@@ -7,7 +7,6 @@
 		<version>2</version>
 	</parent>
 
-	<groupId>org.metricshub</groupId>
 	<artifactId>snmp</artifactId>
 	<version>2.1.00-SNAPSHOT</version>
 
