@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -87,56 +87,50 @@ import java.lang.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.5 $ $Date: 2006/11/29 16:12:50 $
  */
-public class InformPdu_vec extends InformPdu 
-{
-    private static final String     version_id =
-        "@(#)$Id: InformPdu_vec.java,v 3.5 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
+public class InformPdu_vec extends InformPdu {
+    private static final String version_id = "@(#)$Id: InformPdu_vec.java,v 3.5 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
 
-    varbind[]  value;
+    varbind[] value;
 
-/**
- * Constructor.
- *
- * @param con The context of the request
- * @param count The number of OIDs to be get
- */
-public InformPdu_vec(SnmpContextBasisFace con, int count) 
-{
-    super(con);
-    value = new varbind[count];
-}
-
-/**
- * The value of the request is set. This will be called by
- * InformPdu.fillin().
- *
- * @param n the index of the value
- * @param var the value
- * @see Pdu#new_value 
- */
-protected void new_value(int n, varbind var) 
-{
-    if (n <value.length) 
-    {
-        value[n] = var;
+    /**
+     * Constructor.
+     *
+     * @param con   The context of the request
+     * @param count The number of OIDs to be get
+     */
+    public InformPdu_vec(SnmpContextBasisFace con, int count) {
+        super(con);
+        value = new varbind[count];
     }
-}
 
-/**
- * This method notifies all observers. 
- * This will be called by InformPdu.fillin().
- * 
- * <p>
- * If no exception occurred whilst receiving the response, the Object to the 
- * update() method of the Observer will be an array of
- * varbinds, so they may contains any AsnObject type.
- * If an exception occurred, that exception will be passed as the Object
- * to the update() method.
- * </p>
- */
-protected void tell_them()  
-{
-    notifyObservers(value);
-}
+    /**
+     * The value of the request is set. This will be called by
+     * InformPdu.fillin().
+     *
+     * @param n   the index of the value
+     * @param var the value
+     * @see Pdu#new_value
+     */
+    protected void new_value(int n, varbind var) {
+        if (n < value.length) {
+            value[n] = var;
+        }
+    }
+
+    /**
+     * This method notifies all observers.
+     * This will be called by InformPdu.fillin().
+     * 
+     * <p>
+     * If no exception occurred whilst receiving the response, the Object to the
+     * update() method of the Observer will be an array of
+     * varbinds, so they may contains any AsnObject type.
+     * If an exception occurred, that exception will be passed as the Object
+     * to the update() method.
+     * </p>
+     */
+    protected void tell_them() {
+        notifyObservers(value);
+    }
 
 }

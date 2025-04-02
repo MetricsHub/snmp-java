@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -66,107 +66,99 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.3 $ $Date: 2006/01/17 17:59:34 $
  */
-public class ReportPdu extends Pdu 
-{
-    private static final String     version_id =
-        "@(#)$Id: ReportPdu.java,v 3.3 2006/01/17 17:59:34 birgit Exp $ Copyright Westhawk Ltd";
+public class ReportPdu extends Pdu {
+    private static final String version_id = "@(#)$Id: ReportPdu.java,v 3.3 2006/01/17 17:59:34 birgit Exp $ Copyright Westhawk Ltd";
 
-/** 
- * Constructor.
- * The requestPdu is used to copy the necessary IDs to this PDU.
- *
- * @param con The context of the PDU
- * @param requestPdu The original Request PDU
- */
-public ReportPdu(SnmpContextBasisFace con, Pdu requestPdu) 
-{
-    super(con);
-    setMsgType(AsnObject.GET_RPRT_MSG);
-    req_id = requestPdu.req_id;
-    snmpv3MsgId = requestPdu.snmpv3MsgId;
-}
+    /**
+     * Constructor.
+     * The requestPdu is used to copy the necessary IDs to this PDU.
+     *
+     * @param con        The context of the PDU
+     * @param requestPdu The original Request PDU
+     */
+    public ReportPdu(SnmpContextBasisFace con, Pdu requestPdu) {
+        super(con);
+        setMsgType(AsnObject.GET_RPRT_MSG);
+        req_id = requestPdu.req_id;
+        snmpv3MsgId = requestPdu.snmpv3MsgId;
+    }
 
+    /**
+     * Sets the error status of this PDU. This indicates that an exception
+     * has occurred while processing the original request.
+     *
+     * @see SnmpConstants#SNMP_ERR_NOERROR
+     * @see SnmpConstants#SNMP_ERR_TOOBIG
+     * @see SnmpConstants#SNMP_ERR_NOSUCHNAME
+     * @see SnmpConstants#SNMP_ERR_BADVALUE
+     * @see SnmpConstants#SNMP_ERR_READONLY
+     * @see SnmpConstants#SNMP_ERR_GENERR
+     * @see SnmpConstants#SNMP_ERR_NOACCESS
+     * @see SnmpConstants#SNMP_ERR_WRONGTYPE
+     * @see SnmpConstants#SNMP_ERR_WRONGLENGTH
+     * @see SnmpConstants#SNMP_ERR_WRONGENCODING
+     * @see SnmpConstants#SNMP_ERR_WRONGVALUE
+     * @see SnmpConstants#SNMP_ERR_NOCREATION
+     * @see SnmpConstants#SNMP_ERR_INCONSISTENTVALUE
+     * @see SnmpConstants#SNMP_ERR_RESOURCEUNAVAILABLE
+     * @see SnmpConstants#SNMP_ERR_COMMITFAILED
+     * @see SnmpConstants#SNMP_ERR_UNDOFAILED
+     * @see SnmpConstants#SNMP_ERR_AUTHORIZATIONERR
+     * @see SnmpConstants#SNMP_ERR_NOTWRITABLE
+     * @see SnmpConstants#SNMP_ERR_INCONSISTENTNAME
+     */
+    public void getErrorStatus(int errorStatus) {
+        errstat = errorStatus;
+    }
 
-/**
- * Sets the error status of this PDU. This indicates that an exception
- * has occurred while processing the original request.
- *
- * @see SnmpConstants#SNMP_ERR_NOERROR
- * @see SnmpConstants#SNMP_ERR_TOOBIG
- * @see SnmpConstants#SNMP_ERR_NOSUCHNAME
- * @see SnmpConstants#SNMP_ERR_BADVALUE
- * @see SnmpConstants#SNMP_ERR_READONLY
- * @see SnmpConstants#SNMP_ERR_GENERR
- * @see SnmpConstants#SNMP_ERR_NOACCESS
- * @see SnmpConstants#SNMP_ERR_WRONGTYPE
- * @see SnmpConstants#SNMP_ERR_WRONGLENGTH
- * @see SnmpConstants#SNMP_ERR_WRONGENCODING
- * @see SnmpConstants#SNMP_ERR_WRONGVALUE
- * @see SnmpConstants#SNMP_ERR_NOCREATION
- * @see SnmpConstants#SNMP_ERR_INCONSISTENTVALUE
- * @see SnmpConstants#SNMP_ERR_RESOURCEUNAVAILABLE
- * @see SnmpConstants#SNMP_ERR_COMMITFAILED
- * @see SnmpConstants#SNMP_ERR_UNDOFAILED
- * @see SnmpConstants#SNMP_ERR_AUTHORIZATIONERR
- * @see SnmpConstants#SNMP_ERR_NOTWRITABLE
- * @see SnmpConstants#SNMP_ERR_INCONSISTENTNAME
- */
-public void getErrorStatus(int errorStatus)
-{
-    errstat = errorStatus;
-}
+    /**
+     * Sets the error index of this PDU. When the error status is not
+     * SNMP_ERR_NOERROR, it indicates the index of the variable in the
+     * varbind list that caused the exception.
+     */
+    public void getErrorIndex(int errorIndex) {
+        errind = errorIndex;
+    }
 
+    /**
+     * The Report PDU does not get a response back. So it should be sent once.
+     */
+    void transmit() {
+        transmit(false);
+    }
 
-/**
- * Sets the error index of this PDU. When the error status is not
- * SNMP_ERR_NOERROR, it indicates the index of the variable in the
- * varbind list that caused the exception.
- */
-public void getErrorIndex(int errorIndex)
-{
-    errind = errorIndex;
-}
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return The string of the PDU
+     */
+    public String toString() {
+        return super.toString(true);
+    }
 
-/**
- * The Report PDU does not get a response back. So it should be sent once.
- */
-void transmit() 
-{
-    transmit(false);
-}
+    /**
+     * Has no meaning, since there is not response.
+     */
+    protected void new_value(int n, varbind res) {
+    }
 
-/**
- * Returns the string representation of this object.
- *
- * @return The string of the PDU
- */
-public String toString()
-{
-    return super.toString(true);
-}
+    /**
+     * Has no meaning, since there is not response.
+     */
+    protected void tell_them() {
+    }
 
-/**
- * Has no meaning, since there is not response.
- */
-protected void new_value(int n, varbind res){}
-
-/**
- * Has no meaning, since there is not response.
- */
-protected void tell_them(){}
-
-/**
- * Returns that this type of PDU is <em>not</em> expecting a response.
- * This method is used in AbstractSnmpContext to help determine whether
- * or not to start a thread that listens for a response when sending this
- * PDU.
- * The default is <em>false</em>.
- *
- * @return true if a response is expected, false if not.
- */
-protected boolean isExpectingResponse()
-{
-    return false;
-}
+    /**
+     * Returns that this type of PDU is <em>not</em> expecting a response.
+     * This method is used in AbstractSnmpContext to help determine whether
+     * or not to start a thread that listens for a response when sending this
+     * PDU.
+     * The default is <em>false</em>.
+     *
+     * @return true if a response is expected, false if not.
+     */
+    protected boolean isExpectingResponse() {
+        return false;
+    }
 
 }

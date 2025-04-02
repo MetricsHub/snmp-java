@@ -32,7 +32,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -76,10 +76,8 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.9 $ $Date: 2006/01/17 17:43:53 $
  */
-public class OneGetBulkPdu extends GetBulkPdu 
-{
-    private static final String     version_id =
-        "@(#)$Id: OneGetBulkPdu.java,v 3.9 2006/01/17 17:43:53 birgit Exp $ Copyright Westhawk Ltd";
+public class OneGetBulkPdu extends GetBulkPdu {
+    private static final String version_id = "@(#)$Id: OneGetBulkPdu.java,v 3.9 2006/01/17 17:43:53 birgit Exp $ Copyright Westhawk Ltd";
 
     /**
      * The GetBulk request is the only request that will return more
@@ -87,61 +85,54 @@ public class OneGetBulkPdu extends GetBulkPdu
      */
     Vector vars;
 
-/**
- * Constructor.
- *
- * @param con The context (v2c or v3) of the PDU
- */
-public OneGetBulkPdu(SnmpContextBasisFace con)
-{
-    super(con);
-    vars = new Vector();
-}
-
-
-/**
- * Returns a vector with the response varbinds.
- */
-public Vector getVarbinds()
-{
-    return vars;
-}
-
-
-/**
- * The value of the request is set. This will be called by
- * Pdu.fillin().
- *
- * @param n the index of the value
- * @param a_var the value
- * @see Pdu#new_value 
- */
-protected void new_value(int n, varbind a_var) 
-{
-    if (n == 0) 
-    {
+    /**
+     * Constructor.
+     *
+     * @param con The context (v2c or v3) of the PDU
+     */
+    public OneGetBulkPdu(SnmpContextBasisFace con) {
+        super(con);
         vars = new Vector();
     }
-    vars.addElement(a_var);
-}
 
-/**
- * This method notifies all observers. 
- * This will be called by Pdu.fillin().
- * 
- * <p>
- * If no exception occurred whilst receiving the response, the Object to the 
- * update() method of the Observer will be an Vector of
- * varbinds, so they may contains any AsnObject type.
- * If an exception occurred, that exception will be passed as the Object
- * to the update() method.
- * </p>
- *
- * @see Vector
- */
-protected void tell_them()  
-{
-    notifyObservers(vars);
-}
+    /**
+     * Returns a vector with the response varbinds.
+     */
+    public Vector getVarbinds() {
+        return vars;
+    }
+
+    /**
+     * The value of the request is set. This will be called by
+     * Pdu.fillin().
+     *
+     * @param n     the index of the value
+     * @param a_var the value
+     * @see Pdu#new_value
+     */
+    protected void new_value(int n, varbind a_var) {
+        if (n == 0) {
+            vars = new Vector();
+        }
+        vars.addElement(a_var);
+    }
+
+    /**
+     * This method notifies all observers.
+     * This will be called by Pdu.fillin().
+     * 
+     * <p>
+     * If no exception occurred whilst receiving the response, the Object to the
+     * update() method of the Observer will be an Vector of
+     * varbinds, so they may contains any AsnObject type.
+     * If an exception occurred, that exception will be passed as the Object
+     * to the update() method.
+     * </p>
+     *
+     * @see Vector
+     */
+    protected void tell_them() {
+        notifyObservers(vars);
+    }
 
 }

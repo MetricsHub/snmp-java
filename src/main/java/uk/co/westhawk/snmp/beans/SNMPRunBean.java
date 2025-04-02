@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.beans;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -84,126 +84,108 @@ import java.beans.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.9 $ $Date: 2006/02/09 14:20:09 $
  */
-public abstract class SNMPRunBean extends SNMPBean implements Runnable
-{
-    private static final String     version_id =
-        "@(#)$Id: SNMPRunBean.java,v 1.9 2006/02/09 14:20:09 birgit Exp $ Copyright Westhawk Ltd";
+public abstract class SNMPRunBean extends SNMPBean implements Runnable {
+    private static final String version_id = "@(#)$Id: SNMPRunBean.java,v 1.9 2006/02/09 14:20:09 birgit Exp $ Copyright Westhawk Ltd";
 
-    protected int interval      = 2000;
-    protected Thread me         = null;
-    protected boolean running   = false;
+    protected int interval = 2000;
+    protected Thread me = null;
+    protected boolean running = false;
 
+    /**
+     * Method according to the Runnable interface. This method should
+     * provide the continuous sending of a Pdu, with a sleeping interval set
+     * by setUpdateInterval().
+     *
+     * @see #setUpdateInterval(int)
+     * @see #setRunning
+     */
+    public abstract void run();
 
-/**
- * Method according to the Runnable interface. This method should
- * provide the continuous sending of a Pdu, with a sleeping interval set
- * by setUpdateInterval().
- *
- * @see #setUpdateInterval(int)
- * @see #setRunning
- */
-public abstract void run();
-
-
-/**
- * The default constructor
- */
-public SNMPRunBean() 
-{
-}
-
-
-/**
- * Returns the update interval. This is the interval that the
- * bean will sleep between 2 requests.
- *
- * @return the update interval in msec
- * @see #setUpdateInterval(int)
- * @see #setUpdateInterval(String)
- */
-public int getUpdateInterval()
-{
-    return interval;
-}
-
-/**
- * Sets the update interval. This is the interval that the
- * bean will sleep between 2 requests.
- * The default will be <em>2000</em> (= 2 sec).
- *
- * @param i the interval in msec
- * @see #getUpdateInterval
- * @see #setUpdateInterval(String)
- */
-public void setUpdateInterval(int i)
-{
-    if (interval != i)
-    {
-        interval = i;
+    /**
+     * The default constructor
+     */
+    public SNMPRunBean() {
     }
-}
 
-/**
- * Sets the update interval as String. 
- *
- * @param i the interval in msec as String
- * @see #getUpdateInterval
- * @see #setUpdateInterval(int)
- */
-public void setUpdateInterval(String i)
-{
-    int iNo;
-    try
-    {
-        iNo = Integer.valueOf(i.trim()).intValue();
-        setUpdateInterval(iNo);
+    /**
+     * Returns the update interval. This is the interval that the
+     * bean will sleep between 2 requests.
+     *
+     * @return the update interval in msec
+     * @see #setUpdateInterval(int)
+     * @see #setUpdateInterval(String)
+     */
+    public int getUpdateInterval() {
+        return interval;
     }
-    catch (NumberFormatException exp)
-    {
-    }
-}
 
-/**
- * Returns if the bean is running.
- * @return the running mode
- * @see #setRunning
- */
-public boolean isRunning()
-{
-    return running;
-}
-
-/**
- * Starts or stops the thread.
- * Starting this thread should be a result of calling the action()
- * method, so should be implemented in the action method of any child
- * class. 
- *
- * Stopping this thread may be called by the application of applet.
- * This method does NOT call Thread.stop() anymore. Every run() method
- * should check isRunning(), so that when setRunning(false) is called,
- * the run() method will stop running!!
- *
- * @see #isRunning
- * @see SNMPBean#action()
- */
-public synchronized void setRunning(boolean b)
-{
-    if (running != b)
-    {
-        running = b;
-
-        if (running)
-        {
-            if (me == null)
-            {
-                me = new Thread(this);
-                me.setPriority(Thread.MIN_PRIORITY);
-            }
-            me.start();
+    /**
+     * Sets the update interval. This is the interval that the
+     * bean will sleep between 2 requests.
+     * The default will be <em>2000</em> (= 2 sec).
+     *
+     * @param i the interval in msec
+     * @see #getUpdateInterval
+     * @see #setUpdateInterval(String)
+     */
+    public void setUpdateInterval(int i) {
+        if (interval != i) {
+            interval = i;
         }
     }
-}
 
+    /**
+     * Sets the update interval as String.
+     *
+     * @param i the interval in msec as String
+     * @see #getUpdateInterval
+     * @see #setUpdateInterval(int)
+     */
+    public void setUpdateInterval(String i) {
+        int iNo;
+        try {
+            iNo = Integer.valueOf(i.trim()).intValue();
+            setUpdateInterval(iNo);
+        } catch (NumberFormatException exp) {
+        }
+    }
+
+    /**
+     * Returns if the bean is running.
+     * 
+     * @return the running mode
+     * @see #setRunning
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
+     * Starts or stops the thread.
+     * Starting this thread should be a result of calling the action()
+     * method, so should be implemented in the action method of any child
+     * class.
+     *
+     * Stopping this thread may be called by the application of applet.
+     * This method does NOT call Thread.stop() anymore. Every run() method
+     * should check isRunning(), so that when setRunning(false) is called,
+     * the run() method will stop running!!
+     *
+     * @see #isRunning
+     * @see SNMPBean#action()
+     */
+    public synchronized void setRunning(boolean b) {
+        if (running != b) {
+            running = b;
+
+            if (running) {
+                if (me == null) {
+                    me = new Thread(this);
+                    me.setPriority(Thread.MIN_PRIORITY);
+                }
+                me.start();
+            }
+        }
+    }
 
 }

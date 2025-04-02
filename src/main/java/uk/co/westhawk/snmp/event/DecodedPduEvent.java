@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.event;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -58,74 +58,65 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.5 $ $Date: 2006/02/09 14:30:18 $
  */
-public abstract class DecodedPduEvent extends java.util.EventObject  
-{
-    private static final String     version_id =
-        "@(#)$Id: DecodedPduEvent.java,v 1.5 2006/02/09 14:30:18 birgit Exp $ Copyright Westhawk Ltd";
+public abstract class DecodedPduEvent extends java.util.EventObject {
+    private static final String version_id = "@(#)$Id: DecodedPduEvent.java,v 1.5 2006/02/09 14:30:18 birgit Exp $ Copyright Westhawk Ltd";
 
     protected boolean consumed = false;
 
     private int hostPort = -1;
     private Pdu pdu;
 
-/** 
- * The constructor for a decoded pdu event. The SnmpContext classes
- * will fire decoded pdu events.
- *
- * @param source The source (SnmpContext) of the event
- * @param p The pdu
- * @param prt The remote port number of the host where the pdu came from
- *
- * @see #getHostPort()
- * @see #getPdu()
- */
-public DecodedPduEvent(Object source, Pdu p, int prt) 
-{
-    super(source);
-    pdu = p;
-    hostPort = prt;
-}
+    /**
+     * The constructor for a decoded pdu event. The SnmpContext classes
+     * will fire decoded pdu events.
+     *
+     * @param source The source (SnmpContext) of the event
+     * @param p      The pdu
+     * @param prt    The remote port number of the host where the pdu came from
+     *
+     * @see #getHostPort()
+     * @see #getPdu()
+     */
+    public DecodedPduEvent(Object source, Pdu p, int prt) {
+        super(source);
+        pdu = p;
+        hostPort = prt;
+    }
 
+    /**
+     * The remote port number of the host where the pdu came from.
+     *
+     * @return The remote port number of the host or -1.
+     *
+     */
+    public int getHostPort() {
+        return hostPort;
+    }
 
+    /**
+     * The pdu. The pdu is part of a decoded pdu event.
+     *
+     * @return The decoded Pdu.
+     */
+    public Pdu getPdu() {
+        return pdu;
+    }
 
-/**
- * The remote port number of the host where the pdu came from. 
- *
- * @return The remote port number of the host or -1.
- *
- */
-public int getHostPort()
-{
-    return hostPort;
-}
+    /**
+     * Consumes this event so that it will not be sent to any other
+     * listeners.
+     */
+    public void consume() {
+        consumed = true;
+    }
 
-
-/**
- * The pdu. The pdu is part of a decoded pdu event.
- *
- * @return The decoded Pdu.
- */
-public Pdu getPdu()
-{
-    return pdu;
-}
-
-/**
- * Consumes this event so that it will not be sent to any other
- * listeners.
- */
-public void consume()
-{
-    consumed = true;
-}
-
-/**
- * Returns whether or not this event has been consumed.
- * @see #consume 
- */
-public boolean isConsumed()
-{
-    return consumed;
-}
+    /**
+     * Returns whether or not this event has been consumed.
+     * 
+     * @see #consume
+     */
+    public boolean isConsumed() {
+        return consumed;
+    }
 
 }

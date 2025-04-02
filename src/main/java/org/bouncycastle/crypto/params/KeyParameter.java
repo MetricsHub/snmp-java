@@ -4,7 +4,7 @@ package org.bouncycastle.crypto.params;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,28 +25,24 @@ package org.bouncycastle.crypto.params;
 import org.bouncycastle.crypto.CipherParameters;
 
 public class KeyParameter
-    implements CipherParameters
-{
-    private byte[]  key;
+        implements CipherParameters {
+    private byte[] key;
 
     public KeyParameter(
-        byte[]  key)
-    {
+            byte[] key) {
         this(key, 0, key.length);
     }
 
     public KeyParameter(
-        byte[]  key,
-        int     keyOff,
-        int     keyLen)
-    {
+            byte[] key,
+            int keyOff,
+            int keyLen) {
         this.key = new byte[keyLen];
 
         System.arraycopy(key, keyOff, this.key, 0, keyLen);
     }
 
-    public byte[] getKey()
-    {
+    public byte[] getKey() {
         return key;
     }
 }

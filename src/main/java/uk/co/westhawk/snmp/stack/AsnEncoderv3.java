@@ -45,7 +45,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -77,21 +77,20 @@ import java.util.Enumeration;
  * @author <a href="mailto:snmp@westhawk.co.uk">Tim Panton</a>
  * @version $Revision: 3.5 $ $Date: 2009/03/05 12:48:59 $
  */
-class AsnEncoderv3 extends AsnEncoderBase
-{
-    private static final String     version_id =
-        "@(#)$Id: AsnEncoderv3.java,v 3.5 2009/03/05 12:48:59 birgita Exp $ Copyright Westhawk Ltd";
+class AsnEncoderv3 extends AsnEncoderBase {
+	private static final String version_id = "@(#)$Id: AsnEncoderv3.java,v 3.5 2009/03/05 12:48:59 birgita Exp $ Copyright Westhawk Ltd";
 
 	/**
 	 * Encode SNMPv3 packet into bytes.
-	 * @param context The SNMP context
+	 * 
+	 * @param context      The SNMP context
 	 * @param contextMsgId The message ID
-	 * @param node The time window node
-	 * @param msg_type The message type
-	 * @param pduId The PDU ID
-	 * @param errstat The error status
-	 * @param errind The error index
-	 * @param ve The enumeration
+	 * @param node         The time window node
+	 * @param msg_type     The message type
+	 * @param pduId        The PDU ID
+	 * @param errstat      The error status
+	 * @param errind       The error index
+	 * @param ve           The enumeration
 	 * @return The encoded SNMPv3 packet
 	 */
 	byte[] EncodeSNMPv3(SnmpContextv3Basis context, int contextMsgId, TimeWindowNode node, byte msg_type, int pduId,
@@ -208,7 +207,8 @@ class AsnEncoderv3 extends AsnEncoderBase
 			byte[] computedFingerprint = null;
 
 			// Calculate the fingerprint
-			computedFingerprint = context.computeFingerprint(node.getSnmpEngineId(), authenticationProtocol, computedFingerprint, message);
+			computedFingerprint = context.computeFingerprint(node.getSnmpEngineId(), authenticationProtocol,
+					computedFingerprint, message);
 
 			int usmPos = asnSecurityParameters.getContentsPos();
 			int fpPos = fingerPrintOctets.getContentsPos();
@@ -225,7 +225,6 @@ class AsnEncoderv3 extends AsnEncoderBase
 		}
 		return message;
 	}
-
 
 	private byte[] getMessageFlags(SnmpContextv3Basis context, byte messageType) throws EncodingException {
 		byte authMask = (byte) (0x0);

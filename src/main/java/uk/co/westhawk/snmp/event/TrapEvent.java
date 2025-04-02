@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.event;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -57,8 +57,7 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.8 $ $Date: 2006/02/09 14:30:18 $
  */
-public class TrapEvent extends DecodedPduEvent
-{
+public class TrapEvent extends DecodedPduEvent {
     private static final String     version_id =
         "@(#)$Id: TrapEvent.java,v 1.8 2006/02/09 14:30:18 birgit Exp $ Copyright Westhawk Ltd";
 
@@ -72,8 +71,7 @@ public class TrapEvent extends DecodedPduEvent
  * @param port The remote port number of the host where the pdu came from
  *
  */
-public TrapEvent(Object source, Pdu pdu, int port) 
-{
+public TrapEvent(Object source, Pdu pdu, int port) {
     super(source, pdu, port);
 }
 

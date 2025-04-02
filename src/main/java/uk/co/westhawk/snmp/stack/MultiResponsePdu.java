@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -90,10 +90,8 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.3 $ $Date: 2007/10/17 10:44:09 $
  */
-public class MultiResponsePdu extends Pdu
-{
-    private static final String     version_id =
-        "@(#)$Id: MultiResponsePdu.java,v 3.3 2007/10/17 10:44:09 birgita Exp $ Copyright Westhawk Ltd";
+public class MultiResponsePdu extends Pdu {
+    private static final String version_id = "@(#)$Id: MultiResponsePdu.java,v 3.3 2007/10/17 10:44:09 birgita Exp $ Copyright Westhawk Ltd";
 
     /**
      * Hashtable to hold responses received from agents.
@@ -105,63 +103,52 @@ public class MultiResponsePdu extends Pdu
      */
     private String thisIP = null;
 
-
     /**
      * By default create a MultiResponsePdu that will wait for 3
      * seconds for responses to come in from multiple sources. If you
      * want to wait longer set the RetryInterval to a longer first
      * timeout. To make the request more reliable, add more timeouts.
      *
-     * @param  con  The context
+     * @param con The context
      */
-    public MultiResponsePdu(SnmpContextBasisFace con)
-    {
+    public MultiResponsePdu(SnmpContextBasisFace con) {
         super(con);
-        setRetryIntervals(new int[]{3000});
+        setRetryIntervals(new int[] { 3000 });
     }
-
 
     /**
      * Gets the IP address of the host of the most recent response received.
      *
-     * @return    The sourceAgent value
+     * @return The sourceAgent value
      */
-    public String getSourceAgent()
-    {
+    public String getSourceAgent() {
         return thisIP;
     }
 
-
     /**
-     * Gets the number of responses so far received 
+     * Gets the number of responses so far received
      * to this request.
      *
-     * @return    The number of responses
+     * @return The number of responses
      */
-    public int getNumResponses()
-    {
+    public int getNumResponses() {
         return responses.size();
     }
-
 
     /**
      * Prints out the list of received responses and their source IP
      * addressses. Results will be ommitted if not yet received.
      *
-     * @return    String representation of this PDU and all its received
-     * responses
+     * @return String representation of this PDU and all its received
+     *         responses
      */
-    public String toString()
-    {
-        // loop over vector of responses and use Pdu.toString(boolean) 
+    public String toString() {
+        // loop over vector of responses and use Pdu.toString(boolean)
         // to print out the received varbinds.
         StringBuffer buffer = new StringBuffer();
-        if (!answered)
-        {
+        if (!answered) {
             buffer.append(toString(false));
-        }
-        else
-        {
+        } else {
             Enumeration ipaddrs = responses.keys();
             String ipaddr = (String) ipaddrs.nextElement();
             // set respVarbinds to each response in turn calling toString(true)
@@ -169,14 +156,13 @@ public class MultiResponsePdu extends Pdu
 
             buffer.append(toString(true));
             buffer.append(" rhost=").append(ipaddr);
-            int i=2;
-            while (ipaddrs.hasMoreElements())
-            {
+            int i = 2;
+            while (ipaddrs.hasMoreElements()) {
                 ipaddr = (String) ipaddrs.nextElement();
                 respVarbinds = (Vector) responses.get(ipaddr);
 
                 buffer.append("\n\t");
-                buffer.append(printVars("respVarbinds"+i, respVarbinds));
+                buffer.append(printVars("respVarbinds" + i, respVarbinds));
                 buffer.append(" rhost=").append(ipaddr);
                 i++;
             }
@@ -184,20 +170,15 @@ public class MultiResponsePdu extends Pdu
         return buffer.toString();
     }
 
-
     /**
      * Lets the observers know which source we received a response from.
      */
-    protected void tell_them()
-    {
+    protected void tell_them() {
         String sender = thisIP;
         // if timed out then we are done waiting for replies.
-        if (isTimedOut())
-        {
+        if (isTimedOut()) {
             sender = null;
-        }
-        else
-        {
+        } else {
             // record this response for posterity
             responses.put(sender, respVarbinds);
         }
@@ -210,9 +191,6 @@ public class MultiResponsePdu extends Pdu
         thisIP = null;
     }
 
-
-
-
     /**
      * Fills in the received response.
      *
@@ -220,44 +198,36 @@ public class MultiResponsePdu extends Pdu
      * you can get multiple responses by setting the timeout period long
      * do this in the constructor.
      *
-     * @param  seq  Description of Parameter
-     * @see         Pdu#getResponseVarbinds()
+     * @param seq Description of Parameter
+     * @see Pdu#getResponseVarbinds()
      */
-    void fillin(AsnPduSequence seq)
-    {
+    void fillin(AsnPduSequence seq) {
         // this will be set to true (eventually) in handleNoAnswer()
-        if (answered)
-        {
-            if (AsnObject.debug > 6)
-            {
+        if (answered) {
+            if (AsnObject.debug > 6) {
                 System.out.println(getClass().getName() + ".fillin(): "
-                    + "Got a second answer to request " + getReqId());
+                        + "Got a second answer to request " + getReqId());
             }
             return;
         }
 
         // check that we haven't already heard from this host before:
         thisIP = getContext().getReceivedFromHostAddress();
-        if (responses.containsKey(thisIP))
-        {
-            if (AsnObject.debug > 6)
-            {
+        if (responses.containsKey(thisIP)) {
+            if (AsnObject.debug > 6) {
                 System.out.println(getClass().getName() + ".fillin(): "
-                    + "Got a second answer from " + thisIP 
-                    + " to request " + getReqId());
+                        + "Got a second answer from " + thisIP
+                        + " to request " + getReqId());
             }
             return;
         }
 
         // fillin(null) can be called in case of a Decoding exception
-        if (seq != null)
-        {
-            if (seq.isCorrect == true)
-            {
+        if (seq != null) {
+            if (seq.isCorrect == true) {
                 int n = -1;
-                try
-                {
-                    // Fill in the request id 
+                try {
+                    // Fill in the request id
                     this.req_id = seq.getReqId();
                     setErrorStatus(seq.getWhatError());
                     setErrorIndex(seq.getWhereError());
@@ -267,19 +237,16 @@ public class MultiResponsePdu extends Pdu
                     AsnSequence varBind = seq.getVarBind();
                     int size = varBind.getObjCount();
                     respVarbinds = new Vector(size, 1);
-                    for (n=0; n<size; n++)
-                    {
+                    for (n = 0; n < size; n++) {
                         Object obj = varBind.getObj(n);
-                        if (obj instanceof AsnSequence)
-                        {
+                        if (obj instanceof AsnSequence) {
                             AsnSequence varSeq = (AsnSequence) obj;
-                            try
-                            {
+                            try {
                                 varbind vb = new varbind(varSeq);
                                 respVarbinds.addElement(vb);
                                 new_value(n, vb);
+                            } catch (IllegalArgumentException exc) {
                             }
-                            catch (IllegalArgumentException exc) { }
                         }
                     }
 
@@ -289,13 +256,10 @@ public class MultiResponsePdu extends Pdu
                     // and I should fill in the reqVarbinds.
                     // So when reqVarbinds is empty, I clone the
                     // respVarbinds.
-                    if (reqVarbinds.isEmpty())
-                    {
+                    if (reqVarbinds.isEmpty()) {
                         reqVarbinds = (Vector) respVarbinds.clone();
                     }
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     // it happens that an agent does not encode the varbind
                     // list properly. Since we try do decode as much as
                     // possible there may be wrong elements in this list.
@@ -304,9 +268,7 @@ public class MultiResponsePdu extends Pdu
                             "Incorrect varbind list, element " + n);
                     setErrorStatus(AsnObject.SNMP_ERR_DECODINGASN_EXC, exc);
                 }
-            }
-            else
-            {
+            } else {
                 // we couldn't read the whole message
                 // see AsnObject.AsnReadHeader, isCorrect
 
@@ -321,27 +283,24 @@ public class MultiResponsePdu extends Pdu
         tell_them();
         clearChanged();
 
-
         // don't want to tell trans to stop since this will remove
         // the PDU from the context. Instead depend on timeouts to
         // free up the transmitter and remove PDU from context.
         /*
-        synchronized(this)
-        {
-            got = true;
-            answered = true;
-            notify();             // see also handleNoAnswer()
-            if (trans != null)
-            {
-                // free up the transmitter, since 
-                // we are happy with the answer.
-                // trans may be null if we are receiving a trap.
-                trans.interruptMe();  
-            }
-        }
-        */
+         * synchronized(this)
+         * {
+         * got = true;
+         * answered = true;
+         * notify(); // see also handleNoAnswer()
+         * if (trans != null)
+         * {
+         * // free up the transmitter, since
+         * // we are happy with the answer.
+         * // trans may be null if we are receiving a trap.
+         * trans.interruptMe();
+         * }
+         * }
+         */
     }
 
 }
-
-

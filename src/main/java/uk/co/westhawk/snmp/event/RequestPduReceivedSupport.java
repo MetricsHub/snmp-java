@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.event;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,105 +61,87 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.4 $ $Date: 2006/01/17 17:59:33 $
  */
-public class RequestPduReceivedSupport 
-{
-    public static final String     version_id =
-        "@(#)$Id: RequestPduReceivedSupport.java,v 1.4 2006/01/17 17:59:33 birgit Exp $ Copyright Westhawk Ltd";
+public class RequestPduReceivedSupport {
+    public static final String version_id = "@(#)$Id: RequestPduReceivedSupport.java,v 1.4 2006/01/17 17:59:33 birgit Exp $ Copyright Westhawk Ltd";
 
     private Object source;
     private transient Vector pduListeners;
 
-/**
- * The constructor.
- *
- * @param src The source (SnmpContext) of the pdu events when they are fired. 
- */
-public RequestPduReceivedSupport(Object src)
-{
-    source = src;
-}
-
-/**
- * Removes all the listeners.
- */
-public synchronized void empty()
-{
-    if (pduListeners != null)
-    {
-        pduListeners.removeAllElements();
+    /**
+     * The constructor.
+     *
+     * @param src The source (SnmpContext) of the pdu events when they are fired.
+     */
+    public RequestPduReceivedSupport(Object src) {
+        source = src;
     }
-}
 
-/**
- * Returns the number of listeners.
- *
- * @return The number of listeners.
- */
-public synchronized int getListenerCount()
-{
-    int c=0;
-    if (pduListeners != null)
-    {
-        c = pduListeners.size();
-    }
-    return c;
-}
-
-/**
- * Adds the specified pdu listener to receive pdus. 
- */ 
-public synchronized void addRequestPduListener(RequestPduListener listener)
-{
-    if (pduListeners == null)
-    {
-        pduListeners = new Vector (5);
-    }
-    if (pduListeners.contains(listener) == false)
-    {
-        pduListeners.addElement(listener);
-    }
-}
-
-/**
- * Removes the specified pdu listener.
- */
-public synchronized void removeRequestPduListener(RequestPduListener listener)
-{
-    if (pduListeners != null)
-    {
-        pduListeners.removeElement(listener);
-    }
-}
-
-
-/**
- * Fires a decoded pdu event.
- * The event is fired to all listeners, whether they consume it or not.
- * 
- * @param pdu The decoded pdu pdu.
- */
-public void fireRequestPduReceived(Pdu pdu, int hostPort)
-{
-    Vector copyOfListeners = null;
-    if (pduListeners != null)
-    {
-        synchronized (pduListeners)
-        {
-            copyOfListeners = (Vector) pduListeners.clone();
+    /**
+     * Removes all the listeners.
+     */
+    public synchronized void empty() {
+        if (pduListeners != null) {
+            pduListeners.removeAllElements();
         }
     }
 
-    if (copyOfListeners != null)
-    {
-        int sz = copyOfListeners.size();
-        for (int i=sz-1; i>=0; i--)
-        {
-            RequestPduListener listener = (RequestPduListener) copyOfListeners.elementAt(i);
+    /**
+     * Returns the number of listeners.
+     *
+     * @return The number of listeners.
+     */
+    public synchronized int getListenerCount() {
+        int c = 0;
+        if (pduListeners != null) {
+            c = pduListeners.size();
+        }
+        return c;
+    }
 
-            RequestPduEvent evt = new RequestPduEvent(source, pdu, hostPort);
-            listener.requestPduReceived(evt);
+    /**
+     * Adds the specified pdu listener to receive pdus.
+     */
+    public synchronized void addRequestPduListener(RequestPduListener listener) {
+        if (pduListeners == null) {
+            pduListeners = new Vector(5);
+        }
+        if (pduListeners.contains(listener) == false) {
+            pduListeners.addElement(listener);
         }
     }
-}
+
+    /**
+     * Removes the specified pdu listener.
+     */
+    public synchronized void removeRequestPduListener(RequestPduListener listener) {
+        if (pduListeners != null) {
+            pduListeners.removeElement(listener);
+        }
+    }
+
+    /**
+     * Fires a decoded pdu event.
+     * The event is fired to all listeners, whether they consume it or not.
+     * 
+     * @param pdu The decoded pdu pdu.
+     */
+    public void fireRequestPduReceived(Pdu pdu, int hostPort) {
+        Vector copyOfListeners = null;
+        if (pduListeners != null) {
+            synchronized (pduListeners) {
+                copyOfListeners = (Vector) pduListeners.clone();
+            }
+        }
+
+        if (copyOfListeners != null) {
+            int sz = copyOfListeners.size();
+            for (int i = sz - 1; i >= 0; i--) {
+                RequestPduListener listener = (RequestPduListener) copyOfListeners.elementAt(i);
+
+                RequestPduEvent evt = new RequestPduEvent(source, pdu, hostPort);
+                listener.requestPduReceived(evt);
+            }
+        }
+    }
 
 }

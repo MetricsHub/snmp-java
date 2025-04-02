@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -68,144 +68,130 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.15 $ $Date: 2009/03/05 13:27:41 $
  */
-public class SnmpContextv2cPool extends SnmpContextPool 
-    implements SnmpContextv2cFace
-{
-    private static final String     version_id =
-        "@(#)$Id: SnmpContextv2cPool.java,v 3.15 2009/03/05 13:27:41 birgita Exp $ Copyright Westhawk Ltd";
+public class SnmpContextv2cPool extends SnmpContextPool
+        implements SnmpContextv2cFace {
+    private static final String version_id = "@(#)$Id: SnmpContextv2cPool.java,v 3.15 2009/03/05 13:27:41 birgita Exp $ Copyright Westhawk Ltd";
 
-
-/**
- * Constructor.
- *
- * @param host The host to which the PDU will be sent
- * @param port The port where the SNMP server will be
- * @see SnmpContextv2c#SnmpContextv2c(String, int)
- */
-public SnmpContextv2cPool(String host, int port) throws java.io.IOException
-{
-    super(host, port, STANDARD_SOCKET);
-}
-
-/**
- * Constructor.
- * Parameter typeSocket should be either STANDARD_SOCKET, TCP_SOCKET or a
- * fully qualified classname.
- *
- * @param host The host to which the PDU will be sent
- * @param port The port where the SNMP server will be
- * @param typeSocket The type of socket to use. 
- *
- * @see SnmpContextv2c#SnmpContextv2c(String, int, String)
- * @see SnmpContextBasisFace#STANDARD_SOCKET
- * @see SnmpContextBasisFace#TCP_SOCKET
- */
-public SnmpContextv2cPool(String host, int port, String typeSocket) 
-throws java.io.IOException
-{
-    super(host, port, typeSocket);
-}
-
-/**
- * Constructor.
- * Parameter typeSocket should be either STANDARD_SOCKET, TCP_SOCKET or a
- * fully qualified classname.
- *
- * @param host The host to which the PDU will be sent
- * @param port The port where the SNMP server will be
- * @param comm The community name. 
- * @param typeSocket The type of socket to use. 
- *
- * @see SnmpContextBasisFace#STANDARD_SOCKET
- * @see SnmpContextBasisFace#TCP_SOCKET
- *
- * @since 4_14
- */
-public SnmpContextv2cPool(String host, int port, String comm, String typeSocket) 
-throws java.io.IOException
-{
-    super(host, port, comm, null, typeSocket);
-}
-
-/**
- * Constructor.
- * Parameter typeSocket should be either STANDARD_SOCKET, TCP_SOCKET or a
- * fully qualified classname.
- *
- * @param host The host to which the PDU will be sent
- * @param port The port where the SNMP server will be
- * @param comm The community name. 
- * @param bindAddress The local address the server will bind to
- * @param typeSocket The type of socket to use. 
- *
- * @see SnmpContextBasisFace#STANDARD_SOCKET
- * @see SnmpContextBasisFace#TCP_SOCKET
- *
- * @since 4_14
- */
-public SnmpContextv2cPool(String host, int port, String comm, String bindAddress, String typeSocket) 
-throws java.io.IOException
-{
-    super(host, port, comm, bindAddress, typeSocket);
-}
-
-public int getVersion()
-{
-    return SnmpConstants.SNMP_VERSION_2c;
-}
-
-/**
- * Returns a v2c context from the pool. 
- * The pre-existing context (if there is any) is destroyed.
- * This methods checks for an existing context that matches all our
- * properties. If such a context does not exist, a new one is created and
- * added to the pool. 
- *
- * This method actually returns a SnmpContextv2c, although it doesn't
- * look like it.
- *
- * @return A context (v2c) from the pool 
- * @see #getHashKey
- * @see SnmpContext
- * @see SnmpContextv2c
- */
-protected SnmpContext getMatchingContext() throws java.io.IOException
-{
-    SnmpContextPoolItem item = null;
-    SnmpContextv2c newContext = null;
-    String hashKey = getHashKey();
-
-    destroy();
-    synchronized(contextPool)
-    {
-        int count=0;
-        if (contextPool.containsKey(hashKey))
-        {
-            item = (SnmpContextPoolItem) contextPool.get(hashKey);
-            newContext = (SnmpContextv2c) item.getContext();
-            count = item.getCounter();
-        }
-        else
-        {
-            newContext = new SnmpContextv2c(hostname, hostPort, bindAddr, socketType);
-            newContext.setCommunity(community);
-            item = new SnmpContextPoolItem(newContext);
-            contextPool.put(hashKey, item);
-        }
-        count++;
-        item.setCounter(count);
+    /**
+     * Constructor.
+     *
+     * @param host The host to which the PDU will be sent
+     * @param port The port where the SNMP server will be
+     * @see SnmpContextv2c#SnmpContextv2c(String, int)
+     */
+    public SnmpContextv2cPool(String host, int port) throws java.io.IOException {
+        super(host, port, STANDARD_SOCKET);
     }
-    return newContext;
-}
 
-/**
- * This method is not supported. It will throw a CloneNotSupportedException.
- *
- * @since 4_14
- */
-public Object clone() throws CloneNotSupportedException
-{
-    throw new CloneNotSupportedException();
-}
+    /**
+     * Constructor.
+     * Parameter typeSocket should be either STANDARD_SOCKET, TCP_SOCKET or a
+     * fully qualified classname.
+     *
+     * @param host       The host to which the PDU will be sent
+     * @param port       The port where the SNMP server will be
+     * @param typeSocket The type of socket to use.
+     *
+     * @see SnmpContextv2c#SnmpContextv2c(String, int, String)
+     * @see SnmpContextBasisFace#STANDARD_SOCKET
+     * @see SnmpContextBasisFace#TCP_SOCKET
+     */
+    public SnmpContextv2cPool(String host, int port, String typeSocket)
+            throws java.io.IOException {
+        super(host, port, typeSocket);
+    }
+
+    /**
+     * Constructor.
+     * Parameter typeSocket should be either STANDARD_SOCKET, TCP_SOCKET or a
+     * fully qualified classname.
+     *
+     * @param host       The host to which the PDU will be sent
+     * @param port       The port where the SNMP server will be
+     * @param comm       The community name.
+     * @param typeSocket The type of socket to use.
+     *
+     * @see SnmpContextBasisFace#STANDARD_SOCKET
+     * @see SnmpContextBasisFace#TCP_SOCKET
+     *
+     * @since 4_14
+     */
+    public SnmpContextv2cPool(String host, int port, String comm, String typeSocket)
+            throws java.io.IOException {
+        super(host, port, comm, null, typeSocket);
+    }
+
+    /**
+     * Constructor.
+     * Parameter typeSocket should be either STANDARD_SOCKET, TCP_SOCKET or a
+     * fully qualified classname.
+     *
+     * @param host        The host to which the PDU will be sent
+     * @param port        The port where the SNMP server will be
+     * @param comm        The community name.
+     * @param bindAddress The local address the server will bind to
+     * @param typeSocket  The type of socket to use.
+     *
+     * @see SnmpContextBasisFace#STANDARD_SOCKET
+     * @see SnmpContextBasisFace#TCP_SOCKET
+     *
+     * @since 4_14
+     */
+    public SnmpContextv2cPool(String host, int port, String comm, String bindAddress, String typeSocket)
+            throws java.io.IOException {
+        super(host, port, comm, bindAddress, typeSocket);
+    }
+
+    public int getVersion() {
+        return SnmpConstants.SNMP_VERSION_2c;
+    }
+
+    /**
+     * Returns a v2c context from the pool.
+     * The pre-existing context (if there is any) is destroyed.
+     * This methods checks for an existing context that matches all our
+     * properties. If such a context does not exist, a new one is created and
+     * added to the pool.
+     *
+     * This method actually returns a SnmpContextv2c, although it doesn't
+     * look like it.
+     *
+     * @return A context (v2c) from the pool
+     * @see #getHashKey
+     * @see SnmpContext
+     * @see SnmpContextv2c
+     */
+    protected SnmpContext getMatchingContext() throws java.io.IOException {
+        SnmpContextPoolItem item = null;
+        SnmpContextv2c newContext = null;
+        String hashKey = getHashKey();
+
+        destroy();
+        synchronized (contextPool) {
+            int count = 0;
+            if (contextPool.containsKey(hashKey)) {
+                item = (SnmpContextPoolItem) contextPool.get(hashKey);
+                newContext = (SnmpContextv2c) item.getContext();
+                count = item.getCounter();
+            } else {
+                newContext = new SnmpContextv2c(hostname, hostPort, bindAddr, socketType);
+                newContext.setCommunity(community);
+                item = new SnmpContextPoolItem(newContext);
+                contextPool.put(hashKey, item);
+            }
+            count++;
+            item.setCounter(count);
+        }
+        return newContext;
+    }
+
+    /**
+     * This method is not supported. It will throw a CloneNotSupportedException.
+     *
+     * @since 4_14
+     */
+    public Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
 
 }

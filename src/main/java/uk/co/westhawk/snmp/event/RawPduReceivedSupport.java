@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.event;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,119 +61,101 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.5 $ $Date: 2006/02/09 14:30:18 $
  */
-public class RawPduReceivedSupport 
-{
-    public static final String     version_id =
-        "@(#)$Id: RawPduReceivedSupport.java,v 1.5 2006/02/09 14:30:18 birgit Exp $ Copyright Westhawk Ltd";
+public class RawPduReceivedSupport {
+    public static final String version_id = "@(#)$Id: RawPduReceivedSupport.java,v 1.5 2006/02/09 14:30:18 birgit Exp $ Copyright Westhawk Ltd";
 
     private Object source;
     private transient Vector pduListeners;
 
-/**
- * The constructor.
- *
- * @param src The source (ListeningContext) of the pdu events when they are fired. 
- */
-public RawPduReceivedSupport(Object src)
-{
-    source = src;
-}
-
-/**
- * Removes all the listeners.
- */
-public synchronized void empty()
-{
-    if (pduListeners != null)
-    {
-        pduListeners.removeAllElements();
+    /**
+     * The constructor.
+     *
+     * @param src The source (ListeningContext) of the pdu events when they are
+     *            fired.
+     */
+    public RawPduReceivedSupport(Object src) {
+        source = src;
     }
-}
 
-/**
- * Returns the number of listeners.
- *
- * @return The number of listeners.
- */
-public synchronized int getListenerCount()
-{
-    int c=0;
-    if (pduListeners != null)
-    {
-        c = pduListeners.size();
-    }
-    return c;
-}
-
-/**
- * Adds the specified pdu listener to receive pdus. 
- */ 
-public synchronized void addRawPduListener(RawPduListener listener)
-{
-    if (pduListeners == null)
-    {
-        pduListeners = new Vector (5);
-    }
-    if (pduListeners.contains(listener) == false)
-    {
-        pduListeners.addElement(listener);
-    }
-}
-
-/**
- * Removes the specified pdu listener.
- */
-public synchronized void removeRawPduListener(RawPduListener listener)
-{
-    if (pduListeners != null)
-    {
-        pduListeners.removeElement(listener);
-    }
-}
-
-
-/**
- * Fires an undecoded pdu event.
- * The event is fired to all listeners, unless one of them consumes it.
- * The idea is that for undecoded pdus it is very unlikely that more
- * than one party (usually SnmpContext objects) is interested.
- *
- * @param version The SNMP version of the pdu
- * @param hostAddress The IP address of the host where the pdu came from
- * @param hostPort The remote port number of the host where the pdu came from
- * @param message The pdu in bytes
- *
- * @return Whether or not the event has been consumed.
- */
-public boolean fireRawPduReceived(int version, String hostAddress, int hostPort, byte [] message)
-{
-    boolean isConsumed = false;
-    Vector copyOfListeners = null;
-    if (pduListeners != null)
-    {
-        synchronized (pduListeners)
-        {
-            copyOfListeners = (Vector) pduListeners.clone();
+    /**
+     * Removes all the listeners.
+     */
+    public synchronized void empty() {
+        if (pduListeners != null) {
+            pduListeners.removeAllElements();
         }
     }
 
-    if (copyOfListeners != null)
-    {
-        int l = message.length;
-        int sz = copyOfListeners.size();
-        for (int i=sz-1; i>=0 && isConsumed == false; i--)
-        {
-            RawPduListener listener = (RawPduListener) copyOfListeners.elementAt(i);
+    /**
+     * Returns the number of listeners.
+     *
+     * @return The number of listeners.
+     */
+    public synchronized int getListenerCount() {
+        int c = 0;
+        if (pduListeners != null) {
+            c = pduListeners.size();
+        }
+        return c;
+    }
 
-            byte [] copyOfMessage = new byte[l];
-            System.arraycopy(message, 0, copyOfMessage, 0, l);
-            RawPduEvent evt = new RawPduEvent(source, version, hostAddress, copyOfMessage, hostPort);
-            listener.rawPduReceived(evt);
-            isConsumed = (evt.isConsumed());
+    /**
+     * Adds the specified pdu listener to receive pdus.
+     */
+    public synchronized void addRawPduListener(RawPduListener listener) {
+        if (pduListeners == null) {
+            pduListeners = new Vector(5);
+        }
+        if (pduListeners.contains(listener) == false) {
+            pduListeners.addElement(listener);
         }
     }
-    return isConsumed;
-}
 
+    /**
+     * Removes the specified pdu listener.
+     */
+    public synchronized void removeRawPduListener(RawPduListener listener) {
+        if (pduListeners != null) {
+            pduListeners.removeElement(listener);
+        }
+    }
+
+    /**
+     * Fires an undecoded pdu event.
+     * The event is fired to all listeners, unless one of them consumes it.
+     * The idea is that for undecoded pdus it is very unlikely that more
+     * than one party (usually SnmpContext objects) is interested.
+     *
+     * @param version     The SNMP version of the pdu
+     * @param hostAddress The IP address of the host where the pdu came from
+     * @param hostPort    The remote port number of the host where the pdu came from
+     * @param message     The pdu in bytes
+     *
+     * @return Whether or not the event has been consumed.
+     */
+    public boolean fireRawPduReceived(int version, String hostAddress, int hostPort, byte[] message) {
+        boolean isConsumed = false;
+        Vector copyOfListeners = null;
+        if (pduListeners != null) {
+            synchronized (pduListeners) {
+                copyOfListeners = (Vector) pduListeners.clone();
+            }
+        }
+
+        if (copyOfListeners != null) {
+            int l = message.length;
+            int sz = copyOfListeners.size();
+            for (int i = sz - 1; i >= 0 && isConsumed == false; i--) {
+                RawPduListener listener = (RawPduListener) copyOfListeners.elementAt(i);
+
+                byte[] copyOfMessage = new byte[l];
+                System.arraycopy(message, 0, copyOfMessage, 0, l);
+                RawPduEvent evt = new RawPduEvent(source, version, hostAddress, copyOfMessage, hostPort);
+                listener.rawPduReceived(evt);
+                isConsumed = (evt.isConsumed());
+            }
+        }
+        return isConsumed;
+    }
 
 }

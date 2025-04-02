@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.net;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -77,220 +77,178 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.8 $ $Date: 2009/03/05 15:56:19 $
  */
-public class TCPSocket implements ContextSocketFace 
-{
-    static final String     version_id =
-        "@(#)$Id: TCPSocket.java,v 1.8 2009/03/05 15:56:19 birgita Exp $ Copyright Westhawk Ltd";
+public class TCPSocket implements ContextSocketFace {
+    static final String version_id = "@(#)$Id: TCPSocket.java,v 1.8 2009/03/05 15:56:19 birgita Exp $ Copyright Westhawk Ltd";
 
-    private ServerSocket    serverSoc=null;
-    private Socket          clientSoc=null;
-    private InetAddress     sendToHostAddr;
-    private int             sendToHostPort;
-    private InetAddress     receiveFromHostAddr;
-    private int             receiveFromHostPort;
-    private InetAddress     locBindAddr;
+    private ServerSocket serverSoc = null;
+    private Socket clientSoc = null;
+    private InetAddress sendToHostAddr;
+    private int sendToHostPort;
+    private InetAddress receiveFromHostAddr;
+    private int receiveFromHostPort;
+    private InetAddress locBindAddr;
 
-public TCPSocket()
-{
-}
-
-public void create(int port, String bindAddr) throws IOException
-{
-    sendToHostPort = port;
-    receiveFromHostPort = sendToHostPort; // initialise (once!)
-    try
-    {
-        locBindAddr = null;
-        if (bindAddr != null)
-        {
-            locBindAddr = InetAddress.getByName(bindAddr);
-        }
-        serverSoc = new ServerSocket(sendToHostPort, 50, locBindAddr);
+    public TCPSocket() {
     }
-    catch (SocketException exc)
-    {
-        String str = "Socket problem: port=" + port + ", bindAddr=" 
-            + bindAddr + " " + exc.getMessage();
-        throw (new IOException(str));
-    }
-}
 
-
-public void create(String host, int port, String bindAddr) throws IOException
-{
-    sendToHostPort = port;
-    receiveFromHostPort = sendToHostPort; // initialise (once!)
-    try
-    {
-        sendToHostAddr = InetAddress.getByName(host);
-        receiveFromHostAddr = sendToHostAddr; // initialise (once!)
-        locBindAddr = null;
-        if (bindAddr != null)
-        {
-            locBindAddr = InetAddress.getByName(bindAddr);
-        }
-        clientSoc = new Socket(sendToHostAddr, sendToHostPort, locBindAddr, 0);
-    }
-    catch (SocketException exc)
-    {
-        String str = "Socket problem: host=" + host + ", port=" + port 
-            + ", bindAddr=" + bindAddr + " " + exc.getMessage();
-        throw (new IOException(str));
-    }
-    catch (UnknownHostException exc)
-    {
-        String str = "Cannot find host " + host + " " + exc.getMessage();
-        throw (new IOException(str));
-    }
-}
-
-public String getReceivedFromHostAddress()
-{
-    String res = null;
-    if (receiveFromHostAddr != null)
-    {
-        res = receiveFromHostAddr.getHostAddress();
-    }
-    return res;
-}
-
-public String getSendToHostAddress()
-{
-    String res = null;
-    if (sendToHostAddr != null)
-    {
-        res = sendToHostAddr.getHostAddress();
-    }
-    return res;
-}
-
-public String getLocalSocketAddress()
-{
-    String res = null;
-    if (serverSoc != null)
-    {
-        SocketAddress sa = serverSoc.getLocalSocketAddress();
-        if (sa != null)
-        {
-            res = sa.toString();
+    public void create(int port, String bindAddr) throws IOException {
+        sendToHostPort = port;
+        receiveFromHostPort = sendToHostPort; // initialise (once!)
+        try {
+            locBindAddr = null;
+            if (bindAddr != null) {
+                locBindAddr = InetAddress.getByName(bindAddr);
+            }
+            serverSoc = new ServerSocket(sendToHostPort, 50, locBindAddr);
+        } catch (SocketException exc) {
+            String str = "Socket problem: port=" + port + ", bindAddr="
+                    + bindAddr + " " + exc.getMessage();
+            throw (new IOException(str));
         }
     }
-    else if (clientSoc != null)
-    {
-        SocketAddress sa = clientSoc.getLocalSocketAddress();
-        if (sa != null)
-        {
-            res = sa.toString();
+
+    public void create(String host, int port, String bindAddr) throws IOException {
+        sendToHostPort = port;
+        receiveFromHostPort = sendToHostPort; // initialise (once!)
+        try {
+            sendToHostAddr = InetAddress.getByName(host);
+            receiveFromHostAddr = sendToHostAddr; // initialise (once!)
+            locBindAddr = null;
+            if (bindAddr != null) {
+                locBindAddr = InetAddress.getByName(bindAddr);
+            }
+            clientSoc = new Socket(sendToHostAddr, sendToHostPort, locBindAddr, 0);
+        } catch (SocketException exc) {
+            String str = "Socket problem: host=" + host + ", port=" + port
+                    + ", bindAddr=" + bindAddr + " " + exc.getMessage();
+            throw (new IOException(str));
+        } catch (UnknownHostException exc) {
+            String str = "Cannot find host " + host + " " + exc.getMessage();
+            throw (new IOException(str));
         }
     }
-    return res;
-}
 
-public String getRemoteSocketAddress()
-{
-    String res = null;
-    if (clientSoc != null)
-    {
-        SocketAddress sa = clientSoc.getRemoteSocketAddress();
-        if (sa != null)
-        {
-            res = sa.toString();
+    public String getReceivedFromHostAddress() {
+        String res = null;
+        if (receiveFromHostAddr != null) {
+            res = receiveFromHostAddr.getHostAddress();
+        }
+        return res;
+    }
+
+    public String getSendToHostAddress() {
+        String res = null;
+        if (sendToHostAddr != null) {
+            res = sendToHostAddr.getHostAddress();
+        }
+        return res;
+    }
+
+    public String getLocalSocketAddress() {
+        String res = null;
+        if (serverSoc != null) {
+            SocketAddress sa = serverSoc.getLocalSocketAddress();
+            if (sa != null) {
+                res = sa.toString();
+            }
+        } else if (clientSoc != null) {
+            SocketAddress sa = clientSoc.getLocalSocketAddress();
+            if (sa != null) {
+                res = sa.toString();
+            }
+        }
+        return res;
+    }
+
+    public String getRemoteSocketAddress() {
+        String res = null;
+        if (clientSoc != null) {
+            SocketAddress sa = clientSoc.getRemoteSocketAddress();
+            if (sa != null) {
+                res = sa.toString();
+            }
+        } else if (serverSoc != null) {
+            //
+        }
+        return res;
+    }
+
+    public StreamPortItem receive(int maxRecvSize) throws IOException {
+        StreamPortItem item = null;
+        if (serverSoc != null) {
+            byte[] data = new byte[maxRecvSize];
+
+            // timeout will throw an exception every 1000 secs whilst idle
+            // it is caught and ignored, but as a side effect it loops,
+            // checking 'me'
+            serverSoc.setSoTimeout(1000);
+
+            Socket newSocket = serverSoc.accept();
+
+            // copy newSocketIn into in
+            InputStream newSocketIn = newSocket.getInputStream();
+            newSocketIn.read(data, 0, data.length);
+
+            receiveFromHostAddr = newSocket.getInetAddress();
+            receiveFromHostPort = newSocket.getPort();
+
+            ByteArrayInputStream in = null;
+            in = new ByteArrayInputStream(data, 0, data.length);
+            item = new StreamPortItem(receiveFromHostAddr.getHostAddress(),
+                    receiveFromHostPort, in);
+
+            newSocketIn.close();
+            newSocket.close();
+
+            newSocketIn = null;
+            newSocket = null;
+        } else if (clientSoc != null) {
+            byte[] data = new byte[maxRecvSize];
+
+            // timeout will throw an exception every 1000 secs whilst idle
+            // it is caught and ignored, but as a side effect it loops,
+            // checking 'me'
+            clientSoc.setSoTimeout(1000);
+
+            InputStream cin = clientSoc.getInputStream();
+            cin.read(data, 0, data.length);
+
+            receiveFromHostAddr = clientSoc.getInetAddress();
+            receiveFromHostPort = clientSoc.getPort();
+
+            ByteArrayInputStream in = null;
+            in = new ByteArrayInputStream(data, 0, data.length);
+            item = new StreamPortItem(receiveFromHostAddr.getHostAddress(),
+                    receiveFromHostPort, in);
+        }
+        return item;
+    }
+
+    public void send(byte[] packet) throws IOException {
+        if (clientSoc != null) {
+            OutputStream out = clientSoc.getOutputStream();
+            out.write(packet);
+            out.flush();
         }
     }
-    else if (serverSoc != null)
-    {
-        // 
-    }
-    return res;
-}
 
-public StreamPortItem receive(int maxRecvSize) throws IOException
-{
-    StreamPortItem item = null;
-    if (serverSoc != null)
-    {
-        byte [] data = new byte[maxRecvSize];
-
-        // timeout will throw an exception every 1000 secs whilst idle
-        // it is caught and ignored, but as a side effect it loops,
-        // checking 'me'
-        serverSoc.setSoTimeout(1000);
-
-        Socket newSocket = serverSoc.accept();
-
-        // copy newSocketIn into in
-        InputStream newSocketIn = newSocket.getInputStream();
-        newSocketIn.read(data, 0, data.length);
-
-        receiveFromHostAddr = newSocket.getInetAddress();
-        receiveFromHostPort = newSocket.getPort();
-
-        ByteArrayInputStream in = null;
-        in = new ByteArrayInputStream(data, 0, data.length);
-        item = new StreamPortItem(receiveFromHostAddr.getHostAddress(), 
-                                  receiveFromHostPort, in);
-
-        newSocketIn.close();
-        newSocket.close();
-
-        newSocketIn = null;
-        newSocket = null;
-    }
-    else if (clientSoc != null)
-    {
-        byte [] data = new byte[maxRecvSize];
-
-        // timeout will throw an exception every 1000 secs whilst idle
-        // it is caught and ignored, but as a side effect it loops,
-        // checking 'me'
-        clientSoc.setSoTimeout(1000);
-
-        InputStream cin = clientSoc.getInputStream();
-        cin.read(data, 0, data.length);
-
-        receiveFromHostAddr = clientSoc.getInetAddress();
-        receiveFromHostPort = clientSoc.getPort();
-
-        ByteArrayInputStream in = null;
-        in = new ByteArrayInputStream(data, 0, data.length);
-        item = new StreamPortItem(receiveFromHostAddr.getHostAddress(), 
-                                  receiveFromHostPort, in);
-    }
-    return item;
-}
-
-public void send(byte[] packet) throws IOException
-{
-    if (clientSoc != null)
-    {
-        OutputStream out = clientSoc.getOutputStream();
-        out.write(packet);
-        out.flush();
-    }
-}
-
-public void close()
-{
-    try
-    {
-        if (clientSoc != null)
-        {
-            clientSoc.close();
+    public void close() {
+        try {
+            if (clientSoc != null) {
+                clientSoc.close();
+            }
+        } catch (IOException exc) {
         }
-    }
-    catch(IOException exc) {}
 
-    try
-    {
-        if (serverSoc != null)
-        {
-            serverSoc.close();
+        try {
+            if (serverSoc != null) {
+                serverSoc.close();
+            }
+        } catch (IOException exc) {
         }
-    }
-    catch(IOException exc) {}
 
-    serverSoc = null;
-    clientSoc = null;
-}
+        serverSoc = null;
+        clientSoc = null;
+    }
 
 }

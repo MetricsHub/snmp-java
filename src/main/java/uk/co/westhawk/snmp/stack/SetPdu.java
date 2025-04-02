@@ -45,7 +45,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -72,21 +72,17 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.9 $ $Date: 2006/01/17 17:43:54 $
  */
-public class SetPdu extends Pdu 
-{
-    private static final String     version_id =
-        "@(#)$Id: SetPdu.java,v 3.9 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
+public class SetPdu extends Pdu {
+    private static final String version_id = "@(#)$Id: SetPdu.java,v 3.9 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
 
-    /** 
+    /**
      * Constructor.
      *
      * @param con The context of the Pdu
      */
-    public SetPdu(SnmpContextBasisFace con) 
-    {
+    public SetPdu(SnmpContextBasisFace con) {
         super(con);
         setMsgType(AsnObject.SET_REQ_MSG);
     }
-
 
 }

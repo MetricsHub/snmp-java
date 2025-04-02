@@ -2,7 +2,7 @@
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software
+ * Copyright 2023 MetricsHub
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@
  * ╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱
  */
 
-package org.sentrysoftware.snmp.client;
+package org.metricshub.snmp.client;
 
 import uk.co.westhawk.snmp.pdu.BlockPdu;
 import uk.co.westhawk.snmp.stack.AsnObject;
@@ -76,29 +76,38 @@ public class SnmpClient {
 	public static final String SOCKET_TYPE = "Standard";
 
 	/**
-	 * Creates an SNMPClient instance, which connects to the specified SNMP agent with the specified credentials
+	 * Creates an SNMPClient instance, which connects to the specified SNMP agent
+	 * with the specified credentials
 	 * (depending on the version of SNMP)
-	 * @param host				The hostname/IP address of the SNMP agent we're querying
-	 * @param port				The port of the SNMP agent (should be 161)
-	 * @param version			The version of SNMP to use (1, 2 or 3)
-	 * @param retryIntervals	Timeout in milliseconds after which the elementary operations will be retried
-	 * @param community			<i>(SNMP v1 and v2 only)</i> The SNMP community
-	 * @param authType			<i>(SNMP v3 only)</i> The authentication method: "MD5", "SHA" or ""
-	 * @param authUsername		<i>(SNMP v3 only)</i> The username
-	 * @param authPassword		<i>(SNMP v3 only)</i> The password (in clear)
-	 * @param privacyType		<i>(SNMP v3 only)</i> The encryption type: "DES", "AES" or ""
-	 * @param privacyPassword	<i>(SNMP v3 only)</i> The encryption password
-	 * @param contextName		<i>(SNMP v3 only)</i> The context name
-	 * @param contextID			<i>(SNMP v3 only)</i> The context ID (??)
-	 * @throws IllegalArgumentException when specified authType, privType are invalid
-	 * @throws IllegalStateException when the specified properties lead to something that cannot work (i.e. privacy without authentication)
-	 * @throws IOException when cannot initialize the SNMP context
+	 * 
+	 * @param host            The hostname/IP address of the SNMP agent we're
+	 *                        querying
+	 * @param port            The port of the SNMP agent (should be 161)
+	 * @param version         The version of SNMP to use (1, 2 or 3)
+	 * @param retryIntervals  Timeout in milliseconds after which the elementary
+	 *                        operations will be retried
+	 * @param community       <i>(SNMP v1 and v2 only)</i> The SNMP community
+	 * @param authType        <i>(SNMP v3 only)</i> The authentication method:
+	 *                        "MD5", "SHA" or ""
+	 * @param authUsername    <i>(SNMP v3 only)</i> The username
+	 * @param authPassword    <i>(SNMP v3 only)</i> The password (in clear)
+	 * @param privacyType     <i>(SNMP v3 only)</i> The encryption type: "DES",
+	 *                        "AES" or ""
+	 * @param privacyPassword <i>(SNMP v3 only)</i> The encryption password
+	 * @param contextName     <i>(SNMP v3 only)</i> The context name
+	 * @param contextID       <i>(SNMP v3 only)</i> The context ID (??)
+	 * @throws IllegalArgumentException when specified authType, privType are
+	 *                                  invalid
+	 * @throws IllegalStateException    when the specified properties lead to
+	 *                                  something that cannot work (i.e. privacy
+	 *                                  without authentication)
+	 * @throws IOException              when cannot initialize the SNMP context
 	 */
 	public SnmpClient(String host, int port, int version, int[] retryIntervals,
-					  String community,
-					  String authType, String authUsername, String authPassword,
-					  String privacyType, String privacyPassword,
-					  String contextName, byte[] contextID) throws IOException {
+			String community,
+			String authType, String authUsername, String authPassword,
+			String privacyType, String privacyPassword,
+			String contextName, byte[] contextID) throws IOException {
 		// First, validate the inputs
 		validate(version, authType, privacyType);
 
@@ -120,11 +129,11 @@ public class SnmpClient {
 		initialize();
 	}
 
-
 	/**
 	 * Validate the specified inputs. Throws an IllegalArgumentException if needed.
-	 * @param version Specified version of the SNMP protocol
-	 * @param authType Specified authType
+	 * 
+	 * @param version     Specified version of the SNMP protocol
+	 * @param authType    Specified authType
 	 * @param privacyType Specified privacyType
 	 * @throws IllegalArgumentException when invalid inputs are specified
 	 */
@@ -135,16 +144,16 @@ public class SnmpClient {
 			if (authType != null) {
 				if (!authType.isEmpty()) {
 					if (!authType.equals(SNMP_AUTH_MD5) && !authType.equals(SNMP_AUTH_SHA)
-						&& !authType.equals(SNMP_AUTH_SHA256) && !authType.equals(SNMP_AUTH_SHA512)
-						&& !authType.equals(SNMP_AUTH_SHA224) && !authType.equals(SNMP_AUTH_SHA384)) {
+							&& !authType.equals(SNMP_AUTH_SHA256) && !authType.equals(SNMP_AUTH_SHA512)
+							&& !authType.equals(SNMP_AUTH_SHA224) && !authType.equals(SNMP_AUTH_SHA384)) {
 						throw new IllegalArgumentException("Invalid authentication method '" + authType +
-							"' (must be either '" + SNMP_AUTH_MD5
-							+ "' or '" + SNMP_AUTH_SHA
-							+ "' or '" + SNMP_AUTH_SHA256
-							+ "' or '" + SNMP_AUTH_SHA512
-							+ "' or '" + SNMP_AUTH_SHA224
-							+ "' or '" + SNMP_AUTH_SHA384
-							+"' or empty)");
+								"' (must be either '" + SNMP_AUTH_MD5
+								+ "' or '" + SNMP_AUTH_SHA
+								+ "' or '" + SNMP_AUTH_SHA256
+								+ "' or '" + SNMP_AUTH_SHA512
+								+ "' or '" + SNMP_AUTH_SHA224
+								+ "' or '" + SNMP_AUTH_SHA384
+								+ "' or empty)");
 					}
 				}
 			}
@@ -152,7 +161,9 @@ public class SnmpClient {
 			if (privacyType != null) {
 				if (!privacyType.isEmpty()) {
 					if (!privacyType.equals(SNMP_PRIVACY_DES) && !privacyType.equals(SNMP_PRIVACY_AES)) {
-						throw new IllegalArgumentException("Invalid privacy method '" + privacyType +"' (must be either '" + SNMP_PRIVACY_DES + "' or '" + SNMP_PRIVACY_AES + "' or empty)");
+						throw new IllegalArgumentException(
+								"Invalid privacy method '" + privacyType + "' (must be either '" + SNMP_PRIVACY_DES
+										+ "' or '" + SNMP_PRIVACY_AES + "' or empty)");
 					}
 				}
 			}
@@ -162,9 +173,12 @@ public class SnmpClient {
 	/**
 	 * Initialize the SNMPClient
 	 * <p>
-	 * Creates the context to connect to the SNMP agent. Required before any actual operation is performed.
-	 * @throws IOException when cannot create the SNMP context
-	 * @throws IllegalStateException when there is an inconsistency in the properties that prevent us from moving forward
+	 * Creates the context to connect to the SNMP agent. Required before any actual
+	 * operation is performed.
+	 * 
+	 * @throws IOException           when cannot create the SNMP context
+	 * @throws IllegalStateException when there is an inconsistency in the
+	 *                               properties that prevent us from moving forward
 	 */
 	private void initialize() throws IOException {
 
@@ -182,43 +196,44 @@ public class SnmpClient {
 			boolean privacy = false;
 
 			// Some sanity check with the "context"
-			if (contextEngineID == null) { contextEngineID = new byte[0]; }
-			if (contextName == null) { contextName = ""; }
+			if (contextEngineID == null) {
+				contextEngineID = new byte[0];
+			}
+			if (contextName == null) {
+				contextName = "";
+			}
 
 			// Verify the username
-			if (authUsername == null) { authUsername = ""; }
+			if (authUsername == null) {
+				authUsername = "";
+			}
 
 			// Verify and translate the authentication type
 			if (authType == null || authUsername == null || authPassword == null) {
 				authenticate = false;
 				authProtocolCode = SnmpContextv3Face.NO_AUTH_PROTOCOL;
 				authPassword = "";
-			}
-			else if (authType.isEmpty() || authUsername.isEmpty() || authPassword.isEmpty()) {
+			} else if (authType.isEmpty() || authUsername.isEmpty() || authPassword.isEmpty()) {
 				authenticate = false;
 				authProtocolCode = SnmpContextv3Face.NO_AUTH_PROTOCOL;
 				authPassword = "";
-			}
-			else if (authType.equals(SNMP_AUTH_MD5)) {
+			} else if (authType.equals(SNMP_AUTH_MD5)) {
 				authenticate = true;
 				authProtocolCode = SnmpContextv3Face.MD5_PROTOCOL;
-			}
-			else if (authType.equals(SNMP_AUTH_SHA)) {
+			} else if (authType.equals(SNMP_AUTH_SHA)) {
 				authenticate = true;
 				authProtocolCode = SnmpContextv3Face.SHA1_PROTOCOL;
-			}
-			else if (authType.equals(SNMP_AUTH_SHA256)) {
+			} else if (authType.equals(SNMP_AUTH_SHA256)) {
 				authenticate = true;
 				authProtocolCode = SnmpContextv3Face.SHA256_PROTOCOL;
-			}
-			else if (authType.equals(SNMP_AUTH_SHA512)) {
+			} else if (authType.equals(SNMP_AUTH_SHA512)) {
 				authenticate = true;
 				authProtocolCode = SnmpContextv3Face.SHA512_PROTOCOL;
 			} else if (authType.equals(SNMP_AUTH_SHA224)) {
 				authenticate = true;
 				authProtocolCode = SnmpContextv3Face.SHA224_PROTOCOL;
 
-			} else if(authType.equals(SNMP_AUTH_SHA384)) {
+			} else if (authType.equals(SNMP_AUTH_SHA384)) {
 				authenticate = true;
 				authProtocolCode = SnmpContextv3Face.SHA384_PROTOCOL;
 			}
@@ -226,15 +241,12 @@ public class SnmpClient {
 			// Verify the privacy thing
 			if (privacyType == null || privacyPassword == null) {
 				privacy = false;
-			}
-			else if (privacyType.isEmpty() || privacyPassword.isEmpty()) {
+			} else if (privacyType.isEmpty() || privacyPassword.isEmpty()) {
 				privacy = false;
-			}
-			else if (privacyType.equals(SNMP_PRIVACY_DES)) {
+			} else if (privacyType.equals(SNMP_PRIVACY_DES)) {
 				privacy = true;
 				privacyProtocolCode = SnmpContextv3Face.DES_ENCRYPT;
-			}
-			else if (privacyType.equals(SNMP_PRIVACY_AES)) {
+			} else if (privacyType.equals(SNMP_PRIVACY_AES)) {
 				privacy = true;
 				privacyProtocolCode = SnmpContextv3Face.AES_ENCRYPT;
 			}
@@ -267,7 +279,8 @@ public class SnmpClient {
 			contextv1.setCommunity(community);
 		}
 
-		// Small thing: set the prefix for hex values (default is "0x" but we're setting it to empty)
+		// Small thing: set the prefix for hex values (default is "0x" but we're setting
+		// it to empty)
 		AsnOctets.setHexPrefix("");
 
 		// AsnObject.setDebug(15);
@@ -279,23 +292,39 @@ public class SnmpClient {
 	 * (or so at least we believe...)
 	 */
 	public void freeResources() {
-		if (contextv1 != null) { contextv1.destroy(); contextv1 = null;}
-		if (contextv2c != null) { contextv2c.destroy(); contextv2c = null;}
-		if (contextv3 != null) { contextv3.destroy(); contextv3 = null;}
+		if (contextv1 != null) {
+			contextv1.destroy();
+			contextv1 = null;
+		}
+		if (contextv2c != null) {
+			contextv2c.destroy();
+			contextv2c = null;
+		}
+		if (contextv3 != null) {
+			contextv3.destroy();
+			contextv3 = null;
+		}
 
-		if (pdu != null) { pdu = null; }
+		if (pdu != null) {
+			pdu = null;
+		}
 	}
-
 
 	/**
 	 * Create the PDU and sets the timeout
-	 * <p>Note: This method has been created just to avoid duplicate code in the get, getNext and walk functions
+	 * <p>
+	 * Note: This method has been created just to avoid duplicate code in the get,
+	 * getNext and walk functions
 	 */
 	private void createPdu() {
 		// Create the PDU based on the proper context
-		if (snmpVersion == SNMP_V2C) { pdu = new BlockPdu(contextv2c); }
-		else if (snmpVersion == SNMP_V3) { pdu = new BlockPdu(contextv3); }
-		else { pdu = new BlockPdu(contextv1); }
+		if (snmpVersion == SNMP_V2C) {
+			pdu = new BlockPdu(contextv2c);
+		} else if (snmpVersion == SNMP_V3) {
+			pdu = new BlockPdu(contextv3);
+		} else {
+			pdu = new BlockPdu(contextv1);
+		}
 
 		// Set the timeout
 		if (retryIntervals != null) {
@@ -303,12 +332,12 @@ public class SnmpClient {
 		}
 	}
 
-
 	/**
 	 * Perform a GET operation on the specified OID
-	 * @param oid		OID on which to perform a GET operation
-	 * @return			Value of the specified OID
-	 * @throws 			Exception in case of any problem
+	 * 
+	 * @param oid OID on which to perform a GET operation
+	 * @return Value of the specified OID
+	 * @throws Exception in case of any problem
 	 */
 	public String get(String oid) throws Exception {
 		createPdu();
@@ -318,10 +347,13 @@ public class SnmpClient {
 	}
 
 	/**
-	 * Perform a GET operation on the specified OID and return the details of the result (including the type of the value)
-	 * @param oid		OID on which to perform a GET operation
-	 * @return			A string in the form of the OID, "string" and the value, separated by tabs (\t)
-	 * @throws 			Exception in case of any problem
+	 * Perform a GET operation on the specified OID and return the details of the
+	 * result (including the type of the value)
+	 * 
+	 * @param oid OID on which to perform a GET operation
+	 * @return A string in the form of the OID, "string" and the value, separated by
+	 *         tabs (\t)
+	 * @throws Exception in case of any problem
 	 */
 	public String getWithDetails(String oid) throws Exception {
 		createPdu();
@@ -333,9 +365,11 @@ public class SnmpClient {
 
 	/**
 	 * Perform a GETNEXT operation on the specified OID
-	 * @param oid		OID on which to perform a GETNEXT operation
-	 * @return			A string in the form of the OID, "string" and the value, separated by tabs (\t)
-	 * @throws 			Exception in case of any problem
+	 * 
+	 * @param oid OID on which to perform a GETNEXT operation
+	 * @return A string in the form of the OID, "string" and the value, separated by
+	 *         tabs (\t)
+	 * @throws Exception in case of any problem
 	 */
 	public String getNext(String oid) throws Exception {
 		createPdu();
@@ -346,9 +380,12 @@ public class SnmpClient {
 	}
 
 	/**
-	 * Perform a WALK, i.e. a series of GETNEXT operations until we fall off the tree
+	 * Perform a WALK, i.e. a series of GETNEXT operations until we fall off the
+	 * tree
+	 * 
 	 * @param oid Root OID of the tree
-	 * @return Result of the WALK operation, as a long String. Each pair of oid/value is separated with a linefeed (at least, for now!)
+	 * @return Result of the WALK operation, as a long String. Each pair of
+	 *         oid/value is separated with a linefeed (at least, for now!)
 	 * @throws Exception
 	 * @throws IllegalArgumentException for bad specified OIDs
 	 */
@@ -369,9 +406,11 @@ public class SnmpClient {
 		// Now, something special:
 		// In the walk loop below, we will catch any exception and break out of the loop
 		// if anything happens. At that point, we simply return what we have, i.e. just
-		// as if everything was okay. Doing so, we fail to report authentication problems.
+		// as if everything was okay. Doing so, we fail to report authentication
+		// problems.
 		// So, the code using this will think it's just okay, even though the QA team
-		// intentionally put bad credentials to verify the error message... See MATSYA-464.
+		// intentionally put bad credentials to verify the error message... See
+		// MATSYA-464.
 		//
 		// So, we're going to first run a getNext() for nothing, just so that
 		// this call will throw the proper exception in case of credentials problems.
@@ -384,15 +423,13 @@ public class SnmpClient {
 			pdu.addOid(currentOID);
 			try {
 				getNextResult = sendRequest();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				// Something wrong? Get out of the loop and return what we have
 				break;
 			}
 
 			currentOID = getNextResult.oid;
-			if (!currentOID.startsWith(oid))
-			{
+			if (!currentOID.startsWith(oid)) {
 				// We're off the tree, so get out of the loop
 				break;
 			}
@@ -400,7 +437,8 @@ public class SnmpClient {
 			// Append the result
 			walkResult.append(currentOID + "\t" + getNextResult.type + "\t" + getNextResult.value + "\n");
 
-		} while (walkResult.length() < 10 * 1048576);  // 10 MB is the limit for the result of our WALK operation. Should be enough.
+		} while (walkResult.length() < 10 * 1048576); // 10 MB is the limit for the result of our WALK operation. Should
+														// be enough.
 
 		// Remove the trailing \n (if any)
 		int resultLength = walkResult.length();
@@ -412,14 +450,15 @@ public class SnmpClient {
 		return "";
 	}
 
-
 	/**
 	 * Read the content of an SNMP table
-	 * @param rootOID			Root OID of the SNMP table
-	 * @param selectColumnArray	Array of numbers specifying the column numbers of the array to be read. Use "ID" for the row number.
-	 * @return					A semicolon-separated list of values
+	 * 
+	 * @param rootOID           Root OID of the SNMP table
+	 * @param selectColumnArray Array of numbers specifying the column numbers of
+	 *                          the array to be read. Use "ID" for the row number.
+	 * @return A semicolon-separated list of values
 	 * @throws IllegalArgumentException when the specified arguments are wrong
-	 * @throws Exception when the underlying SNMP API throws one
+	 * @throws Exception                when the underlying SNMP API throws one
 	 */
 	public List<List<String>> table(String rootOID, String[] selectColumnArray) throws Exception {
 
@@ -438,7 +477,8 @@ public class SnmpClient {
 		}
 
 		// First of all, retrieve the list of IDs in the table
-		// To do so, we need to see what is the first column number available (it may not be 1)
+		// To do so, we need to see what is the first column number available (it may
+		// not be 1)
 		createPdu();
 		pdu.setPduType(BlockPdu.GETNEXT);
 		pdu.addOid(rootOID);
@@ -450,13 +490,15 @@ public class SnmpClient {
 
 		int tempIndex = firstValueOid.indexOf(".", rootOID.length() + 2);
 		if (tempIndex < 0) {
-			// Weird case, there is no "." after the rootOID in the OID of the first value we successfully got in the table
+			// Weird case, there is no "." after the rootOID in the OID of the first value
+			// we successfully got in the table
 			return new ArrayList<>();
 		}
 		String firstColumnOid = firstValueOid.substring(0, tempIndex);
 		int firstColumnOidLength = firstColumnOid.length();
 
-		// Now, find the list of row IDs in this column. We're going to do something like a walk, except we don't care about the values. Just the OIDs.
+		// Now, find the list of row IDs in this column. We're going to do something
+		// like a walk, except we don't care about the values. Just the OIDs.
 		ArrayList<String> IDArray = new ArrayList<String>(0);
 		String currentOID = firstColumnOid;
 		SnmpResult getNextResult;
@@ -470,12 +512,12 @@ public class SnmpClient {
 			currentOID = getNextResult.oid;
 
 			// Outside? Exit!
-			if (!currentOID.startsWith(firstColumnOid))
-			{
+			if (!currentOID.startsWith(firstColumnOid)) {
 				break;
 			}
 
-			// Add the right part of the OID in the list of IDs (the part to the right of the column OID)
+			// Add the right part of the OID in the list of IDs (the part to the right of
+			// the column OID)
 			IDArray.add(currentOID.substring(firstColumnOidLength + 1));
 
 		} while (IDArray.size() < 10000); // Not more than 10000 lines, please...
@@ -491,13 +533,11 @@ public class SnmpClient {
 				// If the column has to provide the ID of the row
 				if (column.equals("ID")) {
 					row.add(ID);
-				}
-				else {
+				} else {
 					// Keep going, even in case of a failure
 					try {
 						row.add(get(rootOID + "." + column + "." + ID));
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						row.add("");
 					}
 				}
@@ -509,16 +549,18 @@ public class SnmpClient {
 		return tableResult;
 	}
 
-
 	/**
 	 * Sends the SNMP request and perform some minor interpretation of the result
-	 * @return 		Result of the query in the form of a couple {oid;value} (SnmpResult)
+	 * 
+	 * @return Result of the query in the form of a couple {oid;value} (SnmpResult)
 	 * @throws PduException when an error happens at the SNMP layer
-	 * @throws IOException when an error occurs at the network layer
-	 * @throws Exception when we cannot get the value of the specified OID, because it does not exist
-	 * <p>
-	 * <li>In case of no such OID, an exception is thrown.
-	 * <li>In case of empty value, the result will have the oid and an empty value.
+	 * @throws IOException  when an error occurs at the network layer
+	 * @throws Exception    when we cannot get the value of the specified OID,
+	 *                      because it does not exist
+	 *                      <p>
+	 *                      <li>In case of no such OID, an exception is thrown.
+	 *                      <li>In case of empty value, the result will have the oid
+	 *                      and an empty value.
 	 */
 	private SnmpResult sendRequest() throws PduException, IOException, Exception {
 
@@ -526,17 +568,18 @@ public class SnmpClient {
 		SnmpResult result = new SnmpResult();
 
 		// Send the SNMP request
-	 	varbind var = pdu.getResponseVariableBinding();
+		varbind var = pdu.getResponseVariableBinding();
 
-	 	// Retrieve the OID and value of the response (a varbind)
-	 	AsnObjectId oid = var.getOid();
-	 	AsnObject value = var.getValue();
+		// Retrieve the OID and value of the response (a varbind)
+		AsnObjectId oid = var.getOid();
+		AsnObject value = var.getValue();
 
-		// No such OID? Throw an exception (this needs to be caught gracefully by other functions)
-	 	byte valueType = value.getRespType();
+		// No such OID? Throw an exception (this needs to be caught gracefully by other
+		// functions)
+		byte valueType = value.getRespType();
 		if (valueType == SnmpConstants.SNMP_VAR_NOSUCHOBJECT ||
-			valueType == SnmpConstants.SNMP_VAR_NOSUCHINSTANCE ||
-			valueType == SnmpConstants.SNMP_VAR_ENDOFMIBVIEW) {
+				valueType == SnmpConstants.SNMP_VAR_NOSUCHINSTANCE ||
+				valueType == SnmpConstants.SNMP_VAR_ENDOFMIBVIEW) {
 			throw new Exception(value.getRespTypeString());
 		}
 
@@ -546,41 +589,49 @@ public class SnmpClient {
 			result.type = "null";
 		}
 
-		// ASN_OCTET_STRING? (special case, because it may need to be displayed as an hexadecimal string)
-		// Normally, the API should take care of that, but this is not the case for 0x00:00:00:00 values, which are displayed as empty values
+		// ASN_OCTET_STRING? (special case, because it may need to be displayed as an
+		// hexadecimal string)
+		// Normally, the API should take care of that, but this is not the case for
+		// 0x00:00:00:00 values, which are displayed as empty values
 		else if (valueType == SnmpConstants.ASN_OCTET_STR) {
 
 			result.oid = oid.toString();
 			result.type = "ASN_OCTET_STR";
 
 			// Map the value to the specific AsnOctets sub-class
-			AsnOctets octetStringValue = (AsnOctets)value;
+			AsnOctets octetStringValue = (AsnOctets) value;
 
 			// First, convert the value as a string, using toString().
-			// AsnOctets.toString() will convert the value to a normal string (with ASCII chars)
-			// or to the hexadecimal version of it, like 0x00:30:31:32 when the "normal" string is
+			// AsnOctets.toString() will convert the value to a normal string (with ASCII
+			// chars)
+			// or to the hexadecimal version of it, like 0x00:30:31:32 when the "normal"
+			// string is
 			// not printable
 			String octetStringValuetoString = octetStringValue.toString();
 
-			// Then forcibly convert the value to its hexadecimal representation, but replace ':' with blank spaces, to match with what PATROL does
-			String octetStringValuetoHex = octetStringValue.toHex().replace(':',  ' ');
+			// Then forcibly convert the value to its hexadecimal representation, but
+			// replace ':' with blank spaces, to match with what PATROL does
+			String octetStringValuetoHex = octetStringValue.toHex().replace(':', ' ');
 
-			// So, if the toString() and the toHex() value have the same length, it means that toString() is actually returning
-			// the hexadecimal representation (yeah, there is no other way to retrieve that, the SNMP API does not tell us
+			// So, if the toString() and the toHex() value have the same length, it means
+			// that toString() is actually returning
+			// the hexadecimal representation (yeah, there is no other way to retrieve that,
+			// the SNMP API does not tell us
 			// whether the value is printable or not)
-			// If the SNMP API judges that the value is not printable, then we will use the toHex() value, with ':' replaced with blank spaces.
-			// But there is another case: if the original value is just a series of 0x00 (nul) chars, the SNMP API converts that to an
+			// If the SNMP API judges that the value is not printable, then we will use the
+			// toHex() value, with ':' replaced with blank spaces.
+			// But there is another case: if the original value is just a series of 0x00
+			// (nul) chars, the SNMP API converts that to an
 			// empty string, while we need to actually display 00 00 00 00...
 			// That's what we're doing in the code below
 
-			// If octetStringValuetoString is empty while the original value's length was greater than 0, then we'll need to convert it to hexadecimal
+			// If octetStringValuetoString is empty while the original value's length was
+			// greater than 0, then we'll need to convert it to hexadecimal
 			if (octetStringValuetoString.isEmpty() && octetStringValue.getBytes().length > 0) {
 				result.value = octetStringValuetoHex;
-			}
-			else if (octetStringValuetoString.length() == octetStringValuetoHex.length()) {
+			} else if (octetStringValuetoString.length() == octetStringValuetoHex.length()) {
 				result.value = octetStringValuetoHex;
-			}
-			else {
+			} else {
 				result.value = octetStringValuetoString;
 			}
 		}
@@ -594,7 +645,6 @@ public class SnmpClient {
 
 		return result;
 
-	}  // end of sendRequest
-
+	} // end of sendRequest
 
 }// end of class - SNMPClient

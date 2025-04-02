@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -67,10 +67,8 @@ import java.util.*;
  * @version $Revision: 3.4 $ $Date: 2006/11/29 16:12:50 $
  * @since 4_14
  */
-public class InterfaceGetNextPduStub extends GetNextPdu
-{
-    private static final String version_id =
-        "@(#)$Id: InterfaceGetNextPduStub.java,v 3.4 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
+public class InterfaceGetNextPduStub extends GetNextPdu {
+    private static final String version_id = "@(#)$Id: InterfaceGetNextPduStub.java,v 3.4 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
 
     public final static String sysUpTime_OID = "1.3.6.1.2.1.1.3";
     public final static String ifNumber_OID = "1.3.6.1.2.1.2.1";
@@ -85,35 +83,30 @@ public class InterfaceGetNextPduStub extends GetNextPdu
     public final static int NO_COL = 6;
     public final static int NO_OID = NO_SCAL + NO_COL;
 
-
-    public final static String scal_oids[] =
-    {
-        sysUpTime_OID,
-        ifNumber_OID,
+    public final static String scal_oids[] = {
+            sysUpTime_OID,
+            ifNumber_OID,
     };
 
-    public final static String col_oids[] =
-    {
-        ifIndex_OID,
-        ifDescr_OID,
-        ifSpeed_OID,
-        ifOperStatus_OID,
-        ifInOctets_OID,
-        ifOutOctets_OID,
+    public final static String col_oids[] = {
+            ifIndex_OID,
+            ifDescr_OID,
+            ifSpeed_OID,
+            ifOperStatus_OID,
+            ifInOctets_OID,
+            ifOutOctets_OID,
     };
 
-    public final static String all_oids[] =
-    {
-        sysUpTime_OID,
-        ifNumber_OID,
-        ifIndex_OID,
-        ifDescr_OID,
-        ifSpeed_OID,
-        ifOperStatus_OID,
-        ifInOctets_OID,
-        ifOutOctets_OID,
+    public final static String all_oids[] = {
+            sysUpTime_OID,
+            ifNumber_OID,
+            ifIndex_OID,
+            ifDescr_OID,
+            ifSpeed_OID,
+            ifOperStatus_OID,
+            ifInOctets_OID,
+            ifOutOctets_OID,
     };
-
 
     protected long _sysUpTime;
     protected int _ifNumber;
@@ -127,372 +120,332 @@ public class InterfaceGetNextPduStub extends GetNextPdu
 
     protected boolean _valid = false;
 
-/**
- * Constructor.
- *
- * @param con The context of the request
- */
-public InterfaceGetNextPduStub(SnmpContextBasisFace con)
-{
-    super(con);
-    _ifOperStatusMap.put(new Integer(3), "testing");
-    _ifOperStatusMap.put(new Integer(1), "up");
-    _ifOperStatusMap.put(new Integer(2), "down");
+    /**
+     * Constructor.
+     *
+     * @param con The context of the request
+     */
+    public InterfaceGetNextPduStub(SnmpContextBasisFace con) {
+        super(con);
+        _ifOperStatusMap.put(new Integer(3), "testing");
+        _ifOperStatusMap.put(new Integer(1), "up");
+        _ifOperStatusMap.put(new Integer(2), "down");
 
-    _valid = false;
-}
-
-/**
- * Constructor that will send the first request immediately.
- *
- * @param con The context of the request
- * @param o the Observer that will be notified when the answer is
- * received
- */
-public InterfaceGetNextPduStub(SnmpContextBasisFace con, Observer o)
-throws PduException, java.io.IOException
-{
-    this(con);
-    addOids(null);
-    if (o != null)
-    {
-        addObserver(o);
+        _valid = false;
     }
-    send();
-}
 
+    /**
+     * Constructor that will send the first request immediately.
+     *
+     * @param con The context of the request
+     * @param o   the Observer that will be notified when the answer is
+     *            received
+     */
+    public InterfaceGetNextPduStub(SnmpContextBasisFace con, Observer o)
+            throws PduException, java.io.IOException {
+        this(con);
+        addOids(null);
+        if (o != null) {
+            addObserver(o);
+        }
+        send();
+    }
 
-/**
- * The method addOids is the basis for the GetNext functionality.
- *
- * If old is null, it initialises the varbinds from all_oids.
- * If old is not null, it copies the column OIDs from the
- * old InterfaceGetNextPduStub object.
- * so the request continues where the previous one left.
- *
- * Note, the scalars and the columns OIDs are handled differently. The
- * scalars are always copied from the original scal_oids, only the
- * column OIDs are copied from the old
- * InterfaceGetNextPduStub object.
- */
-public void addOids(InterfaceGetNextPduStub old)
-{
-    if (old != null)
-    {
-        for (int i=0; i<NO_SCAL; i++)
-        {
+    /**
+     * The method addOids is the basis for the GetNext functionality.
+     *
+     * If old is null, it initialises the varbinds from all_oids.
+     * If old is not null, it copies the column OIDs from the
+     * old InterfaceGetNextPduStub object.
+     * so the request continues where the previous one left.
+     *
+     * Note, the scalars and the columns OIDs are handled differently. The
+     * scalars are always copied from the original scal_oids, only the
+     * column OIDs are copied from the old
+     * InterfaceGetNextPduStub object.
+     */
+    public void addOids(InterfaceGetNextPduStub old) {
+        if (old != null) {
+            for (int i = 0; i < NO_SCAL; i++) {
+                addOid(scal_oids[i]);
+            }
+            for (int i = NO_SCAL; i < NO_OID; i++) {
+                varbind var = (varbind) old.respVarbinds.elementAt(i);
+                addOid(var.getOid());
+            }
+        } else {
+            for (int i = 0; i < NO_OID; i++) {
+                addOid(all_oids[i]);
+            }
+        }
+    }
+
+    /**
+     * This method sets the column index. By doing this, the request will
+     * return (only) this index.
+     *
+     * The index parameters only applies to the column OIDs.
+     * The scalars are copied from the original scal_oids.
+     */
+    public void addOids(int index) {
+        for (int i = 0; i < NO_SCAL; i++) {
             addOid(scal_oids[i]);
         }
-        for (int i=NO_SCAL; i<NO_OID; i++)
-        {
-            varbind var = (varbind) old.respVarbinds.elementAt(i);
-            addOid(var.getOid());
+        for (int i = 0; i < NO_COL; i++) {
+            addOid(col_oids[i] + "." + index);
         }
     }
-    else
-    {
-        for (int i=0; i<NO_OID; i++)
-        {
-            addOid(all_oids[i]);
-        }
-    }
-}
 
+    /**
+     * The value of the request is set. This will be called by
+     * Pdu.fillin().
+     *
+     * I check if the variables are still in range.
+     * I do this because I'm only interessed in a part of the MIB. If I
+     * would not do this check, I'll get the whole MIB from the starting
+     * point, instead of the variables in the table.
+     *
+     * @param n   the index of the value
+     * @param res the value
+     * @see Pdu#new_value
+     */
+    protected void new_value(int n, varbind res) {
+        if (getErrorStatus() == AsnObject.SNMP_ERR_NOERROR) {
+            AsnObjectId oid = res.getOid();
+            AsnObject value = res.getValue();
 
-/**
- * This method sets the column index. By doing this, the request will
- * return (only) this index.
- *
- * The index parameters only applies to the column OIDs.
- * The scalars are copied from the original scal_oids.
- */
-public void addOids(int index)
-{
-    for (int i=0; i<NO_SCAL; i++)
-    {
-        addOid(scal_oids[i]);
-    }
-    for (int i=0; i<NO_COL; i++)
-    {
-        addOid(col_oids[i] + "." + index);
-    }
-}
-/**
- * The value of the request is set. This will be called by
- * Pdu.fillin().
- *
- * I check if the variables are still in range.
- * I do this because I'm only interessed in a part of the MIB. If I
- * would not do this check, I'll get the whole MIB from the starting
- * point, instead of the variables in the table.
- *
- * @param n the index of the value
- * @param res the value
- * @see Pdu#new_value
- */
-protected void new_value(int n, varbind res)
-{
-    if (getErrorStatus() == AsnObject.SNMP_ERR_NOERROR)
-    {
-        AsnObjectId oid = res.getOid();
-        AsnObject value = res.getValue();
-
-        if (res.getOid().toString().startsWith(all_oids[n]))
-        {
-            try
-            {
-                switch (n)
-                {
-                    case 0:
-                        setSysUpTime(value);
-                        break;
-                    case 1:
-                        setIfNumber(value);
-                        break;
-                    case 2:
-                        setIfIndex(value);
-                        break;
-                    case 3:
-                        setIfDescr(value);
-                        break;
-                    case 4:
-                        setIfSpeed(value);
-                        break;
-                    case 5:
-                        setIfOperStatus(value);
-                        break;
-                    case 6:
-                        setIfInOctets(value);
-                        break;
-                    case 7:
-                        setIfOutOctets(value);
-                        break;
-                    default:
-                        _valid = false;
+            if (res.getOid().toString().startsWith(all_oids[n])) {
+                try {
+                    switch (n) {
+                        case 0:
+                            setSysUpTime(value);
+                            break;
+                        case 1:
+                            setIfNumber(value);
+                            break;
+                        case 2:
+                            setIfIndex(value);
+                            break;
+                        case 3:
+                            setIfDescr(value);
+                            break;
+                        case 4:
+                            setIfSpeed(value);
+                            break;
+                        case 5:
+                            setIfOperStatus(value);
+                            break;
+                        case 6:
+                            setIfInOctets(value);
+                            break;
+                        case 7:
+                            setIfOutOctets(value);
+                            break;
+                        default:
+                            _valid = false;
+                    }
+                } catch (ClassCastException exc) {
+                    _valid = false;
                 }
-            }
-            catch (ClassCastException exc)
-            {
-                _valid = false;
-            }
 
-            if (n == NO_OID-1)
-            {
-                _valid = true;
+                if (n == NO_OID - 1) {
+                    _valid = true;
+                }
+            } else {
+                setErrorStatus(AsnObject.SNMP_ERR_NOSUCHNAME);
+                setErrorIndex(n);
             }
-        }
-        else
-        {
-            setErrorStatus(AsnObject.SNMP_ERR_NOSUCHNAME);
-            setErrorIndex(n);
         }
     }
-}
 
+    /**
+     * sysUpTime
+     * OBJECT-TYPE (
+     * Syntax: [APPLICATION 3] INTEGER (0..4294967295)
+     * Access: read-only
+     * Status: mandatory
+     * Description: The time (in hundredths of a second) since the
+     * network management portion of the system was last
+     * re-initialized.
+     * )
+     */
+    public void setSysUpTime(AsnObject new_value) {
+        AsnUnsInteger obj = (AsnUnsInteger) new_value;
+        _sysUpTime = obj.getValue();
+    }
 
-/**
-sysUpTime
-OBJECT-TYPE (
-  Syntax: [APPLICATION 3] INTEGER (0..4294967295)
-  Access: read-only
-  Status: mandatory
-  Description: The time (in hundredths of a second) since the
-               network management portion of the system was last
-               re-initialized.
-)*/
-public void setSysUpTime(AsnObject new_value)
-{
-    AsnUnsInteger obj = (AsnUnsInteger) new_value;
-    _sysUpTime = obj.getValue();
-}
-public long getSysUpTime()
-{
-    return _sysUpTime;
-}
+    public long getSysUpTime() {
+        return _sysUpTime;
+    }
 
+    /**
+     * ifNumber
+     * OBJECT-TYPE (
+     * Syntax: [UNIVERSAL 2] INTEGER
+     * Access: read-only
+     * Status: mandatory
+     * Description: The number of network interfaces (regardless of
+     * their current state) present on this system.
+     * )
+     */
+    public void setIfNumber(AsnObject new_value) {
+        AsnInteger obj = (AsnInteger) new_value;
+        _ifNumber = obj.getValue();
+    }
 
-/**
-ifNumber
-OBJECT-TYPE (
-  Syntax: [UNIVERSAL 2] INTEGER
-  Access: read-only
-  Status: mandatory
-  Description: The number of network interfaces (regardless of
-               their current state) present on this system.
-)*/
-public void setIfNumber(AsnObject new_value)
-{
-    AsnInteger obj = (AsnInteger) new_value;
-    _ifNumber = obj.getValue();
-}
-public int getIfNumber()
-{
-    return _ifNumber;
-}
+    public int getIfNumber() {
+        return _ifNumber;
+    }
 
+    /**
+     * ifIndex
+     * OBJECT-TYPE (
+     * Syntax: [UNIVERSAL 2] INTEGER
+     * Access: read-only
+     * Status: mandatory
+     * Description: A unique value for each interface. Its value
+     * ranges between 1 and the value of ifNumber. The
+     * value for each interface must remain constant at
+     * least from one re-initialization of the entity's
+     * network management system to the next re-
+     * initialization.
+     * )
+     */
+    public void setIfIndex(AsnObject new_value) {
+        AsnInteger obj = (AsnInteger) new_value;
+        _ifIndex = obj.getValue();
+    }
 
-/**
-ifIndex
-OBJECT-TYPE (
-  Syntax: [UNIVERSAL 2] INTEGER
-  Access: read-only
-  Status: mandatory
-  Description: A unique value for each interface.  Its value
-               ranges between 1 and the value of ifNumber.  The
-               value for each interface must remain constant at
-               least from one re-initialization of the entity's
-               network management system to the next re-
-               initialization.
-)*/
-public void setIfIndex(AsnObject new_value)
-{
-    AsnInteger obj = (AsnInteger) new_value;
-    _ifIndex = obj.getValue();
-}
-public int getIfIndex()
-{
-    return _ifIndex;
-}
+    public int getIfIndex() {
+        return _ifIndex;
+    }
 
+    /**
+     * ifDescr
+     * OBJECT-TYPE (
+     * Syntax: [UNIVERSAL 4] OCTET STRING (SIZE (0..255))
+     * Access: read-only
+     * Status: mandatory
+     * Description: A textual string containing information about the
+     * interface. This string should include the name of
+     * the manufacturer, the product name and the version
+     * of the hardware interface.
+     * )
+     */
+    public void setIfDescr(AsnObject new_value) {
+        AsnOctets obj = (AsnOctets) new_value;
+        _ifDescr = obj.toDisplayString();
+    }
 
-/**
-ifDescr
-OBJECT-TYPE (
-  Syntax: [UNIVERSAL 4] OCTET STRING (SIZE (0..255))
-  Access: read-only
-  Status: mandatory
-  Description: A textual string containing information about the
-               interface.  This string should include the name of
-               the manufacturer, the product name and the version
-               of the hardware interface.
-)*/
-public void setIfDescr(AsnObject new_value)
-{
-    AsnOctets obj = (AsnOctets) new_value;
-    _ifDescr = obj.toDisplayString();
-}
-public String getIfDescr()
-{
-    return _ifDescr;
-}
+    public String getIfDescr() {
+        return _ifDescr;
+    }
 
+    /**
+     * ifSpeed
+     * OBJECT-TYPE (
+     * Syntax: [APPLICATION 2] INTEGER (0..4294967295)
+     * Access: read-only
+     * Status: mandatory
+     * Description: An estimate of the interface's current bandwidth
+     * in bits per second. For interfaces which do not
+     * vary in bandwidth or for those where no accurate
+     * estimation can be made, this object should contain
+     * the nominal bandwidth.
+     * )
+     */
+    public void setIfSpeed(AsnObject new_value) {
+        AsnUnsInteger obj = (AsnUnsInteger) new_value;
+        _ifSpeed = obj.getValue();
+    }
 
-/**
-ifSpeed
-OBJECT-TYPE (
-  Syntax: [APPLICATION 2] INTEGER (0..4294967295)
-  Access: read-only
-  Status: mandatory
-  Description: An estimate of the interface's current bandwidth
-               in bits per second.  For interfaces which do not
-               vary in bandwidth or for those where no accurate
-               estimation can be made, this object should contain
-               the nominal bandwidth.
-)*/
-public void setIfSpeed(AsnObject new_value)
-{
-    AsnUnsInteger obj = (AsnUnsInteger) new_value;
-    _ifSpeed = obj.getValue();
-}
-public long getIfSpeed()
-{
-    return _ifSpeed;
-}
+    public long getIfSpeed() {
+        return _ifSpeed;
+    }
 
+    /**
+     * ifOperStatus
+     * OBJECT-TYPE (
+     * Syntax: [UNIVERSAL 2] INTEGER (1 | 2 | 3)
+     * Access: read-only
+     * Status: mandatory
+     * Description: The current operational state of the interface.
+     * The testing(3) state indicates that no operational
+     * packets can be passed.
+     * )
+     */
+    public void setIfOperStatus(AsnObject new_value) {
+        AsnInteger obj = (AsnInteger) new_value;
+        _ifOperStatus = obj.getValue();
+    }
 
-/**
-ifOperStatus
-OBJECT-TYPE (
-  Syntax: [UNIVERSAL 2] INTEGER (1 | 2 | 3)
-  Access: read-only
-  Status: mandatory
-  Description: The current operational state of the interface.
-               The testing(3) state indicates that no operational
-               packets can be passed.
-)*/
-public void setIfOperStatus(AsnObject new_value)
-{
-    AsnInteger obj = (AsnInteger) new_value;
-    _ifOperStatus = obj.getValue();
-}
-public String getIfOperStatusStr()
-{
-    return (String) _ifOperStatusMap.get(new Integer(_ifOperStatus));
-}
-public int getIfOperStatus()
-{
-    return _ifOperStatus;
-}
+    public String getIfOperStatusStr() {
+        return (String) _ifOperStatusMap.get(new Integer(_ifOperStatus));
+    }
 
+    public int getIfOperStatus() {
+        return _ifOperStatus;
+    }
 
-/**
-ifInOctets
-OBJECT-TYPE (
-  Syntax: [APPLICATION 1] INTEGER (0..4294967295)
-  Access: read-only
-  Status: mandatory
-  Description: The total number of octets received on the
-               interface, including framing characters.
-)*/
-public void setIfInOctets(AsnObject new_value)
-{
-    AsnUnsInteger obj = (AsnUnsInteger) new_value;
-    _ifInOctets = obj.getValue();
-}
-public long getIfInOctets()
-{
-    return _ifInOctets;
-}
+    /**
+     * ifInOctets
+     * OBJECT-TYPE (
+     * Syntax: [APPLICATION 1] INTEGER (0..4294967295)
+     * Access: read-only
+     * Status: mandatory
+     * Description: The total number of octets received on the
+     * interface, including framing characters.
+     * )
+     */
+    public void setIfInOctets(AsnObject new_value) {
+        AsnUnsInteger obj = (AsnUnsInteger) new_value;
+        _ifInOctets = obj.getValue();
+    }
 
+    public long getIfInOctets() {
+        return _ifInOctets;
+    }
 
-/**
-ifOutOctets
-OBJECT-TYPE (
-  Syntax: [APPLICATION 1] INTEGER (0..4294967295)
-  Access: read-only
-  Status: mandatory
-  Description: The total number of octets transmitted out of the
-               interface, including framing characters.
-)*/
-public void setIfOutOctets(AsnObject new_value)
-{
-    AsnUnsInteger obj = (AsnUnsInteger) new_value;
-    _ifOutOctets = obj.getValue();
-}
-public long getIfOutOctets()
-{
-    return _ifOutOctets;
-}
+    /**
+     * ifOutOctets
+     * OBJECT-TYPE (
+     * Syntax: [APPLICATION 1] INTEGER (0..4294967295)
+     * Access: read-only
+     * Status: mandatory
+     * Description: The total number of octets transmitted out of the
+     * interface, including framing characters.
+     * )
+     */
+    public void setIfOutOctets(AsnObject new_value) {
+        AsnUnsInteger obj = (AsnUnsInteger) new_value;
+        _ifOutOctets = obj.getValue();
+    }
 
+    public long getIfOutOctets() {
+        return _ifOutOctets;
+    }
 
+    /**
+     * Returns if this set of values is valid.
+     */
+    public boolean isValid() {
+        return _valid;
+    }
 
-
-/**
- * Returns if this set of values is valid.
- */
-public boolean isValid()
-{
-    return _valid;
-}
-
-
-public String toString()
-{
-    StringBuffer buffer = new StringBuffer(getClass().getName());
-    buffer.append("[");
-    buffer.append("sysUpTime=").append(_sysUpTime);
-    buffer.append(", ifNumber=").append(_ifNumber);
-    buffer.append(", ifIndex=").append(_ifIndex);
-    buffer.append(", ifDescr=").append(_ifDescr);
-    buffer.append(", ifSpeed=").append(_ifSpeed);
-    buffer.append(", ifOperStatus=").append(_ifOperStatusMap.get(new Integer(_ifOperStatus)));
-    buffer.append(", ifInOctets=").append(_ifInOctets);
-    buffer.append(", ifOutOctets=").append(_ifOutOctets);
-    buffer.append(", valid=").append(_valid);
-    buffer.append("]");
-    return buffer.toString();
-}
-
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(getClass().getName());
+        buffer.append("[");
+        buffer.append("sysUpTime=").append(_sysUpTime);
+        buffer.append(", ifNumber=").append(_ifNumber);
+        buffer.append(", ifIndex=").append(_ifIndex);
+        buffer.append(", ifDescr=").append(_ifDescr);
+        buffer.append(", ifSpeed=").append(_ifSpeed);
+        buffer.append(", ifOperStatus=").append(_ifOperStatusMap.get(new Integer(_ifOperStatus)));
+        buffer.append(", ifInOctets=").append(_ifInOctets);
+        buffer.append(", ifOutOctets=").append(_ifOutOctets);
+        buffer.append(", valid=").append(_valid);
+        buffer.append("]");
+        return buffer.toString();
+    }
 
 }
-

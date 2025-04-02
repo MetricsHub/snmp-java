@@ -4,7 +4,7 @@ package org.bouncycastle.crypto;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,8 +27,7 @@ import java.security.SecureRandom;
 /**
  * The base class for symmetric, or secret, cipher key generators.
  */
-public class CipherKeyGenerator
-{
+public class CipherKeyGenerator {
     protected SecureRandom  random;
     protected int           strength;
 
@@ -38,8 +37,7 @@ public class CipherKeyGenerator
      * @param param the parameters to be used for key generation
      */
     public void init(
-        KeyGenerationParameters param)
-    {
+            KeyGenerationParameters param) {
         this.random = param.getRandom();
         this.strength = (param.getStrength() + 7) / 8;
     }
@@ -49,9 +47,8 @@ public class CipherKeyGenerator
      *
      * @return a byte array containing the key value.
      */
-    public byte[] generateKey()
-    {
-        byte[]  key = new byte[strength];
+    public byte[] generateKey() {
+        byte[] key = new byte[strength];
 
         random.nextBytes(key);
 

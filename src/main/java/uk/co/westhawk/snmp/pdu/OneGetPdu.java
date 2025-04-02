@@ -32,7 +32,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -73,10 +73,8 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.13 $ $Date: 2006/01/17 17:49:53 $
  */
-public class OneGetPdu extends GetPdu 
-{
-    private static final String     version_id =
-        "@(#)$Id: OneGetPdu.java,v 3.13 2006/01/17 17:49:53 birgit Exp $ Copyright Westhawk Ltd";
+public class OneGetPdu extends GetPdu {
+    private static final String version_id = "@(#)$Id: OneGetPdu.java,v 3.13 2006/01/17 17:49:53 birgit Exp $ Copyright Westhawk Ltd";
 
     varbind var;
 
@@ -85,8 +83,7 @@ public class OneGetPdu extends GetPdu
      *
      * @param con The context of the request
      */
-    public OneGetPdu(SnmpContextBasisFace con)
-    {
+    public OneGetPdu(SnmpContextBasisFace con) {
         super(con);
     }
 
@@ -95,27 +92,24 @@ public class OneGetPdu extends GetPdu
      * is set.
      *
      * @param con the SnmpContextBasisFace
-     * @param oid the oid 
+     * @param oid the oid
      */
-    public OneGetPdu(SnmpContextBasisFace con, String oid) 
-    throws PduException, java.io.IOException
-    {
+    public OneGetPdu(SnmpContextBasisFace con, String oid)
+            throws PduException, java.io.IOException {
         this(con, oid, null);
     }
 
     /**
-     * Constructor that will send the request immediately. 
+     * Constructor that will send the request immediately.
      *
      * @param con the SnmpContextBasisFace
-     * @param oid the oid 
-     * @param o the Observer that will be notified when the answer is received
+     * @param oid the oid
+     * @param o   the Observer that will be notified when the answer is received
      */
-    public OneGetPdu(SnmpContextBasisFace con, String oid, Observer o) 
-    throws PduException, java.io.IOException
-    {
+    public OneGetPdu(SnmpContextBasisFace con, String oid, Observer o)
+            throws PduException, java.io.IOException {
         super(con);
-        if (o != null) 
-        {
+        if (o != null) {
             addObserver(o);
         }
         addOid(oid);
@@ -126,20 +120,18 @@ public class OneGetPdu extends GetPdu
      * The value of the request is set. This will be called by
      * Pdu.fillin().
      *
-     * @param n the index of the value
+     * @param n     the index of the value
      * @param a_var the value
-     * @see Pdu#new_value 
+     * @see Pdu#new_value
      */
-    protected void new_value(int n, varbind a_var) 
-    {
-        if (n == 0) 
-        {
+    protected void new_value(int n, varbind a_var) {
+        if (n == 0) {
             var = a_var;
         }
     }
 
     /**
-     * This method notifies all observers. 
+     * This method notifies all observers.
      * This will be called by Pdu.fillin().
      * 
      * <p>
@@ -148,8 +140,7 @@ public class OneGetPdu extends GetPdu
      * In the case of an exception, that exception will be passed.
      * </p>
      */
-    protected void tell_them()  
-    {
+    protected void tell_them() {
         notifyObservers(var);
     }
 

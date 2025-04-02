@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -66,43 +66,37 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.5 $ $Date: 2006/03/23 14:54:10 $
  */
-public interface AsnOctetsPrintableFace 
-{
-    static final String     version_id =
-        "@(#)$Id: AsnOctetsPrintableFace.java,v 3.5 2006/03/23 14:54:10 birgit Exp $ Copyright Westhawk Ltd";
+public interface AsnOctetsPrintableFace {
+    static final String version_id = "@(#)$Id: AsnOctetsPrintableFace.java,v 3.5 2006/03/23 14:54:10 birgit Exp $ Copyright Westhawk Ltd";
 
+    /**
+     * Returns whether or not the AsnOctets' byte array represent a printable
+     * string or not.
+     *
+     * @see AsnOctets#toCalendar()
+     * @see AsnOctets#toDisplayString()
+     * @see AsnOctets#toHex()
+     * @see AsnOctets#toString()
+     */
+    public boolean isPrintable(byte[] value);
 
-/**
- * Returns whether or not the AsnOctets' byte array represent a printable
- * string or not.
- *
- * @see AsnOctets#toCalendar() 
- * @see AsnOctets#toDisplayString() 
- * @see AsnOctets#toHex()
- * @see AsnOctets#toString()
- */
-public boolean isPrintable(byte[] value);
-
-
-
-/**
- * This method provides the implemantation of the
- * InternationalDisplayString text-convention. See 
- * <a href="http://www.ietf.org/rfc/rfc2790.txt">HOST-RESOURCES-MIB</a>.
- *
- * <p>
- * "This data type is used to model textual information
- * in some character set. A network management station
- * should use a local algorithm to determine which
- * character set is in use and how it should be
- * displayed. Note that this character set may be
- * encoded with more than one octet per symbol, but will
- * most often be NVT ASCII. When a size clause is
- * specified for an object of this type, the size refers
- * to the length in octets, not the number of symbols."
- * </p>
- */
-public String toInternationalDisplayString(byte[] value);
-
+    /**
+     * This method provides the implemantation of the
+     * InternationalDisplayString text-convention. See
+     * <a href="http://www.ietf.org/rfc/rfc2790.txt">HOST-RESOURCES-MIB</a>.
+     *
+     * <p>
+     * "This data type is used to model textual information
+     * in some character set. A network management station
+     * should use a local algorithm to determine which
+     * character set is in use and how it should be
+     * displayed. Note that this character set may be
+     * encoded with more than one octet per symbol, but will
+     * most often be NVT ASCII. When a size clause is
+     * specified for an object of this type, the size refers
+     * to the length in octets, not the number of symbols."
+     * </p>
+     */
+    public String toInternationalDisplayString(byte[] value);
 
 }

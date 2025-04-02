@@ -45,7 +45,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -73,72 +73,60 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Tim Panton</a>
  * @version $Revision: 3.10 $ $Date: 2006/01/17 17:43:54 $
  */
-class AsnPduSequence extends AsnSequence 
-{
-    private static final String     version_id =
-        "@(#)$Id: AsnPduSequence.java,v 3.10 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
+class AsnPduSequence extends AsnSequence {
+    private static final String version_id = "@(#)$Id: AsnPduSequence.java,v 3.10 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
 
     boolean snmpv3Discovery = false;
 
-    AsnPduSequence(InputStream in, int len, int pos) throws IOException 
-    {
-        super(in,len,pos);
+    AsnPduSequence(InputStream in, int len, int pos) throws IOException {
+        super(in, len, pos);
     }
 
-    int getReqId() 
-    {
+    int getReqId() {
         AsnInteger rid = (AsnInteger) getObj(0);
-        return(rid.getValue());
+        return (rid.getValue());
     }
 
-    int getWhatError() 
-    {
+    int getWhatError() {
         AsnInteger estat = (AsnInteger) getObj(1);
         return (estat.getValue());
     }
 
-    int getWhereError() 
-    {
+    int getWhereError() {
         AsnInteger estat = (AsnInteger) getObj(2);
         return (estat.getValue());
     }
 
-    AsnSequence getVarBind()
-    {
+    AsnSequence getVarBind() {
         return (AsnSequence) getObj(3);
     }
 
-    /** 
+    /**
      * recursively look for a pduSequence object
      * - got one :-)
      */
-    AsnObject findPdu() 
-    {
-        return this;  
+    AsnObject findPdu() {
+        return this;
     }
 
-    int getValue() 
-    {
+    int getValue() {
         AsnSequence varBind = (AsnSequence) getObj(3);
         AsnSequence varPair = (AsnSequence) varBind.getObj(0);
         AsnInteger val = (AsnInteger) varPair.getObj(1);
-        int value =  val.getValue();
+        int value = val.getValue();
 
         return value;
     }
 
-    boolean hadError() 
-    {
+    boolean hadError() {
         return (SNMP_ERR_NOERROR != getWhatError());
     }
 
-    boolean isSnmpv3Discovery()
-    {
+    boolean isSnmpv3Discovery() {
         return snmpv3Discovery;
     }
 
-    void setSnmpv3Discovery(boolean b)
-    {
+    void setSnmpv3Discovery(boolean b) {
         snmpv3Discovery = b;
     }
 }

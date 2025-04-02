@@ -4,7 +4,7 @@ package org.bouncycastle.crypto;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,5 @@ package org.bouncycastle.crypto;
 /**
  * all parameter classes implement this.
  */
-public interface CipherParameters
-{
+public interface CipherParameters {
 }

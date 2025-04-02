@@ -32,7 +32,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,73 +63,61 @@ import java.util.*;
  * @version $Revision: 3.12 $ $Date: 2006/11/29 16:12:50 $
  *
  */
-public class InterfacesPdu extends InterfacePdu
-{
-    private static final String     version_id =
-        "@(#)$Id: InterfacesPdu.java,v 3.12 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
+public class InterfacesPdu extends InterfacePdu {
+    private static final String version_id = "@(#)$Id: InterfacesPdu.java,v 3.12 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
 
     /**
      * ifNumber
-     * The number of network interfaces (regardless of their current state) 
+     * The number of network interfaces (regardless of their current state)
      * present on this system.
      */
-    final static String IFNUMBER      ="1.3.6.1.2.1.2.1.0";
+    final static String IFNUMBER = "1.3.6.1.2.1.2.1.0";
 
-    InterfacePdu [] ifs;
+    InterfacePdu[] ifs;
 
-
-/**
- * Constructor that will send the request immediately.
- *
- * @param con the SnmpContextBasisFace
- * @param o the Observer that will be notified when the answer is received
- * @param interfs the index of the requested interface
- */
-public InterfacesPdu(SnmpContextBasisFace con, Observer o, int interfs) 
-throws PduException, java.io.IOException
-{
-    super(con);
-    ifs = new InterfacePdu [interfs];
-    for (int interf=0; interf < interfs; interf++)
-    {
-        addOids(interf);
-        ifs[interf] = new InterfacePdu(con);
+    /**
+     * Constructor that will send the request immediately.
+     *
+     * @param con     the SnmpContextBasisFace
+     * @param o       the Observer that will be notified when the answer is received
+     * @param interfs the index of the requested interface
+     */
+    public InterfacesPdu(SnmpContextBasisFace con, Observer o, int interfs)
+            throws PduException, java.io.IOException {
+        super(con);
+        ifs = new InterfacePdu[interfs];
+        for (int interf = 0; interf < interfs; interf++) {
+            addOids(interf);
+            ifs[interf] = new InterfacePdu(con);
+        }
+        if (o != null) {
+            addObserver(o);
+        }
+        send();
     }
-    if (o!=null) 
-    {
-        addObserver(o);
+
+    /**
+     * Returns the interfaces.
+     *
+     * @return the interfaces as an array of InterfacePdu
+     */
+    public InterfacePdu[] getInterfacePdus() {
+        return ifs;
     }
-    send();
-}
 
-
-/**
- * Returns the interfaces.
- *
- * @return the interfaces as an array of InterfacePdu
- */
-public InterfacePdu [] getInterfacePdus()
-{
-    return ifs;
-}
-
-/**
- * The value of the request is set. This will be called by
- * Pdu.fillin().
- *
- * @param n the index of the value
- * @param res the value
- * @see Pdu#new_value 
- */
-protected void new_value(int n, varbind res)  
-{
-    int thif = n / 4;
-    if (thif < ifs.length)
-    {
-        ifs[thif].new_value(n%4,res);
+    /**
+     * The value of the request is set. This will be called by
+     * Pdu.fillin().
+     *
+     * @param n   the index of the value
+     * @param res the value
+     * @see Pdu#new_value
+     */
+    protected void new_value(int n, varbind res) {
+        int thif = n / 4;
+        if (thif < ifs.length) {
+            ifs[thif].new_value(n % 4, res);
+        }
     }
-}
-
 
 }
-

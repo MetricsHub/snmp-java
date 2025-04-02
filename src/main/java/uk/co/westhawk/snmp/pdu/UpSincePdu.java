@@ -32,7 +32,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,42 +59,37 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Tim Panton</a>
  * @version $Revision: 3.16 $ $Date: 2006/11/29 16:12:50 $
  */
-public class UpSincePdu extends GetPdu
-{
-    private static final String     version_id =
-        "@(#)$Id: UpSincePdu.java,v 3.16 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
+public class UpSincePdu extends GetPdu {
+    private static final String version_id = "@(#)$Id: UpSincePdu.java,v 3.16 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
 
     Date since;
     /**
      * The oid of sysUpTime
      */
-    public final static String SYSUPTIME="1.3.6.1.2.1.1.3.0";
+    public final static String SYSUPTIME = "1.3.6.1.2.1.1.3.0";
 
     /**
      * Constructor that will send the request immediately.
      *
      * @param con The context of the request
-     * @param o the Observer that will be notified when the answer is received
+     * @param o   the Observer that will be notified when the answer is received
      */
-    public UpSincePdu(SnmpContextBasisFace con, Observer o) 
-    throws PduException, java.io.IOException
-    {
+    public UpSincePdu(SnmpContextBasisFace con, Observer o)
+            throws PduException, java.io.IOException {
         super(con);
         addOid(SYSUPTIME);
-        if (o != null)
-        {
+        if (o != null) {
             addObserver(o);
         }
         send();
     }
 
-
     /**
      * Returns the date when the system went up, (sysUpTime).
+     * 
      * @return the date
      */
-    public Date getDate()
-    {
+    public Date getDate() {
         return since;
     }
 
@@ -102,36 +97,31 @@ public class UpSincePdu extends GetPdu
      * The value of the request is set. This will be called by
      * Pdu.fillin().
      *
-     * @param n the index of the value
+     * @param n   the index of the value
      * @param res the value
-     * @see Pdu#new_value 
+     * @see Pdu#new_value
      */
-    protected void new_value(int n, varbind res)  
-    {
+    protected void new_value(int n, varbind res) {
         // given the uptime in centi seconds and the time now,
         // calculate the time it rebooted
-    
+
         AsnObject val = res.getValue();
-        if (val instanceof AsnUnsInteger)
-        {
+        if (val instanceof AsnUnsInteger) {
             AsnUnsInteger va = (AsnUnsInteger) res.getValue();
-            if (n == 0) 
-            {
+            if (n == 0) {
                 long value = va.getValue();
                 Date now = new Date();
                 long then = now.getTime();
                 then -= 10 * value;
                 since = new Date(then);
             }
-        }
-        else
-        {
+        } else {
             since = null;
         }
     }
 
     /**
-     * This method notifies all observers. 
+     * This method notifies all observers.
      * This will be called by Pdu.fillin().
      * 
      * <p>
@@ -140,10 +130,8 @@ public class UpSincePdu extends GetPdu
      * In the case of an exception, that exception will be passed.
      * </p>
      */
-    protected void tell_them()  
-    {
+    protected void tell_them() {
         notifyObservers(since);
     }
 
 }
-

@@ -32,7 +32,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,32 +63,27 @@ import uk.co.westhawk.snmp.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.7 $ $Date: 2006/03/23 14:54:09 $
  */
-public class OneTrapPduv1 extends TrapPduv1 
-{
-    private static final String     version_id =
-        "@(#)$Id: OneTrapPduv1.java,v 3.7 2006/03/23 14:54:09 birgit Exp $ Copyright Westhawk Ltd";
+public class OneTrapPduv1 extends TrapPduv1 {
+    private static final String version_id = "@(#)$Id: OneTrapPduv1.java,v 3.7 2006/03/23 14:54:09 birgit Exp $ Copyright Westhawk Ltd";
 
+    /**
+     * Constructor.
+     *
+     * @param con The context v1 of the OneTrapPduv1
+     * @see SnmpContext
+     */
+    public OneTrapPduv1(SnmpContext con) {
+        super(con);
+    }
 
-/** 
- * Constructor.
- *
- * @param con The context v1 of the OneTrapPduv1
- * @see SnmpContext
- */
-public OneTrapPduv1(SnmpContext con) 
-{
-    super(con);
-}
-
-/** 
- * Constructor.
- *
- * @param con The context v1 of the OneTrapPduv1
- * @see SnmpContext
- */
-public OneTrapPduv1(SnmpContextPool con) 
-{
-    super(con);
-}
+    /**
+     * Constructor.
+     *
+     * @param con The context v1 of the OneTrapPduv1
+     * @see SnmpContext
+     */
+    public OneTrapPduv1(SnmpContextPool con) {
+        super(con);
+    }
 
 }
