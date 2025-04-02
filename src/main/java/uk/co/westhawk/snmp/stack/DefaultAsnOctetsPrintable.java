@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,76 +65,67 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.3 $ $Date: 2006/01/17 17:43:54 $
  */
-public class DefaultAsnOctetsPrintable implements AsnOctetsPrintableFace 
-{
-    static final String     version_id =
-        "@(#)$Id: DefaultAsnOctetsPrintable.java,v 3.3 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
+public class DefaultAsnOctetsPrintable implements AsnOctetsPrintableFace {
+    static final String version_id = "@(#)$Id: DefaultAsnOctetsPrintable.java,v 3.3 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
 
-public DefaultAsnOctetsPrintable()
-{
-}
-
-/**
- * Returns whether or not the AsnOctets' byte array represent a printable
- * string or not.
- *
- * <p>
- * This method can only make a rough guess. There is no way it always
- * gets it right.
- * It is much better to embed MIB knowledge in your implementation, and
- * use toCalendar() or toDisplayString(), than calling toString().
- * </p>
- *
- * @see AsnOctets#toCalendar() 
- * @see AsnOctets#toDisplayString() 
- * @see AsnOctets#toHex()
- * @see AsnOctets#toString()
- */
-public boolean isPrintable(byte[] value)
-{
-    int length = value.length;
-    int b = ' '; // the first printable char in the ASCII table
-    int e = '~'; // the last printable char in the ASCII table
-
-   /*
-    * About the test for 'value[i] == 0':
-    * (Quote from one of our customers:)
-    * I've seen cases where there are embedded nulls in a sysdescr 
-    * - not always at the end either - and we need to get complete 
-    * data back from the device even in this situation. 
-    */
-
-    boolean isPrintable = true;
-    int i=0;
-    while (i<length && isPrintable)
-    {
-        isPrintable = ((value[i] >= b && value[i] <= e) 
-                            ||
-                       Character.isWhitespace((char)value[i])
-                            ||
-                       value[i] == 0);
-        i++;
+    public DefaultAsnOctetsPrintable() {
     }
 
-    return isPrintable;
-}
+    /**
+     * Returns whether or not the AsnOctets' byte array represent a printable
+     * string or not.
+     *
+     * <p>
+     * This method can only make a rough guess. There is no way it always
+     * gets it right.
+     * It is much better to embed MIB knowledge in your implementation, and
+     * use toCalendar() or toDisplayString(), than calling toString().
+     * </p>
+     *
+     * @see AsnOctets#toCalendar()
+     * @see AsnOctets#toDisplayString()
+     * @see AsnOctets#toHex()
+     * @see AsnOctets#toString()
+     */
+    public boolean isPrintable(byte[] value) {
+        int length = value.length;
+        int b = ' '; // the first printable char in the ASCII table
+        int e = '~'; // the last printable char in the ASCII table
 
+        /*
+         * About the test for 'value[i] == 0':
+         * (Quote from one of our customers:)
+         * I've seen cases where there are embedded nulls in a sysdescr
+         * - not always at the end either - and we need to get complete
+         * data back from the device even in this situation.
+         */
 
-/**
- * Returns the String according to the platform's default character set.
- *
- * @see AsnOctetsPrintableFace#toInternationalDisplayString(byte[] value)
- */
-public String toInternationalDisplayString(byte[] value)
-{
-    String str = "";
-    if (value.length > 0)
-    {
-        // this will use the platform's default charset.
-        str = new String(value).trim();
+        boolean isPrintable = true;
+        int i = 0;
+        while (i < length && isPrintable) {
+            isPrintable = ((value[i] >= b && value[i] <= e)
+                    ||
+                    Character.isWhitespace((char) value[i])
+                    ||
+                    value[i] == 0);
+            i++;
+        }
+
+        return isPrintable;
     }
-    return str;
-}
 
+    /**
+     * Returns the String according to the platform's default character set.
+     *
+     * @see AsnOctetsPrintableFace#toInternationalDisplayString(byte[] value)
+     */
+    public String toInternationalDisplayString(byte[] value) {
+        String str = "";
+        if (value.length > 0) {
+            // this will use the platform's default charset.
+            str = new String(value).trim();
+        }
+        return str;
+    }
 
 }

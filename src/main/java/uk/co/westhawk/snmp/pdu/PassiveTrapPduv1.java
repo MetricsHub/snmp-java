@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -71,37 +71,33 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.7 $ $Date: 2006/03/23 14:54:09 $
  */
-public class PassiveTrapPduv1 extends TrapPduv1
-{
-    private static final String     version_id =
-        "@(#)$Id: PassiveTrapPduv1.java,v 3.7 2006/03/23 14:54:09 birgit Exp $ Copyright ERG Group Ltd";
+public class PassiveTrapPduv1 extends TrapPduv1 {
+    private static final String version_id = "@(#)$Id: PassiveTrapPduv1.java,v 3.7 2006/03/23 14:54:09 birgit Exp $ Copyright ERG Group Ltd";
 
-/**
- * Constructor.
- *
- * @param con The context (v1) of the PDU.
- * This is of type PassiveSnmpContext to ensure that the correct threading
- * behaviour occurs.
- */
-public PassiveTrapPduv1(PassiveSnmpContext con)
-{
-    super(con);
+    /**
+     * Constructor.
+     *
+     * @param con The context (v1) of the PDU.
+     *            This is of type PassiveSnmpContext to ensure that the correct
+     *            threading
+     *            behaviour occurs.
+     */
+    public PassiveTrapPduv1(PassiveSnmpContext con) {
+        super(con);
 
-    // this makes the base class PDU believe that the trap is already 
-    // awaiting transmission therefore it does not create a transmitter 
-    // for this pdu
-    added = true;
-}
+        // this makes the base class PDU believe that the trap is already
+        // awaiting transmission therefore it does not create a transmitter
+        // for this pdu
+        added = true;
+    }
 
-/**
- * Override of the operation in PDU. Send the trap in the
- * callers thread. That is, don't create a sending thread
- * or add it to a queue or anything, just go straight to the socket.
- */
-public void addToTrans()
-{
-    sendme();
-}
-
+    /**
+     * Override of the operation in PDU. Send the trap in the
+     * callers thread. That is, don't create a sending thread
+     * or add it to a queue or anything, just go straight to the socket.
+     */
+    public void addToTrans() {
+        sendme();
+    }
 
 }

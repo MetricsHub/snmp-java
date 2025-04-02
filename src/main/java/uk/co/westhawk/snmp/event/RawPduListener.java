@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.event;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -56,15 +56,12 @@ package uk.co.westhawk.snmp.event;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.3 $ $Date: 2006/01/17 17:59:33 $
  */
-public interface RawPduListener extends java.util.EventListener
-{
-    public static final String     version_id =
-        "@(#)$Id: RawPduListener.java,v 1.3 2006/01/17 17:59:33 birgit Exp $ Copyright Westhawk Ltd";
+public interface RawPduListener extends java.util.EventListener {
+    public static final String version_id = "@(#)$Id: RawPduListener.java,v 1.3 2006/01/17 17:59:33 birgit Exp $ Copyright Westhawk Ltd";
 
-
-/**
- * Invoked when a pdu is received.
- */
-public void rawPduReceived(RawPduEvent evt);
+    /**
+     * Invoked when a pdu is received.
+     */
+    public void rawPduReceived(RawPduEvent evt);
 
 }

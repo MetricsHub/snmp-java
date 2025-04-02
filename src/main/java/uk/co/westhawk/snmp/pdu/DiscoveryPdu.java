@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,107 +61,97 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.15 $ $Date: 2006/11/29 16:12:50 $
  */
-public class DiscoveryPdu extends GetPdu
-{
-    private static final String     version_id =
-        "@(#)$Id: DiscoveryPdu.java,v 3.15 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
+public class DiscoveryPdu extends GetPdu {
+    private static final String version_id = "@(#)$Id: DiscoveryPdu.java,v 3.15 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
 
     private SnmpContextv3Face context;
 
-/**
- * Constructor.
- *
- * @param cntxt The v3 context of the PDU
- */
-public DiscoveryPdu(SnmpContextv3Face cntxt)
-{
-    super(cntxt);
-    context = cntxt;
-}
-
-/**
- * Cannot add any OID. This method is overwritten to prevent users from
- * adding any OID.
- *
- * @exception IllegalArgumentException A discovery PDU cannot have any
- * OID.
- */
-public void addOid(String oid)
-throws IllegalArgumentException
-{
-    throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
-}
-
-/** 
- * Cannot add any OID. This method is overwritten to prevent users from
- * adding any OID.
- *
- * @exception IllegalArgumentException A discovery PDU cannot have any
- * OID.
- * @since 4_12
- */
-public void addOid(String oid, AsnObject val) 
-{
-    throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
-}
-
-/** 
- * Cannot add any OID. This method is overwritten to prevent users from
- * adding any OID.
- *
- * @exception IllegalArgumentException A discovery PDU cannot have any
- * OID.
- * @since 4_12
- */
-public void addOid(AsnObjectId oid, AsnObject val) 
-{
-    throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
-}
-
-/**
- * Cannot add any OID. This method is overwritten to prevent users from
- * adding any OID.
- *
- * @exception IllegalArgumentException A discovery PDU cannot have any
- * OID.
- */
-public void addOid(varbind var)
-throws IllegalArgumentException
-{
-    throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
-}
-
-/**
- * Cannot add any OID. This method is overwritten to prevent users from
- * adding any OID.
- *
- * @exception IllegalArgumentException A discovery PDU cannot have any
- * OID.
- * @since 4_12
- */
-public void addOid(AsnObjectId oid) 
-{
-    throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
-}
-
-/**
- * Sends the PDU.
- * Note that all properties of the context have to be set before this
- * point.
- */
-public boolean send() throws java.io.IOException, PduException
-{
-    if (added == false)
-    {
-        // Moved this statement from the constructor because it
-        // conflicts with the way the SnmpContextXPool works.
-        added = context.addDiscoveryPdu(this);
+    /**
+     * Constructor.
+     *
+     * @param cntxt The v3 context of the PDU
+     */
+    public DiscoveryPdu(SnmpContextv3Face cntxt) {
+        super(cntxt);
+        context = cntxt;
     }
-    Enumeration vbs = reqVarbinds.elements();
-    encodedPacket = context.encodeDiscoveryPacket(msg_type, getReqId(),
-        getErrorStatus(), getErrorIndex(), vbs, snmpv3MsgId);
-    addToTrans();
-    return added;
-}
+
+    /**
+     * Cannot add any OID. This method is overwritten to prevent users from
+     * adding any OID.
+     *
+     * @exception IllegalArgumentException A discovery PDU cannot have any
+     *                                     OID.
+     */
+    public void addOid(String oid)
+            throws IllegalArgumentException {
+        throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
+    }
+
+    /**
+     * Cannot add any OID. This method is overwritten to prevent users from
+     * adding any OID.
+     *
+     * @exception IllegalArgumentException A discovery PDU cannot have any
+     *                                     OID.
+     * @since 4_12
+     */
+    public void addOid(String oid, AsnObject val) {
+        throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
+    }
+
+    /**
+     * Cannot add any OID. This method is overwritten to prevent users from
+     * adding any OID.
+     *
+     * @exception IllegalArgumentException A discovery PDU cannot have any
+     *                                     OID.
+     * @since 4_12
+     */
+    public void addOid(AsnObjectId oid, AsnObject val) {
+        throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
+    }
+
+    /**
+     * Cannot add any OID. This method is overwritten to prevent users from
+     * adding any OID.
+     *
+     * @exception IllegalArgumentException A discovery PDU cannot have any
+     *                                     OID.
+     */
+    public void addOid(varbind var)
+            throws IllegalArgumentException {
+        throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
+    }
+
+    /**
+     * Cannot add any OID. This method is overwritten to prevent users from
+     * adding any OID.
+     *
+     * @exception IllegalArgumentException A discovery PDU cannot have any
+     *                                     OID.
+     * @since 4_12
+     */
+    public void addOid(AsnObjectId oid) {
+        throw new IllegalArgumentException("DiscoveryPdu cannot have OID");
+    }
+
+    /**
+     * Sends the PDU.
+     * Note that all properties of the context have to be set before this
+     * point.
+     */
+    public boolean send() throws java.io.IOException, PduException {
+        if (added == false) {
+            // Moved this statement from the constructor because it
+            // conflicts with the way the SnmpContextXPool works.
+            added = context.addDiscoveryPdu(this);
+        }
+        Enumeration vbs = reqVarbinds.elements();
+        encodedPacket = context.encodeDiscoveryPacket(msg_type, getReqId(),
+                getErrorStatus(), getErrorIndex(), vbs, snmpv3MsgId);
+        addToTrans();
+        return added;
+    }
 
 }

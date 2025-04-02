@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.event;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,24 +65,20 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.5 $ $Date: 2006/02/09 14:30:18 $
  */
-public class RequestPduEvent extends DecodedPduEvent
-{
-    private static final String     version_id =
-        "@(#)$Id: RequestPduEvent.java,v 1.5 2006/02/09 14:30:18 birgit Exp $ Copyright Westhawk Ltd";
+public class RequestPduEvent extends DecodedPduEvent {
+    private static final String version_id = "@(#)$Id: RequestPduEvent.java,v 1.5 2006/02/09 14:30:18 birgit Exp $ Copyright Westhawk Ltd";
 
-/** 
- * The constructor for a decoded request pdu event. The SnmpContext
- * classes will fire decoded request pdu events.
- *
- * @param source The source (SnmpContext) of the event
- * @param pdu The pdu
- * @param port The remote port number of the host where the pdu came from
- *
- */
-public RequestPduEvent(Object source, Pdu pdu, int port) 
-{
-    super(source, pdu, port);
-}
-
+    /**
+     * The constructor for a decoded request pdu event. The SnmpContext
+     * classes will fire decoded request pdu events.
+     *
+     * @param source The source (SnmpContext) of the event
+     * @param pdu    The pdu
+     * @param port   The remote port number of the host where the pdu came from
+     *
+     */
+    public RequestPduEvent(Object source, Pdu pdu, int port) {
+        super(source, pdu, port);
+    }
 
 }

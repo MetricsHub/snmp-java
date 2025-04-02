@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -53,30 +53,25 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.5 $ $Date: 2006/01/17 17:43:54 $
  */
-public class PduException extends Exception 
-{
-    private static final String     version_id =
-        "@(#)$Id: PduException.java,v 3.5 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
+public class PduException extends Exception {
+    private static final String version_id = "@(#)$Id: PduException.java,v 3.5 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
 
-/** 
- * Constructs a PduException with no specified detail message. 
- *
- */
-public PduException() 
-{
-    super();
-}
+    /**
+     * Constructs a PduException with no specified detail message.
+     *
+     */
+    public PduException() {
+        super();
+    }
 
-/** 
- * Constructs a PduException with the specified detail
- * message. 
- *
- * @param str The detail message.
- */
-public PduException(String str) 
-{
-    super(str);
-}
-
+    /**
+     * Constructs a PduException with the specified detail
+     * message.
+     *
+     * @param str The detail message.
+     */
+    public PduException(String str) {
+        super(str);
+    }
 
 }

@@ -45,7 +45,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -94,10 +94,8 @@ import java.text.SimpleDateFormat;
  * @author <a href="mailto:snmp@westhawk.co.uk">Tim Panton</a>
  * @version $Revision: 3.39 $ $Date: 2006/03/23 14:54:10 $
  */
-public class AsnOctets extends AsnObject
-{
-    private static final String     version_id =
-        "@(#)$Id: AsnOctets.java,v 3.39 2006/03/23 14:54:10 birgit Exp $ Copyright Westhawk Ltd";
+public class AsnOctets extends AsnObject {
+    private static final String version_id = "@(#)$Id: AsnOctets.java,v 3.39 2006/03/23 14:54:10 birgit Exp $ Copyright Westhawk Ltd";
 
     /**
      * The hexadecimal prefix that is used when printing a hexadecimal
@@ -106,8 +104,8 @@ public class AsnOctets extends AsnObject
     public static String HEX_PREFIX = "0x";
 
     /**
-     * The object that is used in toCalendar() to format the calendar 
-     * representation of the Octets according to the DateAndTime text 
+     * The object that is used in toCalendar() to format the calendar
+     * representation of the Octets according to the DateAndTime text
      * convension.
      * The pattern is "yyyy-M-d,HH:mm:ss.SS,z".
      *
@@ -130,69 +128,63 @@ public class AsnOctets extends AsnObject
     /** Cache the hash code for the OID */
     private int hash = 0;
 
-    /** 
+    /**
      * Constructor. The type of the AsnOctets defaults to ASN_OCTET_STR.
      *
      * @param s The byte array representing the AsnOctets
-     * @see SnmpConstants#ASN_OCTET_STR 
+     * @see SnmpConstants#ASN_OCTET_STR
      */
-    public AsnOctets(byte s[]) 
-    throws IllegalArgumentException
-    {
+    public AsnOctets(byte s[])
+            throws IllegalArgumentException {
         this(s, ASN_OCTET_STR);
     }
 
-    /** 
+    /**
      * Constructor to create a specific type of AsnOctets.
      *
      * @param s The byte array representing the AsnOctets
      * @param t The type of the AsnOctets
-     * @see SnmpConstants#ASN_OCTET_STR 
+     * @see SnmpConstants#ASN_OCTET_STR
      * @see SnmpConstants#IPADDRESS
      * @see SnmpConstants#OPAQUE
      */
-    public AsnOctets(byte s[], byte t) 
-    throws IllegalArgumentException
-    {
+    public AsnOctets(byte s[], byte t)
+            throws IllegalArgumentException {
         value = s;
         type = t;
-        if (value == null)
-        {
+        if (value == null) {
             throw new IllegalArgumentException("Value is null");
         }
     }
 
-    /** 
+    /**
      * Constructor. The type of the AsnOctets defaults to ASN_OCTET_STR.
      *
      * @param s The character array representing the AsnOctets
-     * @see SnmpConstants#ASN_OCTET_STR 
+     * @see SnmpConstants#ASN_OCTET_STR
      */
-    public AsnOctets(char s[]) 
-    {
+    public AsnOctets(char s[]) {
         int idx;
-        
+
         value = new byte[s.length];
         type = ASN_OCTET_STR;
-        for (idx=0; idx<s.length; idx++) 
-        {
-            value[idx] = (byte)s[idx];
+        for (idx = 0; idx < s.length; idx++) {
+            value[idx] = (byte) s[idx];
         }
     }
 
-    /** 
+    /**
      * Constructor. The type of the AsnOctets defaults to ASN_OCTET_STR.
      *
      * @param s The string representing the AsnOctets
-     * @see SnmpConstants#ASN_OCTET_STR 
+     * @see SnmpConstants#ASN_OCTET_STR
      */
-    public AsnOctets(String s) 
-    {
+    public AsnOctets(String s) {
         this(s.toCharArray());
     }
 
-    /** 
-     * Constructor to create an ASN IP Address. 
+    /**
+     * Constructor to create an ASN IP Address.
      * If the address represents an IPv4 address, the asn type will be
      * set to IPADDRESS. If it represents an IPv6 address, the asn type
      * will be set to ASN_OCTET_STR.
@@ -200,46 +192,41 @@ public class AsnOctets extends AsnObject
      * <br/>
      * Note, the SNMP representation of IPv4 and IPv6 is different:
      * <ul>
-     *    <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
-     *    <li>IPv6: ASN_OCTET_STR</li>
+     * <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
+     * <li>IPv6: ASN_OCTET_STR</li>
      * </ul>
-     * See also 
+     * See also
      * <a href="http://www.ietf.org/rfc/rfc2465.txt">IPV6-TC</a>,
      * <a href="http://www.ietf.org/rfc/rfc3416.txt">SNMPv2-PDU</a>,
      * <a href="http://www.ietf.org/rfc/rfc4001.txt">INET-ADDRESS-MIB</a>.
      *
-     * @param iad The Inet Address 
+     * @param iad The Inet Address
      *
      * @see #AsnOctets(Inet4Address, byte)
      */
     public AsnOctets(InetAddress iad)
-    throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         this(iad.getAddress(), ASN_OCTET_STR);
-        if (iad instanceof java.net.Inet4Address)
-        {
+        if (iad instanceof java.net.Inet4Address) {
             // IPv4
             type = IPADDRESS;
-        }
-        else
-        {
+        } else {
             // IPv6 is ASN_OCTET_STR, so do nothing
         }
     }
 
-
-    /** 
-     * Constructor to create an ASN IPv4 Address. 
+    /**
+     * Constructor to create an ASN IPv4 Address.
      * If the address is an IPv4 address, it can either be represented
      * by IPADDRESS or as ASN_OCTET_STR.
      *
-     * See also 
+     * See also
      * <a href="http://www.ietf.org/rfc/rfc2465.txt">IPV6-TC</a>,
      * <a href="http://www.ietf.org/rfc/rfc3416.txt">SNMPv2-PDU</a>,
      * <a href="http://www.ietf.org/rfc/rfc4001.txt">INET-ADDRESS-MIB</a>.
      *
-     * @param iad The IPv4 Inet Address 
-     * @param t The type of the AsnOctets 
+     * @param iad The IPv4 Inet Address
+     * @param t   The type of the AsnOctets
      *
      * @see #AsnOctets(InetAddress)
      * @see SnmpConstants#IPADDRESS
@@ -247,15 +234,13 @@ public class AsnOctets extends AsnObject
      * @since 4_14
      */
     public AsnOctets(java.net.Inet4Address iad, byte t)
-    throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         this(iad.getAddress(), t);
     }
 
-
     /**
      * Constructor for DateAndTime text convension.
-     * See 
+     * See
      * <a href="http://www.ietf.org/rfc/rfc2579.txt">SNMPv2-TC</a>
      *
      * <pre>
@@ -279,14 +264,13 @@ public class AsnOctets extends AsnObject
      *
      * @since 4_14
      */
-    public AsnOctets(Calendar cal)
-    {
+    public AsnOctets(Calendar cal) {
         value = new byte[11];
         type = ASN_OCTET_STR;
-        
+
         int year = cal.get(Calendar.YEAR);
         // Calendar: 0=January
-        int month = cal.get(Calendar.MONTH)+1;
+        int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int min = cal.get(Calendar.MINUTE);
@@ -307,32 +291,23 @@ public class AsnOctets extends AsnObject
         value[7] = (byte) ((msec / 100) & 0xFF);
 
         char dir = '\0';
-        if (msecGMT < 0)
-        {
+        if (msecGMT < 0) {
             dir = '-';
             msecGMT = msecGMT * -1;
-        }
-        else
-        {
+        } else {
             dir = '+';
         }
         value[8] = (byte) dir;
 
-        if (msecGMT == 0)
-        {
+        if (msecGMT == 0) {
             value[9] = 0x00;
             value[10] = 0x00;
-        }
-        else
-        {
+        } else {
             int minGMT = (int) (((double) msecGMT) / 1000.0 / 60.0);
-            if (minGMT == 0)
-            {
+            if (minGMT == 0) {
                 value[9] = 0x00;
                 value[10] = 0x00;
-            }
-            else
-            {
+            } else {
                 int hourGMT = (int) (minGMT / 60.0);
                 minGMT = minGMT - (hourGMT * 60);
                 value[9] = (byte) (hourGMT & 0xFF);
@@ -341,29 +316,22 @@ public class AsnOctets extends AsnObject
         }
     }
 
-    /** 
+    /**
      * Constructor.
      *
-     * @param in The input stream from which the value should be read
+     * @param in  The input stream from which the value should be read
      * @param len The length of the AsnOctets
      */
-    public AsnOctets(InputStream in, int len) throws IOException 
-    {
+    public AsnOctets(InputStream in, int len) throws IOException {
         value = new byte[len];
-        if (len != 0)
-        {
-            if (len == in.read(value,0,len))
-            {
+        if (len != 0) {
+            if (len == in.read(value, 0, len)) {
                 String str = "";
-                //str = new String(value);
-            }
-            else 
-            {
+                // str = new String(value);
+            } else {
                 throw new IOException("AsnOctets(): Not enough data");
             }
-        }
-        else
-        {
+        } else {
             // if len is zero, the in.read will return -1
             // a length of zero is a valid case.
             ;
@@ -379,8 +347,7 @@ public class AsnOctets extends AsnObject
      * @see #toHex()
      * @see #HEX_PREFIX
      */
-    public static void setHexPrefix(String newPrefix)
-    {
+    public static void setHexPrefix(String newPrefix) {
         HEX_PREFIX = newPrefix;
     }
 
@@ -393,52 +360,47 @@ public class AsnOctets extends AsnObject
      * @see #toInternationalDisplayString
      * @since 4_14
      */
-    public static void setPrintable(AsnOctetsPrintableFace obj)
-    {
-        if (obj != null)
-        {
+    public static void setPrintable(AsnOctetsPrintableFace obj) {
+        if (obj != null) {
             printableObject = obj;
         }
     }
 
-
-    /** 
+    /**
      * Returns the String value. Calls toString().
      *
      * @return The value of the AsnOctets
      * @see #toString()
      */
-    public String getValue()
-    {
+    public String getValue() {
         return toString();
     }
 
-    /** 
+    /**
      * Returns the bytes. This returns a copy of the internal byte array.
      *
      * @return The bytes of the AsnOctets
      */
-    public byte[] getBytes()
-    {
+    public byte[] getBytes() {
         int len = value.length;
-        byte [] bytea = new byte[len];
+        byte[] bytea = new byte[len];
         System.arraycopy(value, 0, bytea, 0, len);
         return bytea;
     }
 
-    /** 
+    /**
      * Returns the string representation of the AsnOctets.
      * <p>
      * The string will have one of the following formats:
      * </p>
      * <ul>
      * <li>if this class represents an IP Address (v4), it will call
-     * toIpAddress()</li> 
+     * toIpAddress()</li>
      * <li>&lt;prefix&gt;aa[:bb]*, if this class represents a non-printable
-     * string or has type OPAQUE. 
+     * string or has type OPAQUE.
      * The output will be in hexadecimal numbers (see toHex()). It will be prefixed
-     * according to the hex. prefix value</li> 
-     * <li>a printable string, if this class seems printable</li> 
+     * according to the hex. prefix value</li>
+     * <li>a printable string, if this class seems printable</li>
      * </ul>
      *
      * <p>
@@ -452,10 +414,10 @@ public class AsnOctets extends AsnObject
      * <br/>
      * Note, the SNMP representation of IPv4 and IPv6 is different:
      * <ul>
-     *    <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
-     *    <li>IPv6: ASN_OCTET_STR</li>
+     * <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
+     * <li>IPv6: ASN_OCTET_STR</li>
      * </ul>
-     * See also 
+     * See also
      * <a href="http://www.ietf.org/rfc/rfc2465.txt">IPV6-TC</a>,
      * <a href="http://www.ietf.org/rfc/rfc3416.txt">SNMPv2-PDU</a>,
      * <a href="http://www.ietf.org/rfc/rfc4001.txt">INET-ADDRESS-MIB</a>.
@@ -468,8 +430,7 @@ public class AsnOctets extends AsnObject
      * @see AsnOctetsPrintableFace#toInternationalDisplayString
      * @return The string representation of the AsnOctets
      */
-    public String toString()
-    {
+    public String toString() {
         return toString(printableObject);
     }
 
@@ -480,55 +441,41 @@ public class AsnOctets extends AsnObject
      * @see #toString()
      * @since 4_14
      */
-    public String toString(AsnOctetsPrintableFace face)
-    {
+    public String toString(AsnOctetsPrintableFace face) {
         String str = "";
 
-        if (type == IPADDRESS)
-        {
+        if (type == IPADDRESS) {
             // for IPv4 only
             str = toIpAddress();
-        }
-        else if (type == OPAQUE)
-        {
-            str = HEX_PREFIX + toHex(); 
-        }
-        else
-        {
+        } else if (type == OPAQUE) {
+            str = HEX_PREFIX + toHex();
+        } else {
             boolean isPrintable = face.isPrintable(value);
-            if (isPrintable)
-            {
+            if (isPrintable) {
                 str = face.toInternationalDisplayString(value);
-            }
-            else
-            {
-                str = HEX_PREFIX + toHex(); 
+            } else {
+                str = HEX_PREFIX + toHex();
             }
         }
         return str;
     }
 
-
-    int size() 
-    { 
-        return value.length; 
+    int size() {
+        return value.length;
     }
 
-    void write(OutputStream out, int pos) throws IOException 
-    {
+    void write(OutputStream out, int pos) throws IOException {
         int idx;
 
         // Output header
         AsnBuildHeader(out, type, value.length);
-        if (debug > 10)
-        {
+        if (debug > 10) {
             System.out.println("\tAsnOctets(): value = " + toString()
-                + ", pos = " + pos);
+                    + ", pos = " + pos);
         }
-        
+
         // Output data
-        for (idx=0; idx<value.length; idx++) 
-        {
+        for (idx = 0; idx < value.length; idx++) {
             out.write(value[idx]);
         }
     }
@@ -539,10 +486,10 @@ public class AsnOctets extends AsnObject
      *
      * Note, the SNMP representation of IPv4 and IPv6 is different:
      * <ul>
-     *    <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
-     *    <li>IPv6: ASN_OCTET_STR</li>
+     * <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
+     * <li>IPv6: ASN_OCTET_STR</li>
      * </ul>
-     * See also 
+     * See also
      * <a href="http://www.ietf.org/rfc/rfc2465.txt">IPV6-TC</a>,
      * <a href="http://www.ietf.org/rfc/rfc3416.txt">SNMPv2-PDU</a>,
      * <a href="http://www.ietf.org/rfc/rfc4001.txt">INET-ADDRESS-MIB</a>.
@@ -554,23 +501,23 @@ public class AsnOctets extends AsnObject
      * @see SnmpConstants#IPADDRESS
      */
     /*
-     TODO: use Java's java.net.InetAddress, so it can be used for IPv4, and IPv6.
+     * TODO: use Java's java.net.InetAddress, so it can be used for IPv4, and IPv6.
      */
-    public String toIpAddress()
-    {
-        /* TODO: Does this work? Yes, but will not compile in jdk 1.2.X, and 
+    public String toIpAddress() {
+        /*
+         * TODO: Does this work? Yes, but will not compile in jdk 1.2.X, and
          * in order to load (a part of) the stack in Oracle, I need
          * 1.2.X
          */
         /*
-        String str = "";
-        try
-        {
-            InetAddress iad = InetAddress.getByAddress(value);
-            str = iad.getHostAddress();
-        }
-        catch (java.net.UnknownHostException exc) { }
-        */
+         * String str = "";
+         * try
+         * {
+         * InetAddress iad = InetAddress.getByAddress(value);
+         * str = iad.getHostAddress();
+         * }
+         * catch (java.net.UnknownHostException exc) { }
+         */
 
         /*
         */
@@ -578,31 +525,24 @@ public class AsnOctets extends AsnObject
         int length;
         long val;
         length = value.length;
-        if (length > 0)
-        {
-            if (length > 4)
-            {
+        if (length > 0) {
+            if (length > 4) {
                 // IPv6
                 // Nicked this code from Inet6Address.numericToTextFormat
-                for (int i=0; i<length/2; i++) 
-                {
-                    sb.append(Integer.toHexString(((value[i<<1]<<8) & 0xff00)
-                                                 | (value[(i<<1)+1] & 0xff)));
-                    if (i < ((length/2)-1))
-                    {
+                for (int i = 0; i < length / 2; i++) {
+                    sb.append(Integer.toHexString(((value[i << 1] << 8) & 0xff00)
+                            | (value[(i << 1) + 1] & 0xff)));
+                    if (i < ((length / 2) - 1)) {
                         sb.append(":");
                     }
                 }
-            }
-            else
-            {
+            } else {
                 // IPv4
-                for (int i=0; i<length-1; i++)
-                {
+                for (int i = 0; i < length - 1; i++) {
                     val = getPositiveValue(i);
                     sb.append(String.valueOf(val)).append(".");
                 }
-                val = getPositiveValue(length-1);
+                val = getPositiveValue(length - 1);
                 sb.append(String.valueOf(val));
             }
         }
@@ -610,22 +550,23 @@ public class AsnOctets extends AsnObject
     }
 
     /**
-     * Returns this Octet as an IP Address. 
+     * Returns this Octet as an IP Address.
      *
      * Note, the SNMP representation of IPv4 and IPv6 is different:
      * <ul>
-     *    <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
-     *    <li>IPv6: ASN_OCTET_STR</li>
+     * <li>IPv4: IPADDRESS (or ASN_OCTET_STR, see rfc 4001)</li>
+     * <li>IPv6: ASN_OCTET_STR</li>
      * </ul>
-     * See also 
+     * See also
      * <a href="http://www.ietf.org/rfc/rfc2465.txt">IPV6-TC</a>,
      * <a href="http://www.ietf.org/rfc/rfc3416.txt">SNMPv2-PDU</a>,
      * <a href="http://www.ietf.org/rfc/rfc4001.txt">INET-ADDRESS-MIB</a>.
      *
      * @return The IP Address representation.
      * @exception RuntimeException Thrown when the Octets does
-     * not represent an InetAddress or when the method internally throws
-     * an java.net.UnknownHostException
+     *                             not represent an InetAddress or when the method
+     *                             internally throws
+     *                             an java.net.UnknownHostException
      *
      * @see #toString
      * @see #toIpAddress
@@ -634,15 +575,11 @@ public class AsnOctets extends AsnObject
      * @since 4_14
      */
     public InetAddress getIpAddress()
-    throws RuntimeException
-    {
+            throws RuntimeException {
         InetAddress iad = null;
-        try
-        {
+        try {
             iad = InetAddress.getByAddress(value);
-        }
-        catch (java.net.UnknownHostException exc) 
-        { 
+        } catch (java.net.UnknownHostException exc) {
             throw new RuntimeException(exc);
         }
         return iad;
@@ -652,52 +589,46 @@ public class AsnOctets extends AsnObject
      * Returns the positive long for an octet. Only if type is IPADDRESS
      * can the value be negative anyway.
      */
-    private long getPositiveValue(int index)
-    {
+    private long getPositiveValue(int index) {
         long val = (long) value[index];
-        if (val <0)
-        {
-            val += 256; 
+        if (val < 0) {
+            val += 256;
         }
         return val;
     }
-    
+
     /**
-     * Returns this Octet as an hexadecimal String, without any prefix. 
+     * Returns this Octet as an hexadecimal String, without any prefix.
      *
      * @return The hex representation.
      * @see #toString
      */
-    public String toHex()
-    {
-        int length; 
+    public String toHex() {
+        int length;
         StringBuffer buffer = new StringBuffer("");
 
         length = value.length;
-        if (length > 0)
-        {
-            for (int i=0; i<length-1; i++)
-            {
+        if (length > 0) {
+            for (int i = 0; i < length - 1; i++) {
                 buffer.append(SnmpUtilities.toHex(value[i])).append(":");
             }
-            buffer.append(SnmpUtilities.toHex(value[length-1]));
+            buffer.append(SnmpUtilities.toHex(value[length - 1]));
         }
 
         return buffer.toString();
     }
 
-
     /**
      * Returns this Octet as a display string (text convension). In contrast to the
      * method toString(), this method does not try to guess whether or
      * not this string is printable, it just converts it to a
-     * String, using "US-ASCII" character set. 
+     * String, using "US-ASCII" character set.
      *
      * <p>
      * DisplayString
      * represents textual information taken from the NVT
      * ASCII character set, as defined in pages 4, 10-11
-     * of <a href="http://www.ietf.org/rfc/rfc854.txt">RFC 854</a>. 
+     * of <a href="http://www.ietf.org/rfc/rfc854.txt">RFC 854</a>.
      * Any object defined using this syntax
      * may not exceed 255 characters in length.
      * Basicly it is US-ASCII with some changes.
@@ -706,20 +637,15 @@ public class AsnOctets extends AsnObject
      * @return The string representation.
      * @see #toString
      */
-    public String toDisplayString()
-    {
+    public String toDisplayString() {
         String str = "";
-        int length; 
+        int length;
 
         length = value.length;
-        if (length > 0)
-        {
-            try
-            {
+        if (length > 0) {
+            try {
                 str = new String(value, "US-ASCII");
-            }
-            catch (UnsupportedEncodingException exc)
-            {
+            } catch (UnsupportedEncodingException exc) {
                 str = new String(value);
             }
             str = str.trim();
@@ -730,7 +656,7 @@ public class AsnOctets extends AsnObject
 
     /**
      * Returns this Octet as an international display string (text
-     * convension). 
+     * convension).
      * It calls AsnOctetsPrintableFace.toInternationalDisplayString().
      *
      * See
@@ -739,41 +665,36 @@ public class AsnOctets extends AsnObject
      * @see AsnOctetsPrintableFace#toInternationalDisplayString
      * @since 4_14
      */
-    public String toInternationalDisplayString()
-    {
+    public String toInternationalDisplayString() {
         return toInternationalDisplayString(printableObject);
     }
 
-
     /**
-     * As toInternationalDisplayString(), but this methods will use this 
+     * As toInternationalDisplayString(), but this methods will use this
      * specific, one-off AsnOctetsPrintableFace object.
      * 
      * @see #toInternationalDisplayString
      * @since 4_14
      */
-    public String toInternationalDisplayString(AsnOctetsPrintableFace face)
-    {
+    public String toInternationalDisplayString(AsnOctetsPrintableFace face) {
         return face.toInternationalDisplayString(value);
     }
-
 
     /**
      * Returns the String representation according to the DateAndTime
      * convension.
      * This string it returns is not exactly the same as the
      * DISPLAY-HINT indicates.
-     * See 
+     * See
      * <a href="http://www.ietf.org/rfc/rfc2579.txt">SNMPv2-TC</a>
      *
      * @since 4_14
      * @exception RuntimeException Thrown when the number of
-     * Octets does not represent the DateAndTime length. 
+     *                             Octets does not represent the DateAndTime length.
      * @see #CALFORMAT
      */
     public String toCalendar()
-    throws RuntimeException
-    {
+            throws RuntimeException {
         Calendar cal = this.getCalendar();
         Date date = cal.getTime();
         return CALFORMAT.format(date);
@@ -785,205 +706,184 @@ public class AsnOctets extends AsnObject
      * the syntax of this Octet is the DateAndTime text convension.
      *
      * @exception RuntimeException Thrown when the number of
-     * Octets does not represent the DateAndTime length. 
+     *                             Octets does not represent the DateAndTime length.
      *
      * @since 4_14
      * @see #AsnOctets(Calendar)
      */
     public Calendar getCalendar()
-    throws RuntimeException
-    {
+            throws RuntimeException {
         Calendar cal = Calendar.getInstance();
-        if (value.length == 8 || value.length == 11)
-        {
+        if (value.length == 8 || value.length == 11) {
             int year = (int) ((getPositiveValue(0) * 256) + getPositiveValue(1));
             // Calendar: 0=January
-            int month = value[2]-1; 
+            int month = value[2] - 1;
             int day = value[3];
             int hour = value[4];
             int min = value[5];
             int sec = value[6];
             int msec = value[7] * 100;
-            cal.set(year, month, day, hour, min, sec); 
+            cal.set(year, month, day, hour, min, sec);
             cal.set(Calendar.MILLISECOND, msec);
 
-            if (value.length == 11)
-            {
+            if (value.length == 11) {
                 char dir = (char) value[8];
                 int hourUTC = value[9];
                 int minUTC = value[10];
                 int secUTC = (hourUTC * 60) * 60;
 
                 int msecGMT = secUTC * 1000;
-                if (dir == '-')
-                {
+                if (dir == '-') {
                     msecGMT = msecGMT * -1;
                 }
 
                 cal.set(Calendar.ZONE_OFFSET, msecGMT);
             }
-        }
-        else
-        {
+        } else {
             throw new RuntimeException("AsnOctets is not DateAndTime");
         }
         return cal;
     }
 
+    /**
+     * Converts this Octet to its corresponding sub-identifiers.
+     * Each octet will be encoded in a separate sub-identifier, by
+     * converting the octet into a positive long.
+     * 
+     * <p>
+     * Use this method when building an OID when this Octet specifies a
+     * conceptual row. For example ipNetToMediaEntry, see
+     * <a href="http://www.ietf.org/rfc/rfc2011.txt">IP-MIB</a>
+     * or SnmpCommunityEntry, see
+     * <a href="http://www.ietf.org/rfc/rfc3584.txt">SNMP-COMMUNITY-MIB</a>
+     * </p>
+     *
+     * <p>
+     * The variable <code>length_implied</code> indicates that this MIB variable
+     * is preceded by the IMPLIED keyword:
+     * </p>
+     * <ul>
+     * <li>
+     * The IMPLIED keyword can only be present for an Octet having
+     * a variable-length syntax (e.g., variable-length strings or object
+     * identifier-valued objects).
+     * </li>
+     * <li>
+     * The IMPLIED keyword can only be associated with the last
+     * object in the INDEX clause.
+     * </li>
+     * <li>
+     * The IMPLIED keyword may not be used on a variable-length
+     * string Octet if that string might have a value of zero-length.
+     * </li>
+     * </ul>
+     *
+     * <p>
+     * If the length is implied, no extra sub-identifier will be created to
+     * indicate its length. <br/>
+     * If the length is not implied, the first
+     * sub-identifier will be the length of the Octet.
+     * </p>
+     *
+     * <p>
+     * If this Octet is of type IPADDRESS, length_implied should be false.
+     * </p>
+     *
+     * <p>
+     * The mapping of the INDEX clause is
+     * explained in <a href="http://www.ietf.org/rfc/rfc2578.txt">SNMPv2-SMI</a>,
+     * section 7.7.
+     * </p>
+     *
+     * @param length_implied Indicates if the length of this octet is
+     *                       implied.
+     *
+     * @see AsnObjectId#add(long[])
+     */
+    public long[] toSubOid(boolean length_implied) {
+        long sub_oid[];
+        int index = 0;
+        int length = value.length;
 
-/**
- * Converts this Octet to its corresponding sub-identifiers.
- * Each octet will be encoded in a separate sub-identifier, by
- * converting the octet into a positive long.
- * 
- * <p>
- * Use this method when building an OID when this Octet specifies a
- * conceptual row. For example ipNetToMediaEntry, see 
- * <a href="http://www.ietf.org/rfc/rfc2011.txt">IP-MIB</a>
- * or SnmpCommunityEntry, see
- * <a href="http://www.ietf.org/rfc/rfc3584.txt">SNMP-COMMUNITY-MIB</a>
- * </p>
- *
- * <p>
- * The variable <code>length_implied</code> indicates that this MIB variable 
- * is preceded by the IMPLIED keyword:
- * </p>
- * <ul>
- * <li>
- * The IMPLIED keyword can only be present for an Octet having 
- * a variable-length syntax (e.g., variable-length strings or object 
- * identifier-valued objects). 
- * </li>
- * <li>
- * The IMPLIED keyword can only be associated with the last
- * object in the INDEX clause.  
- * </li>
- * <li>
- * The IMPLIED keyword may not be used on a variable-length
- * string Octet if that string might have a value of zero-length. 
- * </li>
- * </ul>
- *
- * <p>
- * If the length is implied, no extra sub-identifier will be created to
- * indicate its length. <br/>
- * If the length is not implied, the first
- * sub-identifier will be the length of the Octet.
- * </p>
- *
- * <p>
- * If this Octet is of type IPADDRESS, length_implied should be false.
- * </p>
- *
- * <p>
- * The mapping of the INDEX clause is
- * explained in <a href="http://www.ietf.org/rfc/rfc2578.txt">SNMPv2-SMI</a>,
- * section 7.7.
- * </p>
- *
- * @param length_implied Indicates if the length of this octet is
- * implied. 
- *
- * @see AsnObjectId#add(long[])
- */
-public long [] toSubOid(boolean length_implied)
-{
-    long sub_oid[];
-    int index = 0;
-    int length = value.length;
+        if (length_implied) {
+            sub_oid = new long[length];
+        } else {
+            sub_oid = new long[length + 1];
+            sub_oid[0] = length;
+            index++;
+        }
 
-    if (length_implied)
-    {
-        sub_oid = new long[length];
+        for (int i = 0; i < length; i++) {
+            sub_oid[index] = getPositiveValue(i);
+            index++;
+        }
+        return sub_oid;
     }
-    else
-    {
-        sub_oid = new long[length+1];
-        sub_oid[0] = length;
-        index++;
-    }
 
-    for (int i=0; i<length; i++)
-    {
-        sub_oid[index] = getPositiveValue(i);
-        index++;
-    }
-    return sub_oid;
-}
-
-
-/**
- * Compares this Octet to the specified object.
- * The result is <code>true</code> if and only if the argument is not
- * <code>null</code> and is an <code>AsnOctets</code> object that represents
- * the same sequence of octets as this Octet.
- *
- * @param anObject the object to compare this <code>AsnOctets</code> 
- *                 against.
- * @return <code>true</code> if the <code>AsnOctets </code>are equal;
- *         <code>false</code> otherwise.
- */
-public boolean equals(Object anObject) 
-{
-    if (this == anObject) 
-    {
-        return true;
-    }
-    if (anObject instanceof AsnOctets) 
-    {
-        AsnOctets anotherOctet = (AsnOctets)anObject;
-        int n = value.length;
-        if (n == anotherOctet.value.length) 
-        {
-            byte v1[] = value;
-            byte v2[] = anotherOctet.value;
-            int i = 0;
-            int j = 0;
-            while (n-- != 0) 
-            {
-                if (v1[i++] != v2[j++])
-                {
-                    return false;
-                }
-            }
+    /**
+     * Compares this Octet to the specified object.
+     * The result is <code>true</code> if and only if the argument is not
+     * <code>null</code> and is an <code>AsnOctets</code> object that represents
+     * the same sequence of octets as this Octet.
+     *
+     * @param anObject the object to compare this <code>AsnOctets</code>
+     *                 against.
+     * @return <code>true</code> if the <code>AsnOctets </code>are equal;
+     *         <code>false</code> otherwise.
+     */
+    public boolean equals(Object anObject) {
+        if (this == anObject) {
             return true;
         }
-    }
-    return false;
-}
-
-
-/**
- * Returns a hash code for this Octet. The hash code for a
- * <code>AsnOctets</code> object is computed as
- * <blockquote><pre>
- * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
- * </pre></blockquote>
- * using <code>int</code> arithmetic, where <code>s[i]</code> is the
- * <i>i</i>th character of the Octet, <code>n</code> is the length of
- * the Octet, and <code>^</code> indicates exponentiation.
- * (The hash value of the empty Octet is zero.)
- *
- * @return  a hash code value for this Octet.
- */
-public int hashCode() 
-{
-    int h = hash;
-    if (h == 0) 
-    {
-        int off = 0;
-        byte val[] = value;
-        int len = value.length;
-
-        for (int i=0; i<len; i++) 
-        {
-            h = 31*h + val[off++];
+        if (anObject instanceof AsnOctets) {
+            AsnOctets anotherOctet = (AsnOctets) anObject;
+            int n = value.length;
+            if (n == anotherOctet.value.length) {
+                byte v1[] = value;
+                byte v2[] = anotherOctet.value;
+                int i = 0;
+                int j = 0;
+                while (n-- != 0) {
+                    if (v1[i++] != v2[j++]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
-        hash = h;
+        return false;
     }
-    return h;
+
+    /**
+     * Returns a hash code for this Octet. The hash code for a
+     * <code>AsnOctets</code> object is computed as
+     * <blockquote>
+     * 
+     * <pre>
+     * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+     * </pre>
+     * 
+     * </blockquote>
+     * using <code>int</code> arithmetic, where <code>s[i]</code> is the
+     * <i>i</i>th character of the Octet, <code>n</code> is the length of
+     * the Octet, and <code>^</code> indicates exponentiation.
+     * (The hash value of the empty Octet is zero.)
+     *
+     * @return a hash code value for this Octet.
+     */
+    public int hashCode() {
+        int h = hash;
+        if (h == 0) {
+            int off = 0;
+            byte val[] = value;
+            int len = value.length;
+
+            for (int i = 0; i < len; i++) {
+                h = 31 * h + val[off++];
+            }
+            hash = h;
+        }
+        return h;
+    }
+
 }
-
-
-}
-

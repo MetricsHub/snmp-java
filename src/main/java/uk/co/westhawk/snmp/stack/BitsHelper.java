@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -78,98 +78,79 @@ import java.io.*;
  * @version $Revision: 3.1 $ $Date: 2006/03/23 15:09:48 $
  * @since 5_0
  */
-public class BitsHelper 
-{
-    private static final String     version_id =
-        "@(#)$Id: BitsHelper.java,v 3.1 2006/03/23 15:09:48 birgit Exp $ Copyright Westhawk Ltd";
+public class BitsHelper {
+    private static final String version_id = "@(#)$Id: BitsHelper.java,v 3.1 2006/03/23 15:09:48 birgit Exp $ Copyright Westhawk Ltd";
 
+    /**
+     * Sets or unsets the flag (bit) on the specified index. The bit
+     * will be set to zero if toset is false, set to one if toset is
+     * true.
+     *
+     * Note, as a side effect the size of the asn octet might grow.
+     *
+     * @param oct   The AsnOctets that represents the BITS
+     * @param index The index (0 - X)
+     * @param toset Whether to set (true) or unset (false) the bit
+     */
+    public static void setFlagged(AsnOctets oct, int index, boolean toset)
+            throws IllegalArgumentException {
+        if (index < 0) {
+            throw new IllegalArgumentException("Illegal value index (" + index
+                    + "). Shoud be greater than 0.");
+        } else {
+            byte mask;
+            int byteNo = index / 8;
+            int bitNo = index % 8;
 
-/**
- * Sets or unsets the flag (bit) on the specified index. The bit
- * will be set to zero if toset is false, set to one if toset is
- * true.
- *
- * Note, as a side effect the size of the asn octet might grow.
- *
- * @param oct The AsnOctets that represents the BITS
- * @param index The index (0 - X)
- * @param toset Whether to set (true) or unset (false) the bit
- */
-public static void setFlagged(AsnOctets oct, int index, boolean toset)
-throws IllegalArgumentException
-{
-    if (index < 0)
-    {
-        throw new IllegalArgumentException("Illegal value index (" + index
-            + "). Shoud be greater than 0.");
-    }
-    else
-    {
-        byte mask;
-        int byteNo = index / 8;
-        int bitNo  = index % 8;
+            // See if we've got enough bytes in our array.
+            // Reallocate if necessary.
+            int len = oct.value.length;
+            if (byteNo >= len) {
+                int newLen = byteNo + 1;
+                byte[] newValue = new byte[newLen];
+                System.arraycopy(oct.value, 0, newValue, 0, len);
+                oct.value = newValue;
+            }
 
-        // See if we've got enough bytes in our array.
-        // Reallocate if necessary.
-        int len = oct.value.length;
-        if (byteNo >= len)
-        {
-            int newLen = byteNo+1;
-            byte[] newValue = new byte[newLen];
-            System.arraycopy(oct.value, 0, newValue, 0, len);
-            oct.value = newValue;
-        }
-
-        if (toset == true)
-        {
-            mask = (byte) (0x80 >>> bitNo);
-            oct.value[byteNo] = (byte) (oct.value[byteNo] | mask);
-        }
-        else
-        {
-            mask = (byte) (0x7F >>> bitNo);
-            oct.value[byteNo] = (byte) (oct.value[byteNo] & mask);
+            if (toset == true) {
+                mask = (byte) (0x80 >>> bitNo);
+                oct.value[byteNo] = (byte) (oct.value[byteNo] | mask);
+            } else {
+                mask = (byte) (0x7F >>> bitNo);
+                oct.value[byteNo] = (byte) (oct.value[byteNo] & mask);
+            }
         }
     }
-}
 
+    /**
+     * Returns if the flag (bit) on the specified index is set. The bit
+     * will be set to zero if toset is false, set to one if toset is
+     * true.
+     *
+     * @param oct   The AsnOctets that represents the BITS
+     * @param index The index (0 - X)
+     * @return Whether the bit is set (true) or unset (false)
+     */
+    public static boolean isFlagged(AsnOctets oct, int index)
+            throws IllegalArgumentException {
+        boolean isFlagged = false;
+        if (index < 0) {
+            throw new IllegalArgumentException("Illegal value index (" + index
+                    + "). Shoud be greater than 0.");
+        } else {
+            byte mask;
+            int byteNo = index / 8;
+            int bitNo = index % 8;
 
-/**
- * Returns if the flag (bit) on the specified index is set. The bit
- * will be set to zero if toset is false, set to one if toset is
- * true.
- *
- * @param oct The AsnOctets that represents the BITS
- * @param index The index (0 - X)
- * @return Whether the bit is set (true) or unset (false)
- */
-public static boolean isFlagged(AsnOctets oct, int index)
-throws IllegalArgumentException
-{
-    boolean isFlagged = false;
-    if (index < 0)
-    {
-        throw new IllegalArgumentException("Illegal value index (" + index
-            + "). Shoud be greater than 0.");
-    }
-    else
-    {
-        byte mask;
-        int byteNo = index / 8;
-        int bitNo  = index % 8;
-
-        int len = oct.value.length;
-        if (byteNo < len)
-        {
-            // Shift the bit we're interested in to the far left.
-            // If the bit is one, the byte will be negative.
-            byte res = (byte) (oct.value[byteNo] << bitNo);
-            isFlagged = (res < 0);
+            int len = oct.value.length;
+            if (byteNo < len) {
+                // Shift the bit we're interested in to the far left.
+                // If the bit is one, the byte will be negative.
+                byte res = (byte) (oct.value[byteNo] << bitNo);
+                isFlagged = (res < 0);
+            }
         }
+        return isFlagged;
     }
-    return isFlagged;
-}
-
 
 }
-

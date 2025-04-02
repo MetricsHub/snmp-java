@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -58,10 +58,7 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.7 $ $Date: 2006/01/17 17:43:54 $
  */
-public interface SnmpContextv2cFace extends SnmpContextFace 
-{
-    static final String     version_id =
-        "@(#)$Id: SnmpContextv2cFace.java,v 3.7 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
-
+public interface SnmpContextv2cFace extends SnmpContextFace {
+    static final String version_id = "@(#)$Id: SnmpContextv2cFace.java,v 3.7 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
 
 }

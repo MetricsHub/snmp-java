@@ -32,7 +32,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,24 +59,20 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Tim Panton</a>
  * @version $Revision: 3.15 $ $Date: 2007/02/05 15:01:20 $
 */
-class Transmitter extends Object implements Runnable
-{
-    private static final String     version_id =
-        "@(#)$Id: Transmitter.java,v 3.15 2007/02/05 15:01:20 birgita Exp $ Copyright Westhawk Ltd";
+class Transmitter extends Object implements Runnable {
+    private static final String version_id = "@(#)$Id: Transmitter.java,v 3.15 2007/02/05 15:01:20 birgita Exp $ Copyright Westhawk Ltd";
 
     Pdu pdu = null;
     Thread me;
     String myName;
 
-    Transmitter(String name)
-    {
-        me = new Thread(this,name);
+    Transmitter(String name) {
+        me = new Thread(this, name);
         me.setPriority(me.MIN_PRIORITY);
-        if (AsnObject.debug > 12)
-        {
+        if (AsnObject.debug > 12) {
             System.out.println("Transmitter(): Made thread " + name);
         }
-        myName =name;
+        myName = name;
         me.start();
     }
 
@@ -90,30 +86,25 @@ class Transmitter extends Object implements Runnable
      * @see #stand()
      * @see Pdu#transmit()
      */
-    public void run()
-    {
-        while (me != null)
-        {
+    public void run() {
+        while (me != null) {
             sit();
-            synchronized (this) 
-            {
-                if (pdu != null)
-                {
+            synchronized (this) {
+                if (pdu != null) {
                     pdu.transmit();
                     // I will say this only once....
-                    pdu = null; 
+                    pdu = null;
                 }
             }
         }
     }
 
-    /** 
+    /**
      * Returns the string representation of the Transmitter.
      *
      * @return The string of the Transmitter
      */
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer(getClass().getName());
         buffer.append("[");
         buffer.append("name=").append(myName);
@@ -121,8 +112,7 @@ class Transmitter extends Object implements Runnable
         return buffer.toString();
     }
 
-    synchronized void setPdu(Pdu p)
-    {
+    synchronized void setPdu(Pdu p) {
         pdu = p;
     }
 
@@ -134,16 +124,11 @@ class Transmitter extends Object implements Runnable
      * @see #stand()
      * @see #run()
      */
-    synchronized void sit()
-    {
-        while ((me != null) && (pdu == null))
-        {
-            try
-            {
+    synchronized void sit() {
+        while ((me != null) && (pdu == null)) {
+            try {
                 wait();
-            }
-            catch (InterruptedException iw)
-            {
+            } catch (InterruptedException iw) {
                 ;
             }
 
@@ -161,8 +146,7 @@ class Transmitter extends Object implements Runnable
      * @see #run()
      * @see Pdu#send
      */
-    synchronized void stand()
-    {
+    synchronized void stand() {
         notifyAll();
     }
 
@@ -170,20 +154,16 @@ class Transmitter extends Object implements Runnable
      * It may be sleeping (as opposed to wait()ing
      * so send it a kick.
      */
-    void interruptMe()
-    {
+    void interruptMe() {
         // unsafe ?
-        if (me != null)
-        {
+        if (me != null) {
             me.interrupt();
         }
     }
 
-    void destroy()
-    {
+    void destroy() {
         me = null;
-        pdu=null;
+        pdu = null;
         stand();
     }
 }
-

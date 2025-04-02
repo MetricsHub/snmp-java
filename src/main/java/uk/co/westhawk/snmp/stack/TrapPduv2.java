@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -80,73 +80,68 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.11 $ $Date: 2006/03/23 14:54:10 $
  */
-public class TrapPduv2 extends Pdu 
-{
-    private static final String     version_id =
-        "@(#)$Id: TrapPduv2.java,v 3.11 2006/03/23 14:54:10 birgit Exp $ Copyright Westhawk Ltd";
+public class TrapPduv2 extends Pdu {
+    private static final String version_id = "@(#)$Id: TrapPduv2.java,v 3.11 2006/03/23 14:54:10 birgit Exp $ Copyright Westhawk Ltd";
 
-/** 
- * Constructor.
- *
- * @param con The context (v2c or v3) of the PDU
- * @throws IllegalArgumentException if the context version is
- * SNMPv1
- */
-public TrapPduv2(SnmpContextBasisFace con) 
-{
-    super(con);
-    setMsgType(AsnObject.TRPV2_REQ_MSG);
+    /**
+     * Constructor.
+     *
+     * @param con The context (v2c or v3) of the PDU
+     * @throws IllegalArgumentException if the context version is
+     *                                  SNMPv1
+     */
+    public TrapPduv2(SnmpContextBasisFace con) {
+        super(con);
+        setMsgType(AsnObject.TRPV2_REQ_MSG);
 
-    if (con.getVersion() == SnmpConstants.SNMP_VERSION_1)
-    {
-        throw new IllegalArgumentException("A TrapPduv2"
-          + " can only be sent with an SNMPv2c or SNMPv3 context."
-          + " NOT with an SNMPv1 context!");
+        if (con.getVersion() == SnmpConstants.SNMP_VERSION_1) {
+            throw new IllegalArgumentException("A TrapPduv2"
+                    + " can only be sent with an SNMPv2c or SNMPv3 context."
+                    + " NOT with an SNMPv1 context!");
+        }
     }
-}
 
-/**
- * The trap PDU does not get a response back. So it should be sent once.
- *
- */
-void transmit() 
-{
-    transmit(false);
-}
+    /**
+     * The trap PDU does not get a response back. So it should be sent once.
+     *
+     */
+    void transmit() {
+        transmit(false);
+    }
 
-/**
- * Returns the string representation of this object.
- *
- * @return The string of the PDU
- */
-public String toString()
-{
-    return super.toString(true);
-}
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return The string of the PDU
+     */
+    public String toString() {
+        return super.toString(true);
+    }
 
-/**
- * Has no meaning, since there is not response.
- */
-protected void new_value(int n, varbind res){}
+    /**
+     * Has no meaning, since there is not response.
+     */
+    protected void new_value(int n, varbind res) {
+    }
 
-/**
- * Has no meaning, since there is not response.
- */
-protected void tell_them(){}
+    /**
+     * Has no meaning, since there is not response.
+     */
+    protected void tell_them() {
+    }
 
-/**
- * Returns that this type of PDU is <em>not</em> expecting a response.
- * This method is used in AbstractSnmpContext to help determine whether
- * or not to start a thread that listens for a response when sending this
- * PDU.
- * The default is <em>false</em>.
- *
- * @return true if a response is expected, false if not.
- * @since 4_14
- */
-protected boolean isExpectingResponse()
-{
-    return false;
-}
+    /**
+     * Returns that this type of PDU is <em>not</em> expecting a response.
+     * This method is used in AbstractSnmpContext to help determine whether
+     * or not to start a thread that listens for a response when sending this
+     * PDU.
+     * The default is <em>false</em>.
+     *
+     * @return true if a response is expected, false if not.
+     * @since 4_14
+     */
+    protected boolean isExpectingResponse() {
+        return false;
+    }
 
 }

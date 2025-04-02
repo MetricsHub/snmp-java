@@ -13,7 +13,7 @@ Add SNMP in the list of dependencies in your [Maven **pom.xml**](https://maven.a
 <dependencies>
 	<!-- [...] -->
 	<dependency>
-		<groupId>org.sentrysoftware</groupId>
+		<groupId>org.metricshub</groupId>
 		<artifactId>snmp</artifactId>
 		<version>${project.version}</version>
 	</dependency>

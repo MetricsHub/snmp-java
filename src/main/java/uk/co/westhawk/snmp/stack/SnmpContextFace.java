@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -62,29 +62,26 @@ import uk.co.westhawk.snmp.event.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Tim Panton</a>
  * @version $Revision: 3.13 $ $Date: 2006/02/09 14:19:05 $
  */
-public interface SnmpContextFace extends SnmpContextBasisFace
-{
-    static final String     version_id =
-        "@(#)$Id: SnmpContextFace.java,v 3.13 2006/02/09 14:19:05 birgit Exp $ Copyright Westhawk Ltd";
+public interface SnmpContextFace extends SnmpContextBasisFace {
+    static final String version_id = "@(#)$Id: SnmpContextFace.java,v 3.13 2006/02/09 14:19:05 birgit Exp $ Copyright Westhawk Ltd";
 
     /**
      * The default community name. This is <em>public</em>.
      */
     public final static String DEFAULT_COMMUNITY = "public";
 
-/**
- * Returns the community name.
- */
-public String getCommunity();
+    /**
+     * Returns the community name.
+     */
+    public String getCommunity();
 
-
-/**
- * Sets the community name.
- * This community name will be used for all PDUs sent with this context.
- * The default community name is <em>public</em>.
- *
- * @see #DEFAULT_COMMUNITY
- */
-public void setCommunity(String newCommunity);
+    /**
+     * Sets the community name.
+     * This community name will be used for all PDUs sent with this context.
+     * The default community name is <em>public</em>.
+     *
+     * @see #DEFAULT_COMMUNITY
+     */
+    public void setCommunity(String newCommunity);
 
 }

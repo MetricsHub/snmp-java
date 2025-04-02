@@ -4,7 +4,7 @@ package org.bouncycastle.crypto.generators;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,19 +26,15 @@ import org.bouncycastle.crypto.CipherKeyGenerator;
 import org.bouncycastle.crypto.params.DESParameters;
 
 public class DESKeyGenerator
-    extends CipherKeyGenerator
-{
-    public byte[] generateKey()
-    {
-        byte[]  newKey = new byte[DESParameters.DES_KEY_LENGTH];
+        extends CipherKeyGenerator {
+    public byte[] generateKey() {
+        byte[] newKey = new byte[DESParameters.DES_KEY_LENGTH];
 
-        do
-        {
+        do {
             random.nextBytes(newKey);
 
             DESParameters.setOddParity(newKey);
-        }
-        while (DESParameters.isWeakKey(newKey, 0));
+        } while (DESParameters.isWeakKey(newKey, 0));
 
         return newKey;
     }

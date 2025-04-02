@@ -44,7 +44,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -74,44 +74,35 @@ import java.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Tim Panton</a>
  * @version $Revision: 3.3 $ $Date: 2006/02/09 14:16:36 $
  */
-class AsnDecoderv2c extends AsnDecoderBase 
-{
-    private static final String     version_id =
-        "@(#)$Id: AsnDecoderv2c.java,v 3.3 2006/02/09 14:16:36 birgit Exp $ Copyright Westhawk Ltd";
+class AsnDecoderv2c extends AsnDecoderBase {
+    private static final String version_id = "@(#)$Id: AsnDecoderv2c.java,v 3.3 2006/02/09 14:16:36 birgit Exp $ Copyright Westhawk Ltd";
 
-
-
-/**
- * This method creates an AsnPduSequence out of the characters of the
- * InputStream for v2c.
- *
- * @see AbstractSnmpContext#run
- * @see SnmpContextv2c#processIncomingResponse
- * @see SnmpContextv2c#processIncomingPdu
- */
-AsnPduSequence DecodeSNMPv2c(InputStream in, String community)
-throws IOException, DecodingException
-{
-    AsnSequence asnTopSeq = getAsnSequence(in);
-    int snmpVersion = getSNMPVersion(asnTopSeq);
-    if (snmpVersion != SnmpConstants.SNMP_VERSION_2c)
-    {
-        String str = SnmpUtilities.getSnmpVersionString(snmpVersion);
-        String msg = "Wrong SNMP version: expected SNMPv2c, received "
-            + str;
-        throw new DecodingException(msg);
+    /**
+     * This method creates an AsnPduSequence out of the characters of the
+     * InputStream for v2c.
+     *
+     * @see AbstractSnmpContext#run
+     * @see SnmpContextv2c#processIncomingResponse
+     * @see SnmpContextv2c#processIncomingPdu
+     */
+    AsnPduSequence DecodeSNMPv2c(InputStream in, String community)
+            throws IOException, DecodingException {
+        AsnSequence asnTopSeq = getAsnSequence(in);
+        int snmpVersion = getSNMPVersion(asnTopSeq);
+        if (snmpVersion != SnmpConstants.SNMP_VERSION_2c) {
+            String str = SnmpUtilities.getSnmpVersionString(snmpVersion);
+            String msg = "Wrong SNMP version: expected SNMPv2c, received "
+                    + str;
+            throw new DecodingException(msg);
+        }
+        String comm = getCommunity(asnTopSeq);
+        if (comm.equals(community) == false) {
+            String msg = "Wrong community: expected "
+                    + community + ", received " + comm;
+            throw new DecodingException(msg);
+        }
+        AsnPduSequence Pdu = (AsnPduSequence) asnTopSeq.findPdu();
+        return Pdu;
     }
-    String comm = getCommunity(asnTopSeq);
-    if (comm.equals(community) == false)
-    {
-        String msg = "Wrong community: expected "
-            + community + ", received " + comm;
-        throw new DecodingException(msg);
-    }
-    AsnPduSequence Pdu = (AsnPduSequence) asnTopSeq.findPdu();
-    return Pdu;
-}
-
-
 
 }

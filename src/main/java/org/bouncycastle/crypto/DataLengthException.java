@@ -4,7 +4,7 @@ package org.bouncycastle.crypto;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,14 +28,12 @@ package org.bouncycastle.crypto;
  * insufficient input. In general this exception will get thrown rather
  * than an ArrayOutOfBounds exception.
  */
-public class DataLengthException 
-    extends RuntimeCryptoException
-{
+public class DataLengthException
+        extends RuntimeCryptoException {
     /**
      * base constructor.
      */
-    public DataLengthException()
-    {
+    public DataLengthException() {
     }
 
     /**
@@ -44,8 +42,7 @@ public class DataLengthException
      * @param message the message to be carried with the exception.
      */
     public DataLengthException(
-        String  message)
-    {
+            String message) {
         super(message);
     }
 }

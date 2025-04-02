@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.event;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -60,106 +60,88 @@ import uk.co.westhawk.snmp.stack.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.6 $ $Date: 2006/01/17 17:43:53 $
  */
-public class TrapReceivedSupport 
-{
-    public static final String     version_id =
-        "@(#)$Id: TrapReceivedSupport.java,v 1.6 2006/01/17 17:43:53 birgit Exp $ Copyright Westhawk Ltd";
+public class TrapReceivedSupport {
+    public static final String version_id = "@(#)$Id: TrapReceivedSupport.java,v 1.6 2006/01/17 17:43:53 birgit Exp $ Copyright Westhawk Ltd";
 
     private Object source;
     private transient Vector trapListeners;
 
-/**
- * The constructor.
- *
- * @param src The source (SnmpContext) of the trap events when they are fired. 
- */
-public TrapReceivedSupport(Object src)
-{
-    source = src;
-}
-
-/**
- * Removes all the listeners.
- */
-public synchronized void empty()
-{
-    if (trapListeners != null)
-    {
-        trapListeners.removeAllElements();
+    /**
+     * The constructor.
+     *
+     * @param src The source (SnmpContext) of the trap events when they are fired.
+     */
+    public TrapReceivedSupport(Object src) {
+        source = src;
     }
-}
 
-/**
- * Returns the number of listeners.
- *
- * @return The number of listeners.
- */
-public synchronized int getListenerCount()
-{
-    int c=0;
-    if (trapListeners != null)
-    {
-        c = trapListeners.size();
-    }
-    return c;
-}
-
-/**
- * Adds the specified trap listener to receive traps. 
- */ 
-public synchronized void addTrapListener(TrapListener listener)
-{
-    if (trapListeners == null)
-    {
-        trapListeners = new Vector (5);
-    }
-    if (trapListeners.contains(listener) == false)
-    {
-        trapListeners.addElement(listener);
-    }
-}
-
-/**
- * Removes the specified trap listener.
- */
-public synchronized void removeTrapListener(TrapListener listener)
-{
-    if (trapListeners != null)
-    {
-        trapListeners.removeElement(listener);
-    }
-}
-
-
-/**
- * Fires a decoded trap event.
- * The event is fired to all listeners, whether they consume it or not.
- * This behaviour is different from the undecoded trap event.
- * 
- * @param pdu The decoded trap pdu.
- */
-public void fireTrapReceived(Pdu pdu, int hostPort)
-{
-    Vector copyOfListeners = null;
-    if (trapListeners != null)
-    {
-        synchronized (trapListeners)
-        {
-            copyOfListeners = (Vector) trapListeners.clone();
+    /**
+     * Removes all the listeners.
+     */
+    public synchronized void empty() {
+        if (trapListeners != null) {
+            trapListeners.removeAllElements();
         }
     }
 
-    if (copyOfListeners != null)
-    {
-        int sz = copyOfListeners.size();
-        for (int i=sz-1; i>=0; i--)
-        {
-            TrapListener listener = (TrapListener) copyOfListeners.elementAt(i);
+    /**
+     * Returns the number of listeners.
+     *
+     * @return The number of listeners.
+     */
+    public synchronized int getListenerCount() {
+        int c = 0;
+        if (trapListeners != null) {
+            c = trapListeners.size();
+        }
+        return c;
+    }
 
-            TrapEvent evt = new TrapEvent(source, pdu, hostPort);
-            listener.trapReceived(evt);
+    /**
+     * Adds the specified trap listener to receive traps.
+     */
+    public synchronized void addTrapListener(TrapListener listener) {
+        if (trapListeners == null) {
+            trapListeners = new Vector(5);
+        }
+        if (trapListeners.contains(listener) == false) {
+            trapListeners.addElement(listener);
         }
     }
-}
+
+    /**
+     * Removes the specified trap listener.
+     */
+    public synchronized void removeTrapListener(TrapListener listener) {
+        if (trapListeners != null) {
+            trapListeners.removeElement(listener);
+        }
+    }
+
+    /**
+     * Fires a decoded trap event.
+     * The event is fired to all listeners, whether they consume it or not.
+     * This behaviour is different from the undecoded trap event.
+     * 
+     * @param pdu The decoded trap pdu.
+     */
+    public void fireTrapReceived(Pdu pdu, int hostPort) {
+        Vector copyOfListeners = null;
+        if (trapListeners != null) {
+            synchronized (trapListeners) {
+                copyOfListeners = (Vector) trapListeners.clone();
+            }
+        }
+
+        if (copyOfListeners != null) {
+            int sz = copyOfListeners.size();
+            for (int i = sz - 1; i >= 0; i--) {
+                TrapListener listener = (TrapListener) copyOfListeners.elementAt(i);
+
+                TrapEvent evt = new TrapEvent(source, pdu, hostPort);
+                listener.trapReceived(evt);
+            }
+        }
+    }
 
 }

@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -71,148 +71,129 @@ import uk.co.westhawk.snmp.beans.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.11 $ $Date: 2009/03/05 13:12:50 $
  */
-public class SnmpContextv3Discovery extends SnmpContextv3Basis
-{
-    private static final String     version_id =
-        "@(#)$Id: SnmpContextv3Discovery.java,v 3.11 2009/03/05 13:12:50 birgita Exp $ Copyright Westhawk Ltd";
+public class SnmpContextv3Discovery extends SnmpContextv3Basis {
+    private static final String version_id = "@(#)$Id: SnmpContextv3Discovery.java,v 3.11 2009/03/05 13:12:50 birgita Exp $ Copyright Westhawk Ltd";
 
-
-/**
- * Constructor.
- *
- * @param host The host to which the PDU will be sent
- * @param port The port where the SNMP server will be
- * @see AbstractSnmpContext#AbstractSnmpContext(String, int)
- */
-public SnmpContextv3Discovery(String host, int port) throws IOException
-{
-    super(host, port);
-}
-
-/**
- * Constructor.
- * Parameter typeSocketA should be either STANDARD_SOCKET, TCP_SOCKET or a
- * fully qualified classname.
- *
- * @param host The host to which the Pdu will be sent
- * @param port The port where the SNMP server will be
- * @param typeSocketA The local address the server will bind to
- *
- * @see AbstractSnmpContext#AbstractSnmpContext(String, int, String)
- */
-public SnmpContextv3Discovery(String host, int port, String typeSocketA) 
-throws IOException
-{
-    super(host, port, typeSocketA);
-}
-
-/**
- * Constructor.
- * Parameter typeSocketA should be either STANDARD_SOCKET, TCP_SOCKET or a
- * fully qualified classname.
- *
- * @param host The host to which the PDU will be sent
- * @param port The port where the SNMP server will be
- * @param bindAddress The local address the server will bind to
- * @param typeSocketA The type of socket to use. 
- *
- * @see AbstractSnmpContext#AbstractSnmpContext(String, int, String, String)
- * @see SnmpContextBasisFace#STANDARD_SOCKET
- * @see SnmpContextBasisFace#TCP_SOCKET
- * @since 4_14
- */
-public SnmpContextv3Discovery(String host, int port, String bindAddress, String typeSocketA) 
-throws IOException
-{
-    super(host, port, bindAddress, typeSocketA);
-}
-
-
-/**
- * Processes an incoming Discovery (and only Discovery) PDU. 
- * <p>
- * See <a href="http://www.ietf.org/rfc/rfc3414.txt">SNMP-USER-BASED-SM-MIB</a>.
- * </p>
- *
- * @see #rawPduReceived
- */
-public Pdu processIncomingPdu(byte [] message) 
-throws DecodingException, IOException
-{
-    String msg = checkContextSanity();
-    if (msg != null)
-    {
-        throw new DecodingException(msg);
+    /**
+     * Constructor.
+     *
+     * @param host The host to which the PDU will be sent
+     * @param port The port where the SNMP server will be
+     * @see AbstractSnmpContext#AbstractSnmpContext(String, int)
+     */
+    public SnmpContextv3Discovery(String host, int port) throws IOException {
+        super(host, port);
     }
-    int l = message.length;
-    byte [] copyOfMessage = new byte[l];
-    System.arraycopy(message, 0, copyOfMessage, 0, l);
 
-    AsnDecoderv3 rpdu = new AsnDecoderv3();
-    ByteArrayInputStream in = new ByteArrayInputStream(message);
-    AsnSequence asnTopSeq = rpdu.DecodeSNMPv3(in);
-    int msgId = rpdu.getMessageId(asnTopSeq);
-    AsnPduSequence pduSeq = rpdu.processSNMPv3(this, asnTopSeq, copyOfMessage, true);
+    /**
+     * Constructor.
+     * Parameter typeSocketA should be either STANDARD_SOCKET, TCP_SOCKET or a
+     * fully qualified classname.
+     *
+     * @param host        The host to which the Pdu will be sent
+     * @param port        The port where the SNMP server will be
+     * @param typeSocketA The local address the server will bind to
+     *
+     * @see AbstractSnmpContext#AbstractSnmpContext(String, int, String)
+     */
+    public SnmpContextv3Discovery(String host, int port, String typeSocketA)
+            throws IOException {
+        super(host, port, typeSocketA);
+    }
 
-    Pdu pdu = null;
-    if (pduSeq != null)
-    {
-        byte type = pduSeq.getRespType();
-        if (type == SnmpConstants.GET_REQ_MSG && pduSeq.isSnmpv3Discovery() == true)
-        {
-            pdu = new GetPdu(this);
+    /**
+     * Constructor.
+     * Parameter typeSocketA should be either STANDARD_SOCKET, TCP_SOCKET or a
+     * fully qualified classname.
+     *
+     * @param host        The host to which the PDU will be sent
+     * @param port        The port where the SNMP server will be
+     * @param bindAddress The local address the server will bind to
+     * @param typeSocketA The type of socket to use.
+     *
+     * @see AbstractSnmpContext#AbstractSnmpContext(String, int, String, String)
+     * @see SnmpContextBasisFace#STANDARD_SOCKET
+     * @see SnmpContextBasisFace#TCP_SOCKET
+     * @since 4_14
+     */
+    public SnmpContextv3Discovery(String host, int port, String bindAddress, String typeSocketA)
+            throws IOException {
+        super(host, port, bindAddress, typeSocketA);
+    }
+
+    /**
+     * Processes an incoming Discovery (and only Discovery) PDU.
+     * <p>
+     * See <a href="http://www.ietf.org/rfc/rfc3414.txt">SNMP-USER-BASED-SM-MIB</a>.
+     * </p>
+     *
+     * @see #rawPduReceived
+     */
+    public Pdu processIncomingPdu(byte[] message)
+            throws DecodingException, IOException {
+        String msg = checkContextSanity();
+        if (msg != null) {
+            throw new DecodingException(msg);
         }
-        else
-        {
-            /*
-            These cannot be sent as discovery pdu;
-            SnmpConstants.GETNEXT_REQ_MSG
-            SnmpConstants.SET_REQ_MSG
-            SnmpConstants.GETBULK_REQ_MSG
-            SnmpConstants.INFORM_REQ_MSG
-            SnmpConstants.GET_RSP_MSG
-            SnmpConstants.GET_RPRT_MSG
-            SnmpConstants.TRPV2_REQ_MSG
-            */
+        int l = message.length;
+        byte[] copyOfMessage = new byte[l];
+        System.arraycopy(message, 0, copyOfMessage, 0, l);
 
-            if (AsnObject.debug > 3)
-            {
-                System.out.println(getClass().getName() 
-                    + ".ProcessIncomingPdu(): PDU received with type " 
-                    + pduSeq.getRespTypeString()
-                    + ". Ignoring it.");
+        AsnDecoderv3 rpdu = new AsnDecoderv3();
+        ByteArrayInputStream in = new ByteArrayInputStream(message);
+        AsnSequence asnTopSeq = rpdu.DecodeSNMPv3(in);
+        int msgId = rpdu.getMessageId(asnTopSeq);
+        AsnPduSequence pduSeq = rpdu.processSNMPv3(this, asnTopSeq, copyOfMessage, true);
+
+        Pdu pdu = null;
+        if (pduSeq != null) {
+            byte type = pduSeq.getRespType();
+            if (type == SnmpConstants.GET_REQ_MSG && pduSeq.isSnmpv3Discovery() == true) {
+                pdu = new GetPdu(this);
+            } else {
+                /*
+                 * These cannot be sent as discovery pdu;
+                 * SnmpConstants.GETNEXT_REQ_MSG
+                 * SnmpConstants.SET_REQ_MSG
+                 * SnmpConstants.GETBULK_REQ_MSG
+                 * SnmpConstants.INFORM_REQ_MSG
+                 * SnmpConstants.GET_RSP_MSG
+                 * SnmpConstants.GET_RPRT_MSG
+                 * SnmpConstants.TRPV2_REQ_MSG
+                 */
+
+                if (AsnObject.debug > 3) {
+                    System.out.println(getClass().getName()
+                            + ".ProcessIncomingPdu(): PDU received with type "
+                            + pduSeq.getRespTypeString()
+                            + ". Ignoring it.");
+                }
+            }
+
+            if (pdu != null) {
+                pdu.fillin(pduSeq);
+                pdu.snmpv3MsgId = new Integer(msgId);
             }
         }
+        return pdu;
+    }
 
-        if (pdu != null)
-        {
-            pdu.fillin(pduSeq);
-            pdu.snmpv3MsgId = new Integer(msgId);
+    /**
+     * Returns a clone of this SnmpContextv3.
+     *
+     * @exception CloneNotSupportedException Thrown when the constructor
+     *                                       generates an IOException
+     */
+    public Object clone() throws CloneNotSupportedException {
+        SnmpContextv3Discovery clContext = null;
+        try {
+            clContext = new SnmpContextv3Discovery(hostname, hostPort, bindAddr, typeSocket);
+            clContext = (SnmpContextv3Discovery) cloneParameters(clContext);
+        } catch (IOException exc) {
+            throw new CloneNotSupportedException("IOException "
+                    + exc.getMessage());
         }
+        return clContext;
     }
-    return pdu;
-}
-
-/**
- * Returns a clone of this SnmpContextv3.
- *
- * @exception CloneNotSupportedException Thrown when the constructor
- * generates an IOException
- */
-public Object clone() throws CloneNotSupportedException
-{
-    SnmpContextv3Discovery clContext = null;
-    try
-    {
-        clContext = new SnmpContextv3Discovery(hostname, hostPort, bindAddr, typeSocket);
-        clContext = (SnmpContextv3Discovery) cloneParameters(clContext);
-    }
-    catch (IOException exc)
-    {
-        throw new CloneNotSupportedException("IOException " 
-            + exc.getMessage());
-    }
-    return clContext;
-}
 
 }

@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -67,53 +67,45 @@ import uk.co.westhawk.snmp.event.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.4 $ $Date: 2006/01/17 17:33:04 $
  */
-class SnmpContextPoolItem 
-{
-    private static final String     version_id =
-        "@(#)$Id: SnmpContextPoolItem.java,v 3.4 2006/01/17 17:33:04 birgit Exp $ Copyright Westhawk Ltd";
+class SnmpContextPoolItem {
+    private static final String version_id = "@(#)$Id: SnmpContextPoolItem.java,v 3.4 2006/01/17 17:33:04 birgit Exp $ Copyright Westhawk Ltd";
 
     private SnmpContextBasisFace context = null;
     private int counter = 0;
 
-/**
- * Constructor.
- *
- * @param con The context
- */
-SnmpContextPoolItem(SnmpContextBasisFace con)
-{
-    context = con;
-    counter = 0;
-}
+    /**
+     * Constructor.
+     *
+     * @param con The context
+     */
+    SnmpContextPoolItem(SnmpContextBasisFace con) {
+        context = con;
+        counter = 0;
+    }
 
+    SnmpContextBasisFace getContext() {
+        return context;
+    }
 
-SnmpContextBasisFace getContext()
-{
-    return context;
-}
+    int getCounter() {
+        return counter;
+    }
 
-int getCounter()
-{
-    return counter;
-}
+    void setCounter(int i) {
+        counter = i;
+    }
 
-void setCounter(int i)
-{
-    counter = i;
-}
-
-/**
- * Returns a string representation of the object.
- * @return The string
- */
-public String toString()
-{
-    StringBuffer buffer = new StringBuffer("SnmpContextPoolItem[");
-    buffer.append("context=").append(context.toString());
-    buffer.append(", counter=").append(counter);
-    buffer.append("]");
-    return buffer.toString();
-}
-
+    /**
+     * Returns a string representation of the object.
+     * 
+     * @return The string
+     */
+    public String toString() {
+        StringBuffer buffer = new StringBuffer("SnmpContextPoolItem[");
+        buffer.append("context=").append(context.toString());
+        buffer.append(", counter=").append(counter);
+        buffer.append("]");
+        return buffer.toString();
+    }
 
 }

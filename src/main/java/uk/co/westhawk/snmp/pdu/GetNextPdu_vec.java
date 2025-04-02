@@ -46,7 +46,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -95,21 +95,18 @@ import java.lang.*;
  * @see OneGetNextPdu
  * @see varbind
  */
-public class GetNextPdu_vec extends GetNextPdu 
-{
-    private static final String     version_id =
-        "@(#)$Id: GetNextPdu_vec.java,v 3.13 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
+public class GetNextPdu_vec extends GetNextPdu {
+    private static final String version_id = "@(#)$Id: GetNextPdu_vec.java,v 3.13 2006/11/29 16:12:50 birgit Exp $ Copyright Westhawk Ltd";
 
     varbind[] value;
 
     /**
      * Constructor.
      *
-     * @param con The context of the request
+     * @param con   The context of the request
      * @param count The number of OIDs to be get
      */
-    public GetNextPdu_vec(SnmpContextBasisFace con, int count) 
-    {
+    public GetNextPdu_vec(SnmpContextBasisFace con, int count) {
         super(con);
         value = new varbind[count];
     }
@@ -118,32 +115,29 @@ public class GetNextPdu_vec extends GetNextPdu
      * The value of the request is set. This will be called by
      * Pdu.fillin().
      *
-     * @param n the index of the value
+     * @param n   the index of the value
      * @param var the value
-     * @see Pdu#new_value 
+     * @see Pdu#new_value
      */
-    protected void new_value(int n, varbind var) 
-    {
-        if (n <value.length) 
-        {
+    protected void new_value(int n, varbind var) {
+        if (n < value.length) {
             value[n] = var;
         }
     }
 
     /**
-     * This method notifies all observers. 
+     * This method notifies all observers.
      * This will be called by Pdu.fillin().
      * 
      * <p>
-     * If no exception occurred whilst receiving the response, the Object to the 
+     * If no exception occurred whilst receiving the response, the Object to the
      * update() method of the Observer will be an array of
      * varbinds, so they may contains any AsnObject type.
      * If an exception occurred, that exception will be passed as the Object
      * to the update() method.
      * </p>
      */
-    protected void tell_them()  
-    {
+    protected void tell_them() {
         notifyObservers(value);
     }
 }

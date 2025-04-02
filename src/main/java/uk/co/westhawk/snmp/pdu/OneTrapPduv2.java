@@ -32,7 +32,7 @@ package uk.co.westhawk.snmp.pdu;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -67,22 +67,17 @@ import uk.co.westhawk.snmp.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.9 $ $Date: 2006/03/23 14:54:09 $
  */
-public class OneTrapPduv2 extends TrapPduv2 
-{
-    private static final String     version_id =
-        "@(#)$Id: OneTrapPduv2.java,v 3.9 2006/03/23 14:54:09 birgit Exp $ Copyright Westhawk Ltd";
+public class OneTrapPduv2 extends TrapPduv2 {
+    private static final String version_id = "@(#)$Id: OneTrapPduv2.java,v 3.9 2006/03/23 14:54:09 birgit Exp $ Copyright Westhawk Ltd";
 
-
-/** 
- * Constructor.
- *
- * @param con The context (v2c, v3) of the OneTrapPduv2
- * @see SnmpContext
- */
-public OneTrapPduv2(SnmpContextBasisFace con) 
-{
-    super(con);
-}
-
+    /**
+     * Constructor.
+     *
+     * @param con The context (v2c, v3) of the OneTrapPduv2
+     * @see SnmpContext
+     */
+    public OneTrapPduv2(SnmpContextBasisFace con) {
+        super(con);
+    }
 
 }

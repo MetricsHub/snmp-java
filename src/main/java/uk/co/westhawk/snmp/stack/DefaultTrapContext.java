@@ -31,7 +31,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -113,74 +113,65 @@ import uk.co.westhawk.snmp.util.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.12 $ $Date: 2009/03/05 13:12:50 $
  */
-public class DefaultTrapContext extends ListeningContext
-{
-    private static final String     version_id =
-        "@(#)$Id: DefaultTrapContext.java,v 3.12 2009/03/05 13:12:50 birgita Exp $ Copyright Westhawk Ltd";
+public class DefaultTrapContext extends ListeningContext {
+    private static final String version_id = "@(#)$Id: DefaultTrapContext.java,v 3.12 2009/03/05 13:12:50 birgita Exp $ Copyright Westhawk Ltd";
 
     private static DefaultTrapContext current = null;
 
-/**
- * Constructor.
- * The Standard socket type will be used.
- *
- * @param port The local port where traps are received
- * @see SnmpContextBasisFace#STANDARD_SOCKET
- */
-protected DefaultTrapContext(int port) throws IOException
-{
-    this(port, SnmpContextBasisFace.STANDARD_SOCKET);
-}
-
-/**
- * Constructor.
- *
- * The typeSocket will indicate which type of socket to use. This way
- * different handlers can be provided.
- * It should be either STANDARD_SOCKET, TCP_SOCKET or a
- * fully qualified classname.
- *
- * @param port The local port where traps are received
- * @param typeSocketA The type of socket to use.
- *
- * @see SnmpContextBasisFace#STANDARD_SOCKET
- * @see SnmpContextBasisFace#TCP_SOCKET
- */
-protected DefaultTrapContext(int port, String typeSocketA)
-throws IOException
-{
-    super(port, typeSocketA);
-}
-
-
-/**
- * Returns the instance of DefaultTrapContext. It will create the
- * instance if it didn't exists.
- * See <a href=#note>the note</a> above.
- */
-public static synchronized DefaultTrapContext getInstance(int port) 
-throws IOException
-{
-    if (current == null)
-    {
-        current = new DefaultTrapContext(port);
+    /**
+     * Constructor.
+     * The Standard socket type will be used.
+     *
+     * @param port The local port where traps are received
+     * @see SnmpContextBasisFace#STANDARD_SOCKET
+     */
+    protected DefaultTrapContext(int port) throws IOException {
+        this(port, SnmpContextBasisFace.STANDARD_SOCKET);
     }
-    return current;
-}
 
-/**
- * Returns the instance of DefaultTrapContext. It will create the
- * instance if it didn't exists.
- * See <a href=#note>the note</a> above.
- */
-public static synchronized DefaultTrapContext getInstance(int port, String typeSocketA) 
-throws IOException
-{
-    if (current == null)
-    {
-        current = new DefaultTrapContext(port, typeSocketA);
+    /**
+     * Constructor.
+     *
+     * The typeSocket will indicate which type of socket to use. This way
+     * different handlers can be provided.
+     * It should be either STANDARD_SOCKET, TCP_SOCKET or a
+     * fully qualified classname.
+     *
+     * @param port        The local port where traps are received
+     * @param typeSocketA The type of socket to use.
+     *
+     * @see SnmpContextBasisFace#STANDARD_SOCKET
+     * @see SnmpContextBasisFace#TCP_SOCKET
+     */
+    protected DefaultTrapContext(int port, String typeSocketA)
+            throws IOException {
+        super(port, typeSocketA);
     }
-    return current;
-}
+
+    /**
+     * Returns the instance of DefaultTrapContext. It will create the
+     * instance if it didn't exists.
+     * See <a href=#note>the note</a> above.
+     */
+    public static synchronized DefaultTrapContext getInstance(int port)
+            throws IOException {
+        if (current == null) {
+            current = new DefaultTrapContext(port);
+        }
+        return current;
+    }
+
+    /**
+     * Returns the instance of DefaultTrapContext. It will create the
+     * instance if it didn't exists.
+     * See <a href=#note>the note</a> above.
+     */
+    public static synchronized DefaultTrapContext getInstance(int port, String typeSocketA)
+            throws IOException {
+        if (current == null) {
+            current = new DefaultTrapContext(port, typeSocketA);
+        }
+        return current;
+    }
 
 }

@@ -4,7 +4,7 @@ package org.bouncycastle.crypto;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,19 +26,18 @@ package org.bouncycastle.crypto;
 /**
  * Block cipher engines are expected to conform to this interface.
  */
-public interface BlockCipher
-{
+public interface BlockCipher {
     /**
      * Initialise the cipher.
      *
      * @param forEncryption if true the cipher is initialised for
-     *  encryption, if false for decryption.
-     * @param params the key and other data required by the cipher.
+     *                      encryption, if false for decryption.
+     * @param params        the key and other data required by the cipher.
      * @exception IllegalArgumentException if the params argument is
-     * inappropriate.
+     *                                     inappropriate.
      */
     public void init(boolean forEncryption, CipherParameters params)
-        throws IllegalArgumentException;
+            throws IllegalArgumentException;
 
     /**
      * Return the name of the algorithm the cipher implements.
@@ -58,17 +57,17 @@ public interface BlockCipher
      * Process one block of input from the array in and write it to
      * the out array.
      *
-     * @param in the array containing the input data.
-     * @param inOff offset into the in array the data starts at.
-     * @param out the array the output data will be copied into.
+     * @param in     the array containing the input data.
+     * @param inOff  offset into the in array the data starts at.
+     * @param out    the array the output data will be copied into.
      * @param outOff the offset into the out array the output will start at.
-     * @exception DataLengthException if there isn't enough data in in, or
-     * space in out.
+     * @exception DataLengthException   if there isn't enough data in in, or
+     *                                  space in out.
      * @exception IllegalStateException if the cipher isn't initialised.
      * @return the number of bytes processed and produced.
      */
     public int processBlock(byte[] in, int inOff, byte[] out, int outOff)
-        throws DataLengthException, IllegalStateException;
+            throws DataLengthException, IllegalStateException;
 
     /**
      * Reset the cipher. After resetting the cipher is in the same state

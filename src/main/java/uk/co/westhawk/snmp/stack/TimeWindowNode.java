@@ -29,7 +29,7 @@ package uk.co.westhawk.snmp.stack;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -55,10 +55,8 @@ package uk.co.westhawk.snmp.stack;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 3.10 $ $Date: 2006/01/17 17:43:54 $
  */
-class TimeWindowNode 
-{
-    private static final String     version_id =
-        "@(#)$Id: TimeWindowNode.java,v 3.10 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
+class TimeWindowNode {
+    private static final String version_id = "@(#)$Id: TimeWindowNode.java,v 3.10 2006/01/17 17:43:54 birgit Exp $ Copyright Westhawk Ltd";
 
     public final static int maxTime = 2147483647; // 2^31 -1
 
@@ -68,122 +66,111 @@ class TimeWindowNode
     private int snmpEngineTime = 0;
     private int latestReceivedEngineTime = 0;
 
-/**
- * Constructor.
- *
- * @param engId The engine ID
- */
-public TimeWindowNode(String engId)
-{
-    this(engId, 0, 0);
-}
-
-/**
- * Constructor.
- *
- * @param engId The engine ID
- * @param boots The engine boots
- * @param time The engine time
- */
-public TimeWindowNode(String engId, int boots, int time)
-{
-    snmpEngineId = engId;
-    snmpEngineBoots = boots;
-    snmpEngineTime = time;
-    latestReceivedEngineTime = time;
-}
-
-
-/**
- * Returns the snmp engine ID.
- *
- * @return the snmp engine ID
- */
-public String getSnmpEngineId()
-{
-    return snmpEngineId;
-}
-
-/**
- * Sets the SNMP engine boots 
- *
- * @param newSnmpEngineBoots The SNMP engine boots
- */
-public void setSnmpEngineBoots(int newSnmpEngineBoots)
-{
-    snmpEngineBoots = newSnmpEngineBoots;
-}
-
-/**
- * Returns the SNMP engine boots
- *
- * @return The SNMP engine boots
- */
-public int getSnmpEngineBoots()
-{
-    return snmpEngineBoots;
-}
-
-/**
- * Sets the SNMP engine time. It also sets the latest received engine
- * time.
- *
- * @param newSnmpEngineTime The SNMP engine time
- */
-public void setSnmpEngineTime(int newSnmpEngineTime)
-{
-    snmpEngineTime = newSnmpEngineTime;
-    latestReceivedEngineTime = newSnmpEngineTime;
-}
-
-/**
- * Returns the (estimated) SNMP engine time
- *
- * @return The SNMP engine time
- */
-public int getSnmpEngineTime()
-{
-    return snmpEngineTime;
-}
-
-/**
- * Increments the engine time. This mechanisme maintains the loosely
- * time synchronisation.
- */
-public synchronized void incrementSnmpEngineTime(int incr)
-{
-    snmpEngineTime += incr;
-    if (snmpEngineTime > maxTime)
-    {
-        snmpEngineBoots++;
-        snmpEngineTime -= maxTime;
+    /**
+     * Constructor.
+     *
+     * @param engId The engine ID
+     */
+    public TimeWindowNode(String engId) {
+        this(engId, 0, 0);
     }
-}
 
-/**
- * Returns the latest received engine time for an engine ID
- *
- * @return The latest received engine time
- */
-public int getLatestReceivedEngineTime()
-{
-    return latestReceivedEngineTime;
-}
+    /**
+     * Constructor.
+     *
+     * @param engId The engine ID
+     * @param boots The engine boots
+     * @param time  The engine time
+     */
+    public TimeWindowNode(String engId, int boots, int time) {
+        snmpEngineId = engId;
+        snmpEngineBoots = boots;
+        snmpEngineTime = time;
+        latestReceivedEngineTime = time;
+    }
 
-/**
- * Returns a string representation of the object.
- * @return The string
- */
-public String toString()
-{
-    StringBuffer buffer = new StringBuffer(this.getClass().getName());
-    buffer.append("[");
-    buffer.append("engineId=").append(snmpEngineId);
-    buffer.append(", engineBoots=").append(snmpEngineBoots);
-    buffer.append(", engineTime=").append(snmpEngineTime);
-    buffer.append(", latestReceivedEngineTime=").append(latestReceivedEngineTime);
-    buffer.append("]");
-    return buffer.toString();
-}
+    /**
+     * Returns the snmp engine ID.
+     *
+     * @return the snmp engine ID
+     */
+    public String getSnmpEngineId() {
+        return snmpEngineId;
+    }
+
+    /**
+     * Sets the SNMP engine boots
+     *
+     * @param newSnmpEngineBoots The SNMP engine boots
+     */
+    public void setSnmpEngineBoots(int newSnmpEngineBoots) {
+        snmpEngineBoots = newSnmpEngineBoots;
+    }
+
+    /**
+     * Returns the SNMP engine boots
+     *
+     * @return The SNMP engine boots
+     */
+    public int getSnmpEngineBoots() {
+        return snmpEngineBoots;
+    }
+
+    /**
+     * Sets the SNMP engine time. It also sets the latest received engine
+     * time.
+     *
+     * @param newSnmpEngineTime The SNMP engine time
+     */
+    public void setSnmpEngineTime(int newSnmpEngineTime) {
+        snmpEngineTime = newSnmpEngineTime;
+        latestReceivedEngineTime = newSnmpEngineTime;
+    }
+
+    /**
+     * Returns the (estimated) SNMP engine time
+     *
+     * @return The SNMP engine time
+     */
+    public int getSnmpEngineTime() {
+        return snmpEngineTime;
+    }
+
+    /**
+     * Increments the engine time. This mechanisme maintains the loosely
+     * time synchronisation.
+     */
+    public synchronized void incrementSnmpEngineTime(int incr) {
+        snmpEngineTime += incr;
+        if (snmpEngineTime > maxTime) {
+            snmpEngineBoots++;
+            snmpEngineTime -= maxTime;
+        }
+    }
+
+    /**
+     * Returns the latest received engine time for an engine ID
+     *
+     * @return The latest received engine time
+     */
+    public int getLatestReceivedEngineTime() {
+        return latestReceivedEngineTime;
+    }
+
+    /**
+     * Returns a string representation of the object.
+     * 
+     * @return The string
+     */
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(this.getClass().getName());
+        buffer.append("[");
+        buffer.append("engineId=").append(snmpEngineId);
+        buffer.append(", engineBoots=").append(snmpEngineBoots);
+        buffer.append(", engineTime=").append(snmpEngineTime);
+        buffer.append(", latestReceivedEngineTime=").append(latestReceivedEngineTime);
+        buffer.append("]");
+        return buffer.toString();
+    }
 
 }

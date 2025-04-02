@@ -30,7 +30,7 @@ package uk.co.westhawk.snmp.beans;
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SNMP Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software, Westhawk
+ * Copyright 2023 MetricsHub, Westhawk
  * ჻჻჻჻჻჻
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -100,17 +100,15 @@ import java.beans.*;
  * @author <a href="mailto:snmp@westhawk.co.uk">Birgit Arkesteijn</a>
  * @version $Revision: 1.12 $ $Date: 2006/01/17 17:43:53 $
  */
-public class NcdPerfDataBean extends SNMPBean 
-      implements PropertyChangeListener 
-{
-    private static final String     version_id =
-        "@(#)$Id: NcdPerfDataBean.java,v 1.12 2006/01/17 17:43:53 birgit Exp $ Copyright Westhawk Ltd";
+public class NcdPerfDataBean extends SNMPBean
+        implements PropertyChangeListener {
+    private static final String version_id = "@(#)$Id: NcdPerfDataBean.java,v 1.12 2006/01/17 17:43:53 birgit Exp $ Copyright Westhawk Ltd";
 
     /**
      * Used as propertyName when a propertyChangeEvent is fired because
      * the speed was updated
      */
-    public final static String speedPropertyName  = "Speed";
+    public final static String speedPropertyName = "Speed";
 
     /**
      * Used as propertyName when a propertyChangeEvent is fired because
@@ -122,16 +120,16 @@ public class NcdPerfDataBean extends SNMPBean
      * Used as propertyName when a propertyChangeEvent is fired because
      * the user name was updated
      */
-    public final static String userPropertyName   = "User";
+    public final static String userPropertyName = "User";
 
     /**
      * Used as propertyName when a propertyChangeEvent is fired because
      * a message was set
      */
-    public final static String messagePropertyName   = "Message";
+    public final static String messagePropertyName = "Message";
 
     /**
-     * Used as name when no one is logged in. 
+     * Used as name when no one is logged in.
      */
     public final static String noLogin = "no one is logged in";
 
@@ -140,9 +138,8 @@ public class NcdPerfDataBean extends SNMPBean
      */
     public final static String noName = "not available";
 
-
     private ethernet ethernetData;
-    private user  userData;
+    private user userData;
     private memory memoryData;
 
     private Date lastUpdateDate = null;
@@ -152,190 +149,163 @@ public class NcdPerfDataBean extends SNMPBean
     private long memoryAvail = -1;
     private String userName = "";
 
-/**
- * The default constructor.
- */
-public NcdPerfDataBean() 
-{
-}
-
-/**
- * Returns the speed (bits per second) of the ethernet card interface.
- * @return the speed (b/s)
- */
-public long getSpeed()
-{
-    return speed;
-}
-
-/**
- * Returns the amount of RAM memory in bytes which is
- * currently available.
- *
- * @return the memory in bytes
- */
-public long getMemory()
-{
-    return memoryAvail;
-}
-
-/**
- * Returns the login name of the user that is logged in.
- *
- * @return the user name 
- * @see #noLogin
- * @see #noName
- */
-public String getUserName()
-{
-    return userName;
-}
-
-/**
- * Returns the update interval. This is the interval that the
- * bean will sleep between 2 requests.
- *
- * @return the update interval in msec
- * @see #setUpdateInterval(int)
- * @see #setUpdateInterval(String)
- */
-public int getUpdateInterval()
-{
-    return interval;
-}
-
-/**
- * Sets the update interval. This is the interval that the
- * bean will sleep between 2 requests.
- * The default will be <em>3000</em> (= 3 sec).
- *
- * @param i the interval in msec
- * @see #getUpdateInterval
- * @see #setUpdateInterval(String)
- */
-public void setUpdateInterval(int i)
-{
-    if (interval != i)
-    {
-        interval = i;
+    /**
+     * The default constructor.
+     */
+    public NcdPerfDataBean() {
     }
-}
 
-/**
- * Sets the update interval as String. 
- *
- * @param i the interval in msec as String
- * @see #getUpdateInterval
- * @see #setUpdateInterval(int)
- */
-public void setUpdateInterval(String i)
-{
-    int iNo;
-    try
-    {
-        iNo = Integer.valueOf(i.trim()).intValue();
-        setUpdateInterval(iNo);
+    /**
+     * Returns the speed (bits per second) of the ethernet card interface.
+     * 
+     * @return the speed (b/s)
+     */
+    public long getSpeed() {
+        return speed;
     }
-    catch (NumberFormatException exp)
-    {
+
+    /**
+     * Returns the amount of RAM memory in bytes which is
+     * currently available.
+     *
+     * @return the memory in bytes
+     */
+    public long getMemory() {
+        return memoryAvail;
     }
-}
 
-/**
- * Returns the date of the moment when this bean was last updated.
- * This might be null when the first time the update was not finished.
- *
- * @return the last update date
- */
-public Date getLastUpdateDate()
-{
-    return lastUpdateDate;
-}
-
-/**
- * This method starts sending the SNMP request. All properties should be
- * set before this method is called.
- *
- * The actual sending will take place in the run method.
- * It makes a new snmp context and initialises all variables before
- * starting.
- */
-public void action() 
-{
-    if (isHostPortReachable())
-    {
-        lastUpdateDate = new Date();
-
-        if (ethernetData != null)
-        {
-            ethernetData.setRunning(false);
-        }
-        if (userData != null)
-        {
-            userData.setRunning(false);
-        }
-        if (memoryData != null)
-        {
-            memoryData.setRunning(false);
-        }
-        ethernetData = new ethernet(host, port, community, interval, context);
-        userData = new user(host, port, community, interval, context);
-        memoryData = new memory(host, port, community, interval, context);
-
-        ethernetData.addPropertyChangeListener(this);
-        userData.addPropertyChangeListener(this);
-        memoryData.addPropertyChangeListener(this);
+    /**
+     * Returns the login name of the user that is logged in.
+     *
+     * @return the user name
+     * @see #noLogin
+     * @see #noName
+     */
+    public String getUserName() {
+        return userName;
     }
-}
 
-protected void setMessage(String st)
-{
-    message = st;
-    firePropertyChange (NcdPerfDataBean.messagePropertyName, 
-        null, message);
-}
-
-/**
- * This method is called when a new value of the speed, memory, user or 
- * message is available. It will propagate this event to any listeners.
- *
- * @see #speedPropertyName
- * @see #memoryPropertyName
- * @see #userPropertyName
- * @see #messagePropertyName
- */
-public void propertyChange(PropertyChangeEvent e)
-{
-    Object src = e.getSource();
-    Object oldV = e.getOldValue();
-    Object newV= e.getNewValue();
-    String propName = e.getPropertyName();
-
-    if (propName.equals(messagePropertyName))
-    {
-        setMessage((String) newV);
+    /**
+     * Returns the update interval. This is the interval that the
+     * bean will sleep between 2 requests.
+     *
+     * @return the update interval in msec
+     * @see #setUpdateInterval(int)
+     * @see #setUpdateInterval(String)
+     */
+    public int getUpdateInterval() {
+        return interval;
     }
-    else
-    {
-        if (src == ethernetData)
-        {
-            speed = ((Long) newV).longValue();
-        }
-        else if (src == userData)
-        {
-            userName = (String) newV;
-        }
-        else if (src == memoryData)
-        {
-            memoryAvail = ((Long) newV).longValue();
-        }
 
-        firePropertyChange (e.getPropertyName(), oldV, newV);
+    /**
+     * Sets the update interval. This is the interval that the
+     * bean will sleep between 2 requests.
+     * The default will be <em>3000</em> (= 3 sec).
+     *
+     * @param i the interval in msec
+     * @see #getUpdateInterval
+     * @see #setUpdateInterval(String)
+     */
+    public void setUpdateInterval(int i) {
+        if (interval != i) {
+            interval = i;
+        }
     }
-}
+
+    /**
+     * Sets the update interval as String.
+     *
+     * @param i the interval in msec as String
+     * @see #getUpdateInterval
+     * @see #setUpdateInterval(int)
+     */
+    public void setUpdateInterval(String i) {
+        int iNo;
+        try {
+            iNo = Integer.valueOf(i.trim()).intValue();
+            setUpdateInterval(iNo);
+        } catch (NumberFormatException exp) {
+        }
+    }
+
+    /**
+     * Returns the date of the moment when this bean was last updated.
+     * This might be null when the first time the update was not finished.
+     *
+     * @return the last update date
+     */
+    public Date getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
+    /**
+     * This method starts sending the SNMP request. All properties should be
+     * set before this method is called.
+     *
+     * The actual sending will take place in the run method.
+     * It makes a new snmp context and initialises all variables before
+     * starting.
+     */
+    public void action() {
+        if (isHostPortReachable()) {
+            lastUpdateDate = new Date();
+
+            if (ethernetData != null) {
+                ethernetData.setRunning(false);
+            }
+            if (userData != null) {
+                userData.setRunning(false);
+            }
+            if (memoryData != null) {
+                memoryData.setRunning(false);
+            }
+            ethernetData = new ethernet(host, port, community, interval, context);
+            userData = new user(host, port, community, interval, context);
+            memoryData = new memory(host, port, community, interval, context);
+
+            ethernetData.addPropertyChangeListener(this);
+            userData.addPropertyChangeListener(this);
+            memoryData.addPropertyChangeListener(this);
+        }
+    }
+
+    protected void setMessage(String st) {
+        message = st;
+        firePropertyChange(NcdPerfDataBean.messagePropertyName,
+                null, message);
+    }
+
+    /**
+     * This method is called when a new value of the speed, memory, user or
+     * message is available. It will propagate this event to any listeners.
+     *
+     * @see #speedPropertyName
+     * @see #memoryPropertyName
+     * @see #userPropertyName
+     * @see #messagePropertyName
+     */
+    public void propertyChange(PropertyChangeEvent e) {
+        Object src = e.getSource();
+        Object oldV = e.getOldValue();
+        Object newV = e.getNewValue();
+        String propName = e.getPropertyName();
+
+        if (propName.equals(messagePropertyName)) {
+            setMessage((String) newV);
+        } else {
+            if (src == ethernetData) {
+                speed = ((Long) newV).longValue();
+            } else if (src == userData) {
+                userName = (String) newV;
+            } else if (src == memoryData) {
+                memoryAvail = ((Long) newV).longValue();
+            }
+
+            firePropertyChange(e.getPropertyName(), oldV, newV);
+        }
+    }
 
 }
-
 
 /**
  * <p>
@@ -347,74 +317,59 @@ public void propertyChange(PropertyChangeEvent e)
  * @see ethernet
  * @see memory
  */
-abstract class ncdPart extends SNMPRunBean 
-{
+abstract class ncdPart extends SNMPRunBean {
     Thread me;
     protected boolean isPduInFlight;
 
-public abstract void doPdu() 
-throws PduException, IOException;
+    public abstract void doPdu()
+            throws PduException, IOException;
 
-public ncdPart (String h, int p, String c, int i, SnmpContext con)
-{
-    // reuse the context of the NcdPrefData class, so do not call
-    // isHostPortReachable() !
-    context = con;
-    setHost(h);
-    setPort(p);
-    setCommunityName(c);
-    setUpdateInterval(i);
+    public ncdPart(String h, int p, String c, int i, SnmpContext con) {
+        // reuse the context of the NcdPrefData class, so do not call
+        // isHostPortReachable() !
+        context = con;
+        setHost(h);
+        setPort(p);
+        setCommunityName(c);
+        setUpdateInterval(i);
 
-    action();
-}
+        action();
+    }
 
-protected void setMessage(String st)
-{
-    message = st;
-    firePropertyChange (NcdPerfDataBean.messagePropertyName, 
-        null, message);
-}
+    protected void setMessage(String st) {
+        message = st;
+        firePropertyChange(NcdPerfDataBean.messagePropertyName,
+                null, message);
+    }
 
-public void action()
-{
-    setRunning(true);
-}
+    public void action() {
+        setRunning(true);
+    }
 
-/**
- *
- * @see SNMPRunBean#isRunning()
- */
-public void run()
-{
-    while (context != null && isRunning())
-    {
-        if (isPduInFlight == false)
-        {
-            isPduInFlight = true;
-            try
-            {
-                doPdu();
+    /**
+     *
+     * @see SNMPRunBean#isRunning()
+     */
+    public void run() {
+        while (context != null && isRunning()) {
+            if (isPduInFlight == false) {
+                isPduInFlight = true;
+                try {
+                    doPdu();
+                } catch (PduException exc) {
+                    System.out.println("PduException " + exc.getMessage());
+                } catch (IOException exc) {
+                    System.out.println("IOException " + exc.getMessage());
+                }
             }
-            catch (PduException exc)
-            {
-                System.out.println("PduException " + exc.getMessage());
-            }
-            catch (IOException exc)
-            {
-                System.out.println("IOException " + exc.getMessage());
-            }
-        }
 
-        try
-        {
-            Thread.sleep(interval);
-        } 
-        catch (InterruptedException ix)
-        {
-            ;
+            try {
+                Thread.sleep(interval);
+            } catch (InterruptedException ix) {
+                ;
+            }
         }
     }
-}
 
 }
 
@@ -431,23 +386,22 @@ public void run()
  *
  * <p>
  * If the ethernet card is not found, this class assumes that it is not
- * available at all, and will not try again. 
+ * available at all, and will not try again.
  * </p>
  *
  * @see user
  * @see memory
  */
-class ethernet extends ncdPart implements Observer
-{
+class ethernet extends ncdPart implements Observer {
     private final static int ethernetType = 6;
     private final static int statusUp = 1;
 
-    private final static String sysUpTime =    "1.3.6.1.2.1.1.3.0";
-    private final static String ifIndex =      "1.3.6.1.2.1.2.2.1.1";
-    private final static String ifType =       "1.3.6.1.2.1.2.2.1.3";
+    private final static String sysUpTime = "1.3.6.1.2.1.1.3.0";
+    private final static String ifIndex = "1.3.6.1.2.1.2.2.1.1";
+    private final static String ifType = "1.3.6.1.2.1.2.2.1.3";
     private final static String ifOperStatus = "1.3.6.1.2.1.2.2.1.8";
-    private final static String ifInOctets =   "1.3.6.1.2.1.2.2.1.10";
-    private final static String ifOutOctets =  "1.3.6.1.2.1.2.2.1.16";
+    private final static String ifInOctets = "1.3.6.1.2.1.2.2.1.10";
+    private final static String ifOutOctets = "1.3.6.1.2.1.2.2.1.16";
 
     private long speed = -1;
     private long prevSpeed = -1;
@@ -463,150 +417,120 @@ class ethernet extends ncdPart implements Observer
     private boolean first = true;
     private boolean foundEthernet = false;
 
-public ethernet (String h, int p, String c, int i, SnmpContext con)
-{
-    super(h, p, c, i, con);
-    first = true;
-    foundEthernet = false;
+    public ethernet(String h, int p, String c, int i, SnmpContext con) {
+        super(h, p, c, i, con);
+        first = true;
+        foundEthernet = false;
 
-    speed = -1;
-    prevSpeed = -1;
-    prevSys = -1;
-    prevOper = -1;
-    prevInO = -1;
-    prevOutO = -1;
-}
-
-public long getSpeed()
-{
-    return speed;
-}
-
-public void doPdu() throws PduException, IOException
-{
-    if (first)
-    {
-        // first go looking which interface is the ethernet one
-        typePdu = new GetNextPdu_vec(context, 2);
-        typePdu.addObserver(this);
-        typePdu.addOid(ifIndex);
-        typePdu.addOid(ifType);
-        typePdu.send();
-
-        first = false;
+        speed = -1;
+        prevSpeed = -1;
+        prevSys = -1;
+        prevOper = -1;
+        prevInO = -1;
+        prevOutO = -1;
     }
-    else if (foundEthernet)
-    {
-        ethernetPdu = new GetPdu_vec(context, 5);
-        ethernetPdu.addObserver(this);
-        ethernetPdu.addOid(sysUpTime);
-        ethernetPdu.addOid(ifType + "." + index);
-        ethernetPdu.addOid(ifOperStatus + "." + index);
-        ethernetPdu.addOid(ifInOctets + "." + index);
-        ethernetPdu.addOid(ifOutOctets + "." + index);
-        ethernetPdu.send();
+
+    public long getSpeed() {
+        return speed;
     }
-}
 
-public void update(Observable obs, Object ov)
-{
-    varbind [] vars;
- 
-    if (obs == typePdu)
-    {
-        if (typePdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR)
-        {
-            vars = (varbind[]) ov;
-            if (vars[0].getOid().toString().startsWith(ifIndex))
-            { 
-                int i = ((AsnInteger) vars[0].getValue()).getValue();
-                int t = ((AsnInteger) vars[1].getValue()).getValue();
+    public void doPdu() throws PduException, IOException {
+        if (first) {
+            // first go looking which interface is the ethernet one
+            typePdu = new GetNextPdu_vec(context, 2);
+            typePdu.addObserver(this);
+            typePdu.addOid(ifIndex);
+            typePdu.addOid(ifType);
+            typePdu.send();
 
-                if (t == ethernetType)
-                {
-                    // found it!
-                    index = i;
-                    foundEthernet = true;
-                    isPduInFlight = false;
+            first = false;
+        } else if (foundEthernet) {
+            ethernetPdu = new GetPdu_vec(context, 5);
+            ethernetPdu.addObserver(this);
+            ethernetPdu.addOid(sysUpTime);
+            ethernetPdu.addOid(ifType + "." + index);
+            ethernetPdu.addOid(ifOperStatus + "." + index);
+            ethernetPdu.addOid(ifInOctets + "." + index);
+            ethernetPdu.addOid(ifOutOctets + "." + index);
+            ethernetPdu.send();
+        }
+    }
+
+    public void update(Observable obs, Object ov) {
+        varbind[] vars;
+
+        if (obs == typePdu) {
+            if (typePdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR) {
+                vars = (varbind[]) ov;
+                if (vars[0].getOid().toString().startsWith(ifIndex)) {
+                    int i = ((AsnInteger) vars[0].getValue()).getValue();
+                    int t = ((AsnInteger) vars[1].getValue()).getValue();
+
+                    if (t == ethernetType) {
+                        // found it!
+                        index = i;
+                        foundEthernet = true;
+                        isPduInFlight = false;
+                    } else {
+                        // not found it, ask for the next one
+                        typePdu = new GetNextPdu_vec(context, 2);
+                        typePdu.addObserver(this);
+                        typePdu.addOid(vars[0]);
+                        typePdu.addOid(vars[1]);
+                        try {
+                            typePdu.send();
+                        } catch (PduException exc) {
+                            System.out.println("PduException " + exc.getMessage());
+                        } catch (IOException exc) {
+                            System.out.println("IOException " + exc.getMessage());
+                        }
+                    }
+                } else {
+                    setMessage("Ethernet interface not available!");
                 }
-                else
-                {
-                    // not found it, ask for the next one
-                    typePdu = new GetNextPdu_vec(context, 2);
-                    typePdu.addObserver(this);
-                    typePdu.addOid(vars[0]);
-                    typePdu.addOid(vars[1]);
-                    try
-                    {
-                        typePdu.send();
-                    }
-                    catch (PduException exc)
-                    {
-                        System.out.println("PduException " + exc.getMessage());
-                    }
-                    catch (IOException exc)
-                    {
-                        System.out.println("IOException " + exc.getMessage());
-                    }
-                }
-            }
-            else
-            {
+            } else {
                 setMessage("Ethernet interface not available!");
             }
-        }
-        else
-        {
-            setMessage("Ethernet interface not available!");
-        }
-    }
-    else
-    {
-        speed = -1;
-        int oper = -1;
-        if (ethernetPdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR)
-        {
-            vars = (varbind[]) ov;
+        } else {
+            speed = -1;
+            int oper = -1;
+            if (ethernetPdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR) {
+                vars = (varbind[]) ov;
 
-            long sys  = ((AsnUnsInteger) vars[0].getValue()).getValue();
-            int t     = ((AsnInteger)    vars[1].getValue()).getValue();
-                oper  = ((AsnInteger)    vars[2].getValue()).getValue();
-            long inO  = ((AsnUnsInteger) vars[3].getValue()).getValue();
-            long outO = ((AsnUnsInteger) vars[4].getValue()).getValue();
+                long sys = ((AsnUnsInteger) vars[0].getValue()).getValue();
+                int t = ((AsnInteger) vars[1].getValue()).getValue();
+                oper = ((AsnInteger) vars[2].getValue()).getValue();
+                long inO = ((AsnUnsInteger) vars[3].getValue()).getValue();
+                long outO = ((AsnUnsInteger) vars[4].getValue()).getValue();
 
-            if (t == ethernetType)
-            {
-                if (oper == statusUp && prevOper == statusUp)
-                {
-                    long tdif = (sys - prevSys);
-                    if (tdif != 0)
-                    {
-                        speed = ((inO - prevInO) + (outO - prevOutO)) 
+                if (t == ethernetType) {
+                    if (oper == statusUp && prevOper == statusUp) {
+                        long tdif = (sys - prevSys);
+                        if (tdif != 0) {
+                            speed = ((inO - prevInO) + (outO - prevOutO))
                                     / tdif * 100;
 
-                        firePropertyChange (NcdPerfDataBean.speedPropertyName, 
-                            new Long(prevSpeed), 
-                            new Long(speed));
+                            firePropertyChange(NcdPerfDataBean.speedPropertyName,
+                                    new Long(prevSpeed),
+                                    new Long(speed));
+                        }
                     }
+
+                    prevSys = sys;
+                    prevInO = inO;
+                    prevOutO = outO;
+                } else {
+                    // the index has changed, start searching again
+                    first = true;
+                    foundEthernet = false;
                 }
+            }
+            prevSpeed = speed;
+            prevOper = oper;
 
-                prevSys = sys;
-                prevInO = inO;
-                prevOutO = outO;
-            }
-            else
-            {
-                // the index has changed, start searching again
-                first = true;
-                foundEthernet = false;
-            }
+            isPduInFlight = false;
         }
-        prevSpeed = speed;
-        prevOper = oper;
-
-        isPduInFlight = false;
     }
-}
 
 }
 
@@ -616,8 +540,8 @@ public void update(Observable obs, Object ov)
  * </p>
  *
  * <p>
- * The first time it will search the NCD environment table to find the 
- * entry describing the environment variable USER. After it has been found, 
+ * The first time it will search the NCD environment table to find the
+ * entry describing the environment variable USER. After it has been found,
  * it will ask for the information to calculate the speed.
  * </p>
  *
@@ -635,16 +559,12 @@ public void update(Observable obs, Object ov)
  * @see ethernet
  * @see memory
  */
-class user extends ncdPart implements Observer
-{
+class user extends ncdPart implements Observer {
     private final static String USER = "USER";
 
-    private final static String ncdPrefEnvVarTableIndex =
-                  "1.3.6.1.4.1.82.2.3.15.54.1.1";
-    private final static String ncdPrefEnvVarTableName =
-                  "1.3.6.1.4.1.82.2.3.15.54.1.2";
-    private final static String ncdPrefEnvVarTableValue =
-                  "1.3.6.1.4.1.82.2.3.15.54.1.3";
+    private final static String ncdPrefEnvVarTableIndex = "1.3.6.1.4.1.82.2.3.15.54.1.1";
+    private final static String ncdPrefEnvVarTableName = "1.3.6.1.4.1.82.2.3.15.54.1.2";
+    private final static String ncdPrefEnvVarTableValue = "1.3.6.1.4.1.82.2.3.15.54.1.3";
 
     private int index = -1;
     private String name = "";
@@ -654,168 +574,133 @@ class user extends ncdPart implements Observer
     GetPdu_vec userPdu;
 
     private boolean first = true;
-    private boolean isNcd = false; 
+    private boolean isNcd = false;
     private boolean foundUser = false;
 
-public user (String h, int p, String c, int i, SnmpContext con)
-{
-    super(h, p, c, i, con);
-    first = true;
-    isNcd = false;
-    foundUser = false;
+    public user(String h, int p, String c, int i, SnmpContext con) {
+        super(h, p, c, i, con);
+        first = true;
+        isNcd = false;
+        foundUser = false;
 
-    userPdu = null;
-    name = "";
-    prevName = "";
-}
-
-public String getUserName()
-{
-    return name;
-}
-
-public void doPdu() throws PduException, IOException
-{
-    if (first
-          ||
-        (isNcd && !foundUser))
-    {
-        // first go looking which interface is the ethernet one
-        namePdu = new GetNextPdu_vec(context, 3);
-        namePdu.addObserver(this);
-        namePdu.addOid(ncdPrefEnvVarTableIndex);
-        namePdu.addOid(ncdPrefEnvVarTableName);
-        namePdu.addOid(ncdPrefEnvVarTableValue);
-        namePdu.send();
-
-        first = false;
+        userPdu = null;
+        name = "";
+        prevName = "";
     }
-    else if (foundUser)
-    {
-        userPdu = new GetPdu_vec(context, 3);
-        userPdu.addObserver(this);
-        userPdu.addOid(ncdPrefEnvVarTableIndex + "." + index);
-        userPdu.addOid(ncdPrefEnvVarTableName + "." + index);
-        userPdu.addOid(ncdPrefEnvVarTableValue + "." + index);
-        userPdu.send();
+
+    public String getUserName() {
+        return name;
     }
-}
 
-public void update(Observable obs, Object ov)
-{
-    varbind [] vars;
- 
-    if (obs == namePdu)
-    {
+    public void doPdu() throws PduException, IOException {
+        if (first
+                ||
+                (isNcd && !foundUser)) {
+            // first go looking which interface is the ethernet one
+            namePdu = new GetNextPdu_vec(context, 3);
+            namePdu.addObserver(this);
+            namePdu.addOid(ncdPrefEnvVarTableIndex);
+            namePdu.addOid(ncdPrefEnvVarTableName);
+            namePdu.addOid(ncdPrefEnvVarTableValue);
+            namePdu.send();
 
-        if (namePdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR)
-        {
-            vars = (varbind[]) ov;
-            if (vars[0].getOid().toString().startsWith(ncdPrefEnvVarTableIndex))
-            {
-                // as soon as one response concerns the NCD environment
-                // table, I assume it concerns a NCD machine.
-                isNcd = true;
+            first = false;
+        } else if (foundUser) {
+            userPdu = new GetPdu_vec(context, 3);
+            userPdu.addObserver(this);
+            userPdu.addOid(ncdPrefEnvVarTableIndex + "." + index);
+            userPdu.addOid(ncdPrefEnvVarTableName + "." + index);
+            userPdu.addOid(ncdPrefEnvVarTableValue + "." + index);
+            userPdu.send();
+        }
+    }
 
-                int i   = ((AsnInteger) vars[0].getValue()).getValue();
-                String n = ((AsnOctets) vars[1].getValue()).getValue();
-                String v = "";
-                if (vars[2].getValue() instanceof AsnOctets)
-                {
-                    v = ((AsnOctets) vars[2].getValue()).getValue();
-                }
+    public void update(Observable obs, Object ov) {
+        varbind[] vars;
 
-                if (n.equals(USER))
-                {
-                    // found it!
-                    index = i;
-                    foundUser = true;
-                    name = v;
+        if (obs == namePdu) {
+
+            if (namePdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR) {
+                vars = (varbind[]) ov;
+                if (vars[0].getOid().toString().startsWith(ncdPrefEnvVarTableIndex)) {
+                    // as soon as one response concerns the NCD environment
+                    // table, I assume it concerns a NCD machine.
+                    isNcd = true;
+
+                    int i = ((AsnInteger) vars[0].getValue()).getValue();
+                    String n = ((AsnOctets) vars[1].getValue()).getValue();
+                    String v = "";
+                    if (vars[2].getValue() instanceof AsnOctets) {
+                        v = ((AsnOctets) vars[2].getValue()).getValue();
+                    }
+
+                    if (n.equals(USER)) {
+                        // found it!
+                        index = i;
+                        foundUser = true;
+                        name = v;
+                        isPduInFlight = false;
+                    } else {
+                        // not found it, ask for the next one
+                        namePdu = new GetNextPdu_vec(context, 3);
+                        namePdu.addObserver(this);
+                        namePdu.addOid(vars[0]);
+                        namePdu.addOid(vars[1]);
+                        namePdu.addOid(vars[2]);
+                        try {
+                            namePdu.send();
+                        } catch (PduException exc) {
+                            System.out.println("PduException " + exc.getMessage());
+                        } catch (IOException exc) {
+                            System.out.println("IOException " + exc.getMessage());
+                        }
+                    }
+                } else {
+                    if (isNcd) {
+                        name = NcdPerfDataBean.noLogin;
+                    } else {
+                        name = NcdPerfDataBean.noName;
+                    }
+                    if (!name.equals(prevName)) {
+                        firePropertyChange(NcdPerfDataBean.userPropertyName,
+                                prevName, name);
+                    }
+
+                    prevName = name;
                     isPduInFlight = false;
                 }
-                else
-                {
-                    // not found it, ask for the next one
-                    namePdu = new GetNextPdu_vec(context, 3);
-                    namePdu.addObserver(this);
-                    namePdu.addOid(vars[0]);
-                    namePdu.addOid(vars[1]);
-                    namePdu.addOid(vars[2]);
-                    try
-                    {
-                        namePdu.send();
-                    }
-                    catch (PduException exc)
-                    {
-                        System.out.println("PduException " + exc.getMessage());
-                    }
-                    catch (IOException exc)
-                    {
-                        System.out.println("IOException " + exc.getMessage());
-                    }
-                }
-            }
-            else
-            {
-                if (isNcd)
-                {
-                    name = NcdPerfDataBean.noLogin;
-                }
-                else
-                {
-                    name = NcdPerfDataBean.noName;
-                }
-                if (!name.equals(prevName))
-                {
-                    firePropertyChange (NcdPerfDataBean.userPropertyName,
-                                prevName, name);
-                }
-
+            } else {
                 prevName = name;
                 isPduInFlight = false;
             }
-        }
-        else
-        {
+        } else {
+            name = "";
+            if (userPdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR) {
+                vars = (varbind[]) ov;
+
+                int i = ((AsnInteger) vars[0].getValue()).getValue();
+                String n = ((AsnOctets) vars[1].getValue()).getValue();
+                String v = "";
+                if (vars[2].getValue() instanceof AsnOctets) {
+                    v = ((AsnOctets) vars[2].getValue()).getValue();
+                }
+
+                name = v;
+                if (!name.equals(prevName)) {
+                    firePropertyChange(NcdPerfDataBean.userPropertyName,
+                            prevName, name);
+                }
+
+            } else {
+                first = true;
+                isNcd = true;
+                foundUser = false;
+            }
+
             prevName = name;
             isPduInFlight = false;
         }
     }
-    else
-    {
-        name = "";
-        if (userPdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR)
-        {
-            vars = (varbind[]) ov;
-
-            int i    = ((AsnInteger) vars[0].getValue()).getValue();
-            String n  = ((AsnOctets) vars[1].getValue()).getValue();
-            String v = "";
-            if (vars[2].getValue() instanceof AsnOctets)
-            {
-                v = ((AsnOctets) vars[2].getValue()).getValue();
-            }
-
-
-            name = v;
-            if (!name.equals(prevName))
-            {
-                firePropertyChange (NcdPerfDataBean.userPropertyName,
-                        prevName, name);
-            }
-
-        }
-        else
-        {
-            first = true;
-            isNcd = true;
-            foundUser = false;
-        }
-
-        prevName = name;
-        isPduInFlight = false;
-    }
-}
 
 }
 
@@ -832,10 +717,8 @@ public void update(Observable obs, Object ov)
  * @see ethernet
  * @see user
  */
-class memory extends ncdPart implements Observer
-{
-    private final static String ncdSysMemAvail = 
-                  "1.3.6.1.4.1.82.2.1.1.2.0";
+class memory extends ncdPart implements Observer {
+    private final static String ncdSysMemAvail = "1.3.6.1.4.1.82.2.1.1.2.0";
 
     GetPdu memoryPdu;
     private long memory = -1;
@@ -844,54 +727,45 @@ class memory extends ncdPart implements Observer
     private boolean first = true;
     private boolean isAvailable = false;
 
-public memory (String h, int p, String c, int i, SnmpContext con)
-{
-    super(h, p, c, i, con);
+    public memory(String h, int p, String c, int i, SnmpContext con) {
+        super(h, p, c, i, con);
 
-    first = true;
-    isAvailable = false;
-}
-
-public long getMemory()
-{
-    return memory;
-}
-
-public void doPdu() throws PduException, IOException
-{
-    if (first || isAvailable)
-    {
-        memoryPdu = new GetPdu(context);
-        memoryPdu.addOid(ncdSysMemAvail);
-        memoryPdu.addObserver(this);
-        first = false;
+        first = true;
+        isAvailable = false;
     }
-}
 
-public void update(Observable obs, Object ov)
-{
-    varbind var;
- 
-    memory = -1;
-    if (memoryPdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR)
-    {
-        var = (varbind) ov;
-
-        memory = ((AsnUnsInteger) var.getValue()).getValue();
-
-        firePropertyChange (NcdPerfDataBean.memoryPropertyName, 
-              new Long(prevMemory), 
-              new Long(memory));
-
-        isAvailable = true;
+    public long getMemory() {
+        return memory;
     }
-    else
-    {
-        setMessage("Memory data not available!");
+
+    public void doPdu() throws PduException, IOException {
+        if (first || isAvailable) {
+            memoryPdu = new GetPdu(context);
+            memoryPdu.addOid(ncdSysMemAvail);
+            memoryPdu.addObserver(this);
+            first = false;
+        }
     }
-    prevMemory = memory;
-    isPduInFlight = false;
-}
+
+    public void update(Observable obs, Object ov) {
+        varbind var;
+
+        memory = -1;
+        if (memoryPdu.getErrorStatus() == AsnObject.SNMP_ERR_NOERROR) {
+            var = (varbind) ov;
+
+            memory = ((AsnUnsInteger) var.getValue()).getValue();
+
+            firePropertyChange(NcdPerfDataBean.memoryPropertyName,
+                    new Long(prevMemory),
+                    new Long(memory));
+
+            isAvailable = true;
+        } else {
+            setMessage("Memory data not available!");
+        }
+        prevMemory = memory;
+        isPduInFlight = false;
+    }
 
 }
-
