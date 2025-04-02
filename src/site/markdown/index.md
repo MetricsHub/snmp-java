@@ -14,7 +14,7 @@ Add SNMP in the list of dependencies in your [Maven **pom.xml**](https://maven.a
 	<!-- [...] -->
 	<dependency>
 		<groupId>org.metricshub</groupId>
-		<artifactId>snmp</artifactId>
+		<artifactId>snmp-java</artifactId>
 		<version>${project.version}</version>
 	</dependency>
 </dependencies>
