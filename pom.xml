@@ -7,7 +7,7 @@
 		<version>2</version>
 	</parent>
 
-	<artifactId>snmp</artifactId>
+	<artifactId>snmp-java</artifactId>
 	<version>2.1.00-SNAPSHOT</version>
 
 	<name>SNMP Java Client</name>
