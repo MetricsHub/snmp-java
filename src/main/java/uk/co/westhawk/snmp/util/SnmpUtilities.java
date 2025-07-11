@@ -605,11 +605,11 @@ public class SnmpUtilities extends Object {
     public final static byte[] getAESKey(byte[] secretPrivacyKey)
         throws PduException {
             int len = secretPrivacyKey.length;
-            if (len == AES128_KEY_LENGTH || len == AES192_KEY_LENGTH || len == AES256_KEY_LENGTH) {
-                return secretPrivacyKey;
-            } else {
+            if (len != AES128_KEY_LENGTH && len != AES192_KEY_LENGTH && len != AES256_KEY_LENGTH) {
                 throw new PduException("Invalid AES key length: expected 16, 24, or 32 bytes but got " + len);
             }
+
+            return secretPrivacyKey;
         }
 
     /**
