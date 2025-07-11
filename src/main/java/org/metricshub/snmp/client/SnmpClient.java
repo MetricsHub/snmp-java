@@ -33,8 +33,6 @@ import uk.co.westhawk.snmp.stack.SnmpContextv2c;
 import uk.co.westhawk.snmp.stack.SnmpContextv3;
 import uk.co.westhawk.snmp.stack.SnmpContextv3Face;
 import uk.co.westhawk.snmp.stack.varbind;
-import uk.co.westhawk.snmp.util.SnmpUtilities;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
