@@ -1146,25 +1146,25 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
      * @param privacyProtocol        The privacyProtocol.
      * @return The generated privacy key.
      */
-    protected byte[] generatePrivacyKey(String engineId, int authenticationProtocol, int privacyProtocol) {
-        byte[] derivedPrivacyKey;
-        byte[] localizedPrivacyKey = null;
-        byte[] localizedPrivacyKeyBase;
+	protected byte[] generatePrivacyKey(String engineId, int authenticationProtocol, int privacyProtocol) {
+		byte[] derivedPrivacyKey;
+		byte[] localizedPrivacyKey = null;
+		byte[] localizedPrivacyKeyBase;
 		switch (authenticationProtocol) {
 			case MD5_PROTOCOL:
 				if (privacyProtocol != AES_ENCRYPT && privacyProtocol != DES_ENCRYPT) {
-	                throw new IllegalArgumentException("Unsupported privacy protocol for MD5: "
-	                								+ PROTOCOL_NAMES[privacyProtocol]);
-	            }
+					throw new IllegalArgumentException(
+							"Unsupported privacy protocol for MD5: " + PROTOCOL_NAMES[privacyProtocol]);
+				}
 				derivedPrivacyKey = getPrivacyPasswordKeyMD5();
-	            return SnmpUtilities.getLocalizedKeyMD5(derivedPrivacyKey, engineId);
+				return SnmpUtilities.getLocalizedKeyMD5(derivedPrivacyKey, engineId);
 			case SHA1_PROTOCOL:
 				if (privacyProtocol != AES192_ENCRYPT && privacyProtocol != DES_ENCRYPT) {
-	                throw new IllegalArgumentException("Unsupported privacy protocol for SHA1: " 
-	                								+ PROTOCOL_NAMES[privacyProtocol]);
-	            }
-	            derivedPrivacyKey = getPrivacyPasswordKeySHA1();
-	            return SnmpUtilities.getLocalizedKeySHA1(derivedPrivacyKey, engineId);
+					throw new IllegalArgumentException(
+							"Unsupported privacy protocol for SHA1: " + PROTOCOL_NAMES[privacyProtocol]);
+				}
+				derivedPrivacyKey = getPrivacyPasswordKeySHA1();
+				return SnmpUtilities.getLocalizedKeySHA1(derivedPrivacyKey, engineId);
 			case SHA224_PROTOCOL: {
 				derivedPrivacyKey = getPrivacyPasswordKeySHA224();
 				localizedPrivacyKeyBase = SnmpUtilities.getLocalizedKeySHA224(derivedPrivacyKey, engineId);
@@ -1182,25 +1182,26 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
 			}
 			case SHA256_PROTOCOL: {
 				derivedPrivacyKey = getPrivacyPasswordKeySHA256();
-				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA256, privacyProtocol);
+				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA256,
+						privacyProtocol);
 				return localizedPrivacyKey;
 			}
 			case SHA384_PROTOCOL: {
 				derivedPrivacyKey = getPrivacyPasswordKeySHA384();
-				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA384, privacyProtocol);
+				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA384,
+						privacyProtocol);
 				return localizedPrivacyKey;
 			}
 			case SHA512_PROTOCOL: {
 				derivedPrivacyKey = getPrivacyPasswordKeySHA512();
-				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA512, privacyProtocol);
+				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA512,
+						privacyProtocol);
 				return localizedPrivacyKey;
 			}
-			
-			 default:
-		            throw new IllegalArgumentException("Unsupported authentication protocol: " + authenticationProtocol);
-		}
-		
-    }
+			default:
+				throw new IllegalArgumentException("Unsupported authentication protocol: " + authenticationProtocol);
+			}
+	}
     
     /**
      * Derives a final privacy key
