@@ -168,7 +168,7 @@ public interface SnmpContextv3Face extends SnmpContextBasisFace {
      * The SHA-224 protocol type.
      */
     public static final int SHA384_PROTOCOL = 7;
-    
+
     /**
      * Authentication protocols codes that are supported by SNMPv3.
      */

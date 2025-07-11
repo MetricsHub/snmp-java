@@ -230,7 +230,6 @@ class AsnDecoderv3 extends AsnDecoderBase implements usmStatsConstants {
 		try {
 			AsnObject asnScopedObject = asnTopSeq.getObj(3);
 			AsnSequence asnPlainScopedPdu = null;
-
 			if (isUsePrivacy == true) {
 				int privacyProtocol = context.getPrivacyProtocol();
 				// Retrieves the localized privacy key from the derived privacy key
@@ -240,7 +239,6 @@ class AsnDecoderv3 extends AsnDecoderBase implements usmStatsConstants {
 				byte[] encryptedText = asnEncryptedScopedPdu.getBytes();
 
 				byte[] plainText = null;
-
 				if (SnmpContextv3Basis.AES_PRIVACY_PROTOCOLS.contains(privacyProtocol)){
 					plainText = SnmpUtilities.AESdecrypt(encryptedText, privacyKey, boots, time, salt);
 				} else {

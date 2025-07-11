@@ -60,7 +60,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.function.BiFunction;
 
-
 /**
  * This class contains the basis for the SNMP v3 contexts that is needed 
  * by every PDU to send a SNMP v3 request.
@@ -143,7 +142,7 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
     protected byte[] contextEngineId = new byte[0];
     protected String contextName = DEFAULT_CONTEXT_NAME;
     protected UsmAgent usmAgent = null;
-  
+
     private Hashtable msgIdHash = new Hashtable(MAXPDU);
     private static int next_id = 1;
 
@@ -328,7 +327,7 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
             }
         } else {
             throw new IllegalArgumentException("Privacy Encryption "
-                    + "should be AES or AES192 or AES256 or DES");
+                    + "should be AES, AES192, AES256 or DES");
         }
     }
 
@@ -1139,7 +1138,6 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
         return buffer.toString();
     }
 
-
     /**
      * Generates the privacy key based on the authentication protocol.
      *
@@ -1156,7 +1154,7 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
 			case MD5_PROTOCOL:
 				if (privacyProtocol != AES_ENCRYPT && privacyProtocol != DES_ENCRYPT) {
 	                throw new IllegalArgumentException("Unsupported privacy protocol for MD5: "
-	                										+ PROTOCOL_NAMES[privacyProtocol]);
+	                								+ PROTOCOL_NAMES[privacyProtocol]);
 	            }
 				derivedPrivacyKey = getPrivacyPasswordKeyMD5();
 	            return SnmpUtilities.getLocalizedKeyMD5(derivedPrivacyKey, engineId);

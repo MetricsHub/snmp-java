@@ -164,7 +164,7 @@ public class SnmpClient {
 								+ "', '" + SNMP_AUTH_SHA512
 								+ "', '" + SNMP_AUTH_SHA224
 								+ "', '" + SNMP_AUTH_SHA384
-								+ "' or empty)");
+								+ "', or empty)");
 					}
 				}
 			}
@@ -174,7 +174,7 @@ public class SnmpClient {
 					if (! SNMP_PRIVACY_PROTOCOLS.contains(privacyType)) {
 						throw new IllegalArgumentException(
 								"Invalid privacy method '" + privacyType + "'." + " (Valid options are:'" + SNMP_PRIVACY_DES
-										+ "', '" + SNMP_PRIVACY_AES + "', '" + SNMP_PRIVACY_AES192 + "', '" + SNMP_PRIVACY_AES256  + "' or empty)");
+								+ "', '" + SNMP_PRIVACY_AES + "', '" + SNMP_PRIVACY_AES192 + "', '" + SNMP_PRIVACY_AES256  + "', or empty)");
 					}
 				}
 			}
@@ -260,14 +260,13 @@ public class SnmpClient {
 			} else if (privacyType.equals(SNMP_PRIVACY_AES)) {
 				privacy = true;
 				privacyProtocolCode = SnmpContextv3Face.AES_ENCRYPT;
-			}else if (privacyType.equals(SNMP_PRIVACY_AES192)) {
+			} else if (privacyType.equals(SNMP_PRIVACY_AES192)) {
 			    privacy = true;
 			    privacyProtocolCode = SnmpContextv3Face.AES192_ENCRYPT;
 			} else if (privacyType.equals(SNMP_PRIVACY_AES256)) {
 			    privacy = true;
 			    privacyProtocolCode = SnmpContextv3Face.AES256_ENCRYPT;
 			}
-
 			// Privacy with no authentication is impossible
 			if (privacy && !authenticate) {
 				throw new IllegalStateException("Authentication is required for privacy to be enforced");
@@ -663,4 +662,5 @@ public class SnmpClient {
 		return result;
 
 	} // end of sendRequest
+
 }// end of class - SNMPClient
