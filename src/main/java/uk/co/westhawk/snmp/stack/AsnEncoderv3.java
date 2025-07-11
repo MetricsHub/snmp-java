@@ -140,13 +140,13 @@ class AsnEncoderv3 extends AsnEncoderBase {
 
 		AsnOctets privacyAsnOctets;
 		AsnOctets asnEncryptedScopedPdu = null;
-		if (context.isUsePrivacy()) {
-			// Retrieves the localized privacy key from the derived privacy key
-			byte[] privacyKey = context.generatePrivacyKey(node.getSnmpEngineId(), authenticationProtocol);
 
+		if (context.isUsePrivacy()) {
 			int privacyProtocol = context.getPrivacyProtocol();
+			// Retrieves the localized privacy key from the derived privacy key
+			byte[] privacyKey = context.generatePrivacyKey(node.getSnmpEngineId(), authenticationProtocol, privacyProtocol);
 			byte[] salt = null;
-			if (privacyProtocol == SnmpContextv3Face.AES_ENCRYPT) {
+			if (SnmpContextv3Face.AES_PRIVACY_PROTOCOLS.contains(privacyProtocol)) {
 				salt = SnmpUtilities.getSaltAES();
 			} else {
 				salt = SnmpUtilities.getSaltDES(node.getSnmpEngineBoots());
@@ -158,7 +158,7 @@ class AsnEncoderv3 extends AsnEncoderBase {
 
 			byte[] plaintext = encodedSnmpMessageOutputStream.toByteArray();
 			byte[] encryptedText = null;
-			if (privacyProtocol == SnmpContextv3Face.AES_ENCRYPT) {
+			if (SnmpContextv3Face.AES_PRIVACY_PROTOCOLS.contains(privacyProtocol)) {
 				encryptedText = SnmpUtilities.AESencrypt(plaintext, privacyKey, node.getSnmpEngineBoots(),
 						node.getSnmpEngineTime(), salt);
 			} else {

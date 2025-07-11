@@ -33,10 +33,15 @@ import uk.co.westhawk.snmp.stack.SnmpContextv2c;
 import uk.co.westhawk.snmp.stack.SnmpContextv3;
 import uk.co.westhawk.snmp.stack.SnmpContextv3Face;
 import uk.co.westhawk.snmp.stack.varbind;
+import uk.co.westhawk.snmp.util.SnmpUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SnmpClient {
 
@@ -55,8 +60,16 @@ public class SnmpClient {
 	public static final String SNMP_AUTH_SHA384 = "SHA384";
 	public static final String SNMP_PRIVACY_DES = "DES";
 	public static final String SNMP_PRIVACY_AES = "AES";
+	public static final String SNMP_PRIVACY_AES192 = "AES192";
+	public static final String SNMP_PRIVACY_AES256 = "AES256";
 	public static final String SNMP_NONE = "None";
 
+    public static final Set<String> SNMP_PRIVACY_PROTOCOLS = Collections.unmodifiableSet( new HashSet<>(
+    		Arrays.asList(SNMP_PRIVACY_DES, SNMP_PRIVACY_AES, SNMP_PRIVACY_AES192, SNMP_PRIVACY_AES256)));
+    
+    public static final Set<String> SNMP_AUTH_PROTOCOLS = Collections.unmodifiableSet( new HashSet<>(
+    		Arrays.asList(SNMP_AUTH_MD5, SNMP_AUTH_SHA, SNMP_AUTH_SHA256, SNMP_AUTH_SHA512, SNMP_AUTH_SHA224, SNMP_AUTH_SHA384)));
+    
 	private SnmpContext contextv1 = null;
 	private SnmpContextv2c contextv2c = null;
 	private SnmpContextv3 contextv3 = null;
@@ -143,16 +156,14 @@ public class SnmpClient {
 		if (version == SNMP_V3) {
 			if (authType != null) {
 				if (!authType.isEmpty()) {
-					if (!authType.equals(SNMP_AUTH_MD5) && !authType.equals(SNMP_AUTH_SHA)
-							&& !authType.equals(SNMP_AUTH_SHA256) && !authType.equals(SNMP_AUTH_SHA512)
-							&& !authType.equals(SNMP_AUTH_SHA224) && !authType.equals(SNMP_AUTH_SHA384)) {
-						throw new IllegalArgumentException("Invalid authentication method '" + authType +
-								"' (must be either '" + SNMP_AUTH_MD5
-								+ "' or '" + SNMP_AUTH_SHA
-								+ "' or '" + SNMP_AUTH_SHA256
-								+ "' or '" + SNMP_AUTH_SHA512
-								+ "' or '" + SNMP_AUTH_SHA224
-								+ "' or '" + SNMP_AUTH_SHA384
+					if (! SNMP_AUTH_PROTOCOLS.contains(authType)) {
+						throw new IllegalArgumentException("Invalid authentication method '" + authType + "'." +
+								" (Valid options are: '" + SNMP_AUTH_MD5
+								+ "', '" + SNMP_AUTH_SHA
+								+ "', '" + SNMP_AUTH_SHA256
+								+ "', '" + SNMP_AUTH_SHA512
+								+ "', '" + SNMP_AUTH_SHA224
+								+ "', '" + SNMP_AUTH_SHA384
 								+ "' or empty)");
 					}
 				}
@@ -160,10 +171,10 @@ public class SnmpClient {
 
 			if (privacyType != null) {
 				if (!privacyType.isEmpty()) {
-					if (!privacyType.equals(SNMP_PRIVACY_DES) && !privacyType.equals(SNMP_PRIVACY_AES)) {
+					if (! SNMP_PRIVACY_PROTOCOLS.contains(privacyType)) {
 						throw new IllegalArgumentException(
-								"Invalid privacy method '" + privacyType + "' (must be either '" + SNMP_PRIVACY_DES
-										+ "' or '" + SNMP_PRIVACY_AES + "' or empty)");
+								"Invalid privacy method '" + privacyType + "'." + " (Valid options are:'" + SNMP_PRIVACY_DES
+										+ "', '" + SNMP_PRIVACY_AES + "', '" + SNMP_PRIVACY_AES192 + "', '" + SNMP_PRIVACY_AES256  + "' or empty)");
 					}
 				}
 			}
@@ -249,6 +260,12 @@ public class SnmpClient {
 			} else if (privacyType.equals(SNMP_PRIVACY_AES)) {
 				privacy = true;
 				privacyProtocolCode = SnmpContextv3Face.AES_ENCRYPT;
+			}else if (privacyType.equals(SNMP_PRIVACY_AES192)) {
+			    privacy = true;
+			    privacyProtocolCode = SnmpContextv3Face.AES192_ENCRYPT;
+			} else if (privacyType.equals(SNMP_PRIVACY_AES256)) {
+			    privacy = true;
+			    privacyProtocolCode = SnmpContextv3Face.AES256_ENCRYPT;
 			}
 
 			// Privacy with no authentication is impossible
@@ -646,5 +663,4 @@ public class SnmpClient {
 		return result;
 
 	} // end of sendRequest
-
 }// end of class - SNMPClient

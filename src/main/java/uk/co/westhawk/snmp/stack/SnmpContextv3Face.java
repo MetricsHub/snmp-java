@@ -108,6 +108,16 @@ public interface SnmpContextv3Face extends SnmpContextBasisFace {
     public final static int AES_ENCRYPT = 3;
 
     /**
+     * The AES 192 encryption type.
+     */
+    public static final int AES192_ENCRYPT = 8;
+
+    /**
+     * The AES 256 encryption type.
+     */
+    public static final int AES256_ENCRYPT = 9;
+
+    /**
      * The default value for the (security) user name. This is
      * "initial".
      */
@@ -129,7 +139,9 @@ public interface SnmpContextv3Face extends SnmpContextBasisFace {
             "SHA256",
             "SHA512",
             "SHA224",
-            "SHA384"
+            "SHA384",
+            "AES192",
+            "AES256",
     };
 
     /**
@@ -156,7 +168,7 @@ public interface SnmpContextv3Face extends SnmpContextBasisFace {
      * The SHA-224 protocol type.
      */
     public static final int SHA384_PROTOCOL = 7;
-
+    
     /**
      * Authentication protocols codes that are supported by SNMPv3.
      */
@@ -164,6 +176,15 @@ public interface SnmpContextv3Face extends SnmpContextBasisFace {
             new HashSet<>(Arrays.asList(MD5_PROTOCOL, SHA1_PROTOCOL,
                     SHA256_PROTOCOL, SHA512_PROTOCOL,
                     SHA224_PROTOCOL, SHA384_PROTOCOL)));
+    /**
+     * Privacy protocols codes that are supported by SNMPv3.
+     */
+    public static final Set<Integer> PRIVACY_PROTOCOLS = Collections.unmodifiableSet( new HashSet<>(
+    		Arrays.asList(AES_ENCRYPT, AES192_ENCRYPT, AES256_ENCRYPT, DES_ENCRYPT)));
+    
+    public static final Set<Integer> AES_PRIVACY_PROTOCOLS = Collections.unmodifiableSet( new HashSet<>(
+    		Arrays.asList(AES_ENCRYPT, AES192_ENCRYPT, AES256_ENCRYPT)));
+
 
     /**
      * Returns the username.
