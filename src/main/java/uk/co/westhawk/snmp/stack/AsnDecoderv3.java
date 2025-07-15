@@ -231,15 +231,15 @@ class AsnDecoderv3 extends AsnDecoderBase implements usmStatsConstants {
 			AsnObject asnScopedObject = asnTopSeq.getObj(3);
 			AsnSequence asnPlainScopedPdu = null;
 			if (isUsePrivacy == true) {
+				int privacyProtocol = context.getPrivacyProtocol();
 				// Retrieves the localized privacy key from the derived privacy key
-				byte[] privacyKey = context.generatePrivacyKey(engineId, authenticationProtocol);
+				byte[] privacyKey = context.generatePrivacyKey(engineId, authenticationProtocol, privacyProtocol);
 
 				AsnOctets asnEncryptedScopedPdu = (AsnOctets) asnScopedObject;
 				byte[] encryptedText = asnEncryptedScopedPdu.getBytes();
 
 				byte[] plainText = null;
-				int privacyProtocol = context.getPrivacyProtocol();
-				if (privacyProtocol == context.AES_ENCRYPT) {
+				if (SnmpContextv3Basis.AES_PRIVACY_PROTOCOLS.contains(privacyProtocol)){
 					plainText = SnmpUtilities.AESdecrypt(encryptedText, privacyKey, boots, time, salt);
 				} else {
 					plainText = SnmpUtilities.DESdecrypt(encryptedText, salt, privacyKey);
@@ -247,7 +247,7 @@ class AsnDecoderv3 extends AsnDecoderBase implements usmStatsConstants {
 
 				if (AsnObject.debug > 10) {
 					System.out.println("Encrypted PDU: ");
-					System.out.println("Decoding with : " + context.PROTOCOL_NAMES[privacyProtocol]);
+					System.out.println("Decoding with : " + SnmpContextv3Basis.PROTOCOL_NAMES[privacyProtocol]);
 				}
 
 				ByteArrayInputStream plainIn = new ByteArrayInputStream(plainText);

@@ -65,7 +65,9 @@ import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA224_PROTOCOL;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA256_PROTOCOL;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA384_PROTOCOL;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA512_PROTOCOL;
-
+import static uk.co.westhawk.snmp.stack.SnmpContextv3Basis.AES128_KEY_LENGTH;
+import static uk.co.westhawk.snmp.stack.SnmpContextv3Basis.AES192_KEY_LENGTH;
+import static uk.co.westhawk.snmp.stack.SnmpContextv3Basis.AES256_KEY_LENGTH;
 
 /**
  * This class contains utilities for key and authentication encoding.
@@ -601,15 +603,14 @@ public class SnmpUtilities extends Object {
      * @return The key
      */
     public final static byte[] getAESKey(byte[] secretPrivacyKey)
-            throws PduException {
-        byte[] aesKey = new byte[16];
-        if (secretPrivacyKey.length < 16) {
-            throw new PduException("SnmpUtilities.getAESKey():"
-                    + " secretPrivacyKey is < 16");
+        throws PduException {
+            int len = secretPrivacyKey.length;
+            if (len != AES128_KEY_LENGTH && len != AES192_KEY_LENGTH && len != AES256_KEY_LENGTH) {
+                throw new PduException("Invalid AES key length: expected 16, 24, or 32 bytes but got " + len);
+            }
+
+            return secretPrivacyKey;
         }
-        System.arraycopy(secretPrivacyKey, 0, aesKey, 0, 16);
-        return aesKey;
-    }
 
     /**
      * Returns the DES initial value.

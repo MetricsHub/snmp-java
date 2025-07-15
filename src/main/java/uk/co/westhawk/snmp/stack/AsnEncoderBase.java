@@ -62,7 +62,6 @@ package uk.co.westhawk.snmp.stack;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * ╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱
  */
-import uk.co.westhawk.snmp.util.*;
 import java.io.*;
 import java.util.*;
 

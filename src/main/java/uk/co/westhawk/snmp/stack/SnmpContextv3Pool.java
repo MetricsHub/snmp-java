@@ -263,7 +263,7 @@ public class SnmpContextv3Pool implements SnmpContextv3Face {
     }
 
     public void setPrivacyProtocol(int protocol) throws IllegalArgumentException {
-        if (protocol == AES_ENCRYPT || protocol == DES_ENCRYPT) {
+        if (PRIVACY_PROTOCOLS.contains(protocol)) {
             if (protocol != privacyProtocol) {
                 privacyProtocol = protocol;
                 hasChanged = true;
@@ -271,7 +271,7 @@ public class SnmpContextv3Pool implements SnmpContextv3Face {
         } else {
             hasChanged = false;
             throw new IllegalArgumentException("Privacy Protocol "
-                    + "should be DES or AES");
+                    + "should be DES, AES, AES192, or AES256.");
         }
     }
 

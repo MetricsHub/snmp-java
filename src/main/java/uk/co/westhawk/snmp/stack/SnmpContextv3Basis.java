@@ -55,8 +55,10 @@ import uk.co.westhawk.snmp.util.SnmpUtilities;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.function.BiFunction;
 
 /**
  * This class contains the basis for the SNMP v3 contexts that is needed 
@@ -113,6 +115,10 @@ import java.util.Hashtable;
 public abstract class SnmpContextv3Basis extends AbstractSnmpContext
         implements SnmpContextv3Face, Cloneable {
     private static final String version_id = "@(#)$Id: SnmpContextv3Basis.java,v 3.17 2009/03/05 15:51:42 birgita Exp $ Copyright Westhawk Ltd";
+
+    public static final int AES128_KEY_LENGTH = 16;
+    public static final int AES192_KEY_LENGTH = 24;
+    public static final int AES256_KEY_LENGTH = 32;
 
     protected String userName = DEFAULT_USERNAME;
     protected boolean useAuthentication = false;
@@ -315,13 +321,13 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
      */
     public void setPrivacyProtocol(int protocol)
             throws IllegalArgumentException {
-        if (protocol == DES_ENCRYPT || protocol == AES_ENCRYPT) {
+        if (PRIVACY_PROTOCOLS.contains(protocol)) {
             if (protocol != privacyProtocol) {
                 privacyProtocol = protocol;
             }
         } else {
             throw new IllegalArgumentException("Privacy Encryption "
-                    + "should be AES or DES");
+                    + "should be AES, AES192, AES256 or DES");
         }
     }
 
@@ -1137,32 +1143,93 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
      *
      * @param engineId               The SNMP engine ID.
      * @param authenticationProtocol The authentication protocol.
+     * @param privacyProtocol        The privacyProtocol.
      * @return The generated privacy key.
      */
-    protected byte[] generatePrivacyKey(String engineId, int authenticationProtocol) {
-        byte[] derivedPrivacyKey;
-        byte[] localizedPrivacyKey = null;
-        if (authenticationProtocol == MD5_PROTOCOL) {
-            derivedPrivacyKey = getPrivacyPasswordKeyMD5();
-            localizedPrivacyKey = SnmpUtilities.getLocalizedKeyMD5(derivedPrivacyKey, engineId);
-        } else if (authenticationProtocol == SHA1_PROTOCOL) {
-            derivedPrivacyKey = getPrivacyPasswordKeySHA1();
-            localizedPrivacyKey = SnmpUtilities.getLocalizedKeySHA1(derivedPrivacyKey, engineId);
-        } else if (authenticationProtocol == SHA256_PROTOCOL) {
-            derivedPrivacyKey = getPrivacyPasswordKeySHA256();
-            localizedPrivacyKey = SnmpUtilities.getLocalizedKeySHA256(derivedPrivacyKey, engineId);
-        } else if (authenticationProtocol == SHA512_PROTOCOL) {
-            derivedPrivacyKey = getPrivacyPasswordKeySHA512();
-            localizedPrivacyKey = SnmpUtilities.getLocalizedKeySHA512(derivedPrivacyKey, engineId);
-        } else if (authenticationProtocol == SHA224_PROTOCOL) {
-            derivedPrivacyKey = getPrivacyPasswordKeySHA224();
-            localizedPrivacyKey = SnmpUtilities.getLocalizedKeySHA224(derivedPrivacyKey, engineId);
-        } else if (authenticationProtocol == SHA384_PROTOCOL) {
-            derivedPrivacyKey = getPrivacyPasswordKeySHA384();
-            localizedPrivacyKey = SnmpUtilities.getLocalizedKeySHA384(derivedPrivacyKey, engineId);
+	protected byte[] generatePrivacyKey(String engineId, int authenticationProtocol, int privacyProtocol) {
+		byte[] derivedPrivacyKey;
+		byte[] localizedPrivacyKey = null;
+		byte[] localizedPrivacyKeyBase;
+		switch (authenticationProtocol) {
+			case MD5_PROTOCOL:
+				if (privacyProtocol != AES_ENCRYPT && privacyProtocol != DES_ENCRYPT) {
+					throw new IllegalArgumentException(
+							"Unsupported privacy protocol for MD5: " + PROTOCOL_NAMES[privacyProtocol]);
+				}
+				derivedPrivacyKey = getPrivacyPasswordKeyMD5();
+				return SnmpUtilities.getLocalizedKeyMD5(derivedPrivacyKey, engineId);
+			case SHA1_PROTOCOL:
+				if (privacyProtocol != AES192_ENCRYPT && privacyProtocol != DES_ENCRYPT) {
+					throw new IllegalArgumentException(
+							"Unsupported privacy protocol for SHA1: " + PROTOCOL_NAMES[privacyProtocol]);
+				}
+				derivedPrivacyKey = getPrivacyPasswordKeySHA1();
+				return SnmpUtilities.getLocalizedKeySHA1(derivedPrivacyKey, engineId);
+			case SHA224_PROTOCOL: {
+				derivedPrivacyKey = getPrivacyPasswordKeySHA224();
+				localizedPrivacyKeyBase = SnmpUtilities.getLocalizedKeySHA224(derivedPrivacyKey, engineId);
+				switch (privacyProtocol) {
+				case AES_ENCRYPT:
+					return Arrays.copyOf(localizedPrivacyKeyBase, AES128_KEY_LENGTH);
+				case AES192_ENCRYPT:
+					return Arrays.copyOf(localizedPrivacyKeyBase, AES192_KEY_LENGTH);
+				case DES_ENCRYPT:
+					return localizedPrivacyKeyBase;
+				default:
+					throw new IllegalArgumentException(
+							"Unsupported privacy protocol for SHA224: " + PROTOCOL_NAMES[privacyProtocol]);
+				}
+			}
+			case SHA256_PROTOCOL: {
+				derivedPrivacyKey = getPrivacyPasswordKeySHA256();
+				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA256,
+						privacyProtocol);
+				return localizedPrivacyKey;
+			}
+			case SHA384_PROTOCOL: {
+				derivedPrivacyKey = getPrivacyPasswordKeySHA384();
+				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA384,
+						privacyProtocol);
+				return localizedPrivacyKey;
+			}
+			case SHA512_PROTOCOL: {
+				derivedPrivacyKey = getPrivacyPasswordKeySHA512();
+				localizedPrivacyKey = deriveKey(engineId, derivedPrivacyKey, SnmpUtilities::getLocalizedKeySHA512,
+						privacyProtocol);
+				return localizedPrivacyKey;
+			}
+			default:
+				throw new IllegalArgumentException("Unsupported authentication protocol: " + authenticationProtocol);
+			}
+	}
+    
+    /**
+     * Derives a final privacy key
+     *
+     * @param engineId          The SNMP engine ID.
+     * @param derivedPrivacyKey The SNMP engine ID.
+     * @param localizeKey         A function that localizes the key using the derived key and engine ID.
+     * @param privacyProtocol   The privacyProtocol
+     * @return
+     */
+    private byte[] deriveKey(
+    		String engineId,
+    		byte[] derivedPrivacyKey,
+    		BiFunction<byte[],
+    		String, byte[]> localizeKey,
+    		int privacyProtocol) {
+        byte[] localizedPrivacyKeyBase = localizeKey.apply(derivedPrivacyKey, engineId);
+        switch (privacyProtocol) {
+            case AES_ENCRYPT:  return Arrays.copyOf(localizedPrivacyKeyBase, AES128_KEY_LENGTH);
+            case AES192_ENCRYPT: return Arrays.copyOf(localizedPrivacyKeyBase, AES192_KEY_LENGTH);
+            case AES256_ENCRYPT:  return Arrays.copyOf(localizedPrivacyKeyBase, AES256_KEY_LENGTH);
+            case DES_ENCRYPT:
+				return localizedPrivacyKeyBase;
+            default:
+                throw new IllegalArgumentException("Unsupported privacy protocol: " + PROTOCOL_NAMES[privacyProtocol]);
         }
-        return localizedPrivacyKey;
-    }
+     }
+ 
 
     /**
      * Computes the fingerprint for the given SNMP message.
