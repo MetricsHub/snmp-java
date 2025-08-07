@@ -599,7 +599,7 @@ public class SnmpUtilities extends Object {
     }
 
     /**
-     * Returns the first 128 bits of the localized key Kul are used as the
+     * Returns the first 128/192/256 bits of the localized key Kul are used as the
      * AES encryption key.
      * 
      * @param secretPrivacyKey The secret privacy key
