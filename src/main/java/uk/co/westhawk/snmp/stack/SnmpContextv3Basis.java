@@ -55,7 +55,6 @@ import uk.co.westhawk.snmp.util.SnmpUtilities;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.function.BiFunction;
