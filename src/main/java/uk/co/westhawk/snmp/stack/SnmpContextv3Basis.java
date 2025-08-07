@@ -1159,7 +1159,7 @@ public abstract class SnmpContextv3Basis extends AbstractSnmpContext
 				derivedPrivacyKey = getPrivacyPasswordKeyMD5();
 				return SnmpUtilities.getLocalizedKeyMD5(derivedPrivacyKey, engineId);
 			case SHA1_PROTOCOL:
-				if (privacyProtocol != AES192_ENCRYPT && privacyProtocol != DES_ENCRYPT) {
+				if (privacyProtocol != AES_ENCRYPT && privacyProtocol != DES_ENCRYPT) {
 					throw new IllegalArgumentException(
 							"Unsupported privacy protocol for SHA1: " + PROTOCOL_NAMES[privacyProtocol]);
 				}

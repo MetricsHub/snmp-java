@@ -240,7 +240,7 @@ class AsnDecoderv3 extends AsnDecoderBase implements usmStatsConstants {
 
 				byte[] plainText = null;
 				if (SnmpContextv3Basis.AES_PRIVACY_PROTOCOLS.contains(privacyProtocol)){
-					plainText = SnmpUtilities.AESdecrypt(encryptedText, privacyKey, boots, time, salt);
+					plainText = SnmpUtilities.AESdecrypt(encryptedText, privacyKey, boots, time, salt, privacyProtocol);
 				} else {
 					plainText = SnmpUtilities.DESdecrypt(encryptedText, salt, privacyKey);
 				}
