@@ -65,6 +65,9 @@ import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA224_PROTOCOL;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA256_PROTOCOL;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA384_PROTOCOL;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.SHA512_PROTOCOL;
+import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.AES_ENCRYPT;
+import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.AES192_ENCRYPT;
+import static uk.co.westhawk.snmp.stack.SnmpContextv3Face.AES256_ENCRYPT;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Basis.AES128_KEY_LENGTH;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Basis.AES192_KEY_LENGTH;
 import static uk.co.westhawk.snmp.stack.SnmpContextv3Basis.AES256_KEY_LENGTH;
@@ -596,20 +599,40 @@ public class SnmpUtilities extends Object {
     }
 
     /**
-     * Returns the first 128 bits of the localized key Kul are used as the
+     * Returns the first 128/192/256 bits of the localized key Kul are used as the
      * AES encryption key.
      * 
      * @param secretPrivacyKey The secret privacy key
+     * @param protocolVersion  The version of the AES protocol being used
      * @return The key
      */
-    public final static byte[] getAESKey(byte[] secretPrivacyKey)
+    public static final byte[] getAESKey(byte[] secretPrivacyKey, int protocolVersion)
         throws PduException {
             int len = secretPrivacyKey.length;
-            if (len != AES128_KEY_LENGTH && len != AES192_KEY_LENGTH && len != AES256_KEY_LENGTH) {
-                throw new PduException("Invalid AES key length: expected 16, 24, or 32 bytes but got " + len);
+
+            final  byte[] aesKey;
+            if (protocolVersion == AES_ENCRYPT) {
+            	if (len < AES128_KEY_LENGTH) {
+					throw new PduException("SnmpUtilities.getAESKey():" + " secretPrivacyKey is < 16 for AES_ENCRYPT");
+            	}
+            	aesKey = new byte[AES128_KEY_LENGTH];
+            } else if (protocolVersion == AES192_ENCRYPT) {
+                if (len < AES192_KEY_LENGTH) {
+                	                    throw new PduException("SnmpUtilities.getAESKey():" + " secretPrivacyKey is < 24 for AES192_ENCRYPT");
+                }
+                aesKey = new byte[AES192_KEY_LENGTH];
+            } else if (protocolVersion == AES256_ENCRYPT) {
+				if (len < AES256_KEY_LENGTH) {
+					throw new PduException(
+							"SnmpUtilities.getAESKey():" + " secretPrivacyKey is < 32 for AES256_ENCRYPT");
+				}
+                aesKey = new byte[AES256_KEY_LENGTH];
+            } else {
+                throw new PduException("Unsupported AES protocol version: " + protocolVersion);
             }
 
-            return secretPrivacyKey;
+            System.arraycopy(secretPrivacyKey, 0, aesKey, 0, aesKey.length);
+            return aesKey;
         }
 
     /**
@@ -719,9 +742,10 @@ public class SnmpUtilities extends Object {
      *
      * @param plaintext        The plain bytes
      * @param secretPrivacyKey The secret privacy key
-     * @param engineBoots
-     * @param engineTime
+     * @param engineBoots      The (estimated) boots of the authoritative engine
+     * @param engineTime       The (estimated) time of the authoritative engine
      * @param salt             The salt
+     * @param protocolVersion  The AES protocol version to use
      * @return The encrypted bytes
      * @throws EncodingException
      */
@@ -729,12 +753,13 @@ public class SnmpUtilities extends Object {
             byte[] secretPrivacyKey,
             int engineBoots,
             int engineTime,
-            byte[] salt)
+            byte[] salt,
+            int protocolVersion)
             throws EncodingException {
         byte[] aesKey = null;
         byte[] iv = null;
         try {
-            aesKey = getAESKey(secretPrivacyKey);
+            aesKey = getAESKey(secretPrivacyKey, protocolVersion);
             iv = getAESInitialValue(engineBoots, engineTime, salt);
         } catch (PduException exc) {
             throw new EncodingException(exc.getMessage());
@@ -921,9 +946,10 @@ public class SnmpUtilities extends Object {
      * 
      * @param ciphertext
      * @param secretPrivacyKey The secret privacy key
-     * @param engineBoots
-     * @param engineTime
+     * @param engineBoots      The (estimated) boots of the authoritative engine
+     * @param engineTime       The (estimated) time of the authoritative engine
      * @param salt             The salt
+     * @param protocolVersion  The AES protocol version to use
      * @return The dencrypted bytes
      * @throws DecodingException
      */
@@ -931,12 +957,13 @@ public class SnmpUtilities extends Object {
             byte[] secretPrivacyKey,
             int engineBoots,
             int engineTime,
-            byte[] salt)
+            byte[] salt,
+            int protocolVersion)
             throws DecodingException {
         byte[] aesKey = null;
         byte[] iv = null;
         try {
-            aesKey = getAESKey(secretPrivacyKey);
+            aesKey = getAESKey(secretPrivacyKey, protocolVersion);
             iv = getAESInitialValue(engineBoots, engineTime, salt);
         } catch (PduException exc) {
             throw new DecodingException(exc.getMessage());
