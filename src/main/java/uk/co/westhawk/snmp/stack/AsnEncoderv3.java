@@ -160,7 +160,7 @@ class AsnEncoderv3 extends AsnEncoderBase {
 			byte[] encryptedText = null;
 			if (SnmpContextv3Face.AES_PRIVACY_PROTOCOLS.contains(privacyProtocol)) {
 				encryptedText = SnmpUtilities.AESencrypt(plaintext, privacyKey, node.getSnmpEngineBoots(),
-						node.getSnmpEngineTime(), salt);
+						node.getSnmpEngineTime(), salt, privacyProtocol);
 			} else {
 				encryptedText = SnmpUtilities.DESencrypt(plaintext, privacyKey, salt);
 			}
