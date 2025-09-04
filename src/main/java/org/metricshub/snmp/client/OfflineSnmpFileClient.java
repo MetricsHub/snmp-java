@@ -33,10 +33,24 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+/**
+ * An offline SNMP client that reads OID values from a snmp WALK dump file and executes
+ * SNMP operations (GET, GET_NEXT, TABLE, WALK) against those OIDs.
+ */
 public final class OfflineSnmpFileClient implements ISnmpClient {
 
-	/** OID → value, sorted for efficient GETNEXT. */
-	private final NavigableMap<String,String> oidValues = new TreeMap<>();
+	/** Container for Snmp object's type and value. */
+	private static final class SnmpValue {
+		final String type;
+		final String value;
+		SnmpValue(String type, String value) {
+			this.type = type;
+			this.value = value;
+		}
+	}
+
+	// Maps the OIDs to their corresponding SnmpValue (type + value).
+	private final NavigableMap<String, SnmpValue> oidValues = new TreeMap<>();
 
 	/**
 	 * Constructs an SNMP client that reads OID values from a file.
@@ -56,51 +70,35 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 					continue;
 				}
 				final String oid   = stripDot(parts[0]);
+				final String type  = parts[1];
 				final String value = parts[2];
-				oidValues.put(oid, value);
+				oidValues.put(oid, new SnmpValue(type, value));
 			}
 		}
 	}
 
-	/**
-	 * SNMP GET: returns the value or throws if the OID does not exist.
-	 */
+	@Override
 	public String get(String oid) throws Exception {
 		final String key = stripDot(oid);
-		final String val = oidValues.get(key);
+		final SnmpValue val = oidValues.get(key);
 		if (val == null) {
 			throw new Exception("(no-such-oid)");
 		}
-		return val;
+		return val.value;
 	}
 
-	/**
-	 * SNMP GETNEXT: returns a TAB-separated triple "OID<TAB>TYPE<TAB>VALUE",
-	 * or "(end-of-mib-view)" if there is no next entry.
-	 * <p>
-	 * Note: the offline client currently doesn’t retain the original ASN.1 type,
-	 * so this uses a placeholder ("string"). If you want to preserve the type you
-	 * should adjust the constructor to keep parts[1] from the input file and store
-	 * both type and value.
-	 */
+	@Override
 	public String getNext(String oid) {
-		Map.Entry<String, String> next = oidValues.higherEntry(stripDot(oid));
+		Map.Entry<String, SnmpValue> next = oidValues.higherEntry(stripDot(oid));
 		if (next == null) {
 			return "(end-of-mib-view)";
 		}
 		String nextOid = next.getKey();
-		String value = next.getValue();
-		String type = "string"; // placeholder since original type isn’t stored
-		return nextOid + "\t" + type + "\t" + value;
+		SnmpValue snmpVal = next.getValue();
+		return nextOid + "\t" + snmpVal.type + "\t" + snmpVal.value;
 	}
 
-	/**
-	 * Reconstructs an SNMP table under rootOID.
-	 *
-	 * @param rootOID       the entry OID prefix (e.g. …7.1)
-	 * @param selectColumns array of column numbers as strings ("1","2",… or "ID")
-	 * @return list of rows, each a List<String> in selectColumns order
-	 */
+	@Override
 	public List<List<String>> table(String rootOID, String[] selectColumns) {
 		if (rootOID == null || rootOID.length() < 3) {
 			throw new IllegalArgumentException("Invalid SNMP Table OID: " + rootOID);
@@ -112,7 +110,7 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 		final String base = stripDot(rootOID);
 
 		// find first column under base
-		Map.Entry<String, String> firstEntry = oidValues.higherEntry(base);
+		Map.Entry<String, SnmpValue> firstEntry = oidValues.higherEntry(base);
 		if (firstEntry == null || !firstEntry.getKey().startsWith(base + ".")) {
 			return new ArrayList<>();  // empty table
 		}
@@ -128,7 +126,7 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 		final List<String> ids = new ArrayList<>();
 		String cursor = firstColOid;
 		while (true) {
-			Map.Entry<String, String> nxt = oidValues.higherEntry(cursor);
+			Map.Entry<String, SnmpValue> nxt = oidValues.higherEntry(cursor);
 			if (nxt == null) break;
 			final String key = nxt.getKey();
 			if (!key.startsWith(firstColOid + ".")) {
@@ -165,6 +163,32 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 
 	@Override
 	public String walk(String oid) {
-		return "";
+		final String base = stripDot(oid);
+		final StringBuilder walkResult = new StringBuilder();
+
+		// Find the first OID that is >= base
+		Map.Entry<String, SnmpValue> entry = oidValues.ceilingEntry(base);
+		if (entry == null) {
+			return ""; // Nothing at or after base
+		}
+
+		while (entry != null) {
+			final String nextOid = entry.getKey();
+			if (!nextOid.startsWith(base + ".") && !nextOid.equals(base)) {
+				break; // left the subtree
+			}
+
+			final SnmpValue snmpValue = entry.getValue();
+			walkResult.append(nextOid)
+					.append("\t")
+					.append(snmpValue.type)
+					.append("\t")
+					.append(snmpValue.value)
+					.append("\n");
+
+			entry = oidValues.higherEntry(nextOid);
+		}
+
+		return walkResult.toString();
 	}
 }

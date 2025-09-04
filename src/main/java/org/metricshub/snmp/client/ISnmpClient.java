@@ -27,36 +27,32 @@ import java.util.List;
 /**
  * Unified abstraction that both {@link SnmpClient} (live network) and
  * {@link OfflineSnmpFileClient} (file‑backed) can implement.
- * <p>
- * All operations return plain {@link String}s – no {@code Optional}s – so that
- * the API mirrors {@code SnmpClient}'s existing contract and remains
- * straightforward for scripting / CLI use‑cases.
- * <p>
- * <strong>Return formats</strong>
- * <ul>
- *   <li><b>get</b> – the value of the OID, as produced by the underlying client.</li>
- *   <li><b>getNext</b> – a TAB‑separated triple “OID&nbsp;TYPE&nbsp;VALUE”
- *       (same convention as {@code SnmpClient#getNext}).</li>
- *   <li><b>walk</b> – a multi‑line string, one “OID&nbsp;TYPE&nbsp;VALUE” per line.</li>
- *   <li><b>table</b> – a multi‑line string; each row is the selected columns
- *       joined by semicolons.</li>
- * </ul>
  */
 public interface ISnmpClient {
 
-	/** SNMP <em>GET</em>. */
+	/**
+	 * Performs SNMP get action for a single OID.
+	 * @param oid A given OID.
+	 * @return The corresponding object as a string.
+	 * @throws Exception on error (e.g. no such OID).
+	 */
 	String get(String oid) throws Exception;
 
-	/** SNMP <em>GETNEXT</em>. */
+	/**
+	 * Performs SNMP getNext action for	 a single OID.
+	 * @param oid A given OID.
+	 * @return The corresponding object as a string.
+	 * @throws Exception on error (e.g. no such OID).
+	 */
 	String getNext(String oid) throws Exception;
 
 
 	/**
 	 * Reads an SNMP table.
 	 *
-	 * @param rootOID       root OID of the table (e.g. …7.1)
-	 * @param selectColumns numeric column indexes or "ID" for the row index
-	 * @return rows serialized with semicolons (one row per line)
+	 * @param rootOID       Root OID of the table (e.g. …7.1)
+	 * @param selectColumns Numeric column indexes or "ID" for the row index
+	 * @return Rows serialized with semicolons (one row per line)
 	 */
 	List<List<String>> table(String rootOID, String[] selectColumns) throws Exception;
 
@@ -70,5 +66,11 @@ public interface ISnmpClient {
 		return s.startsWith(".") ? s.substring(1) : s;
 	}
 
+	/**
+	 * Performs SNMP walk action starting from a given OID.
+	 * @param oid A given OID.
+	 * @return The corresponding object as a string.
+	 * @throws Exception on error (e.g. no such OID).
+	 */
 	String walk(String oid) throws Exception;
 }
