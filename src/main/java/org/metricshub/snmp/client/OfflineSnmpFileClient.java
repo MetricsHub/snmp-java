@@ -89,12 +89,12 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 
 	@Override
 	public String getNext(String oid) {
-		Map.Entry<String, SnmpValue> next = oidValues.higherEntry(stripDot(oid));
+		final Map.Entry<String, SnmpValue> next = oidValues.higherEntry(stripDot(oid));
 		if (next == null) {
 			return "(end-of-mib-view)";
 		}
-		String nextOid = next.getKey();
-		SnmpValue snmpVal = next.getValue();
+		final String nextOid = next.getKey();
+		final SnmpValue snmpVal = next.getValue();
 		return nextOid + "\t" + snmpVal.type + "\t" + snmpVal.value;
 	}
 
@@ -110,7 +110,7 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 		final String base = stripDot(rootOID);
 
 		// find first column under base
-		Map.Entry<String, SnmpValue> firstEntry = oidValues.higherEntry(base);
+		final Map.Entry<String, SnmpValue> firstEntry = oidValues.higherEntry(base);
 		if (firstEntry == null || !firstEntry.getKey().startsWith(base + ".")) {
 			return new ArrayList<>();  // empty table
 		}
@@ -120,15 +120,15 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 		if (dotAfter < 0) return new ArrayList<>();
 
 		final String firstColOid = firstKey.substring(0, dotAfter); // e.g. "…7.1"
-		int colOidLen = firstColOid.length();
+		final int colOidLen = firstColOid.length();
 
 		// collect row IDs
 		final List<String> ids = new ArrayList<>();
 		String cursor = firstColOid;
 		while (true) {
-			Map.Entry<String, SnmpValue> nxt = oidValues.higherEntry(cursor);
-			if (nxt == null) break;
-			final String key = nxt.getKey();
+			final Map.Entry<String, SnmpValue> next = oidValues.higherEntry(cursor);
+			if (next == null) break;
+			final String key = next.getKey();
 			if (!key.startsWith(firstColOid + ".")) {
 				break;
 			}
@@ -143,7 +143,7 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 		// build result rows
 		final List<List<String>> rows = new ArrayList<>(ids.size());
 		for (String id : ids) {
-			List<String> row = new ArrayList<>(selectColumns.length);
+			final List<String> row = new ArrayList<>(selectColumns.length);
 			for (String col : selectColumns) {
 				if ("ID".equals(col)) {
 					row.add(id);
