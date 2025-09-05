@@ -39,20 +39,27 @@ class OfflineSnmpFileClientTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
-		// Create a temporary snmpWalk dump file
-		final Path tempFile = Files.createTempFile("snmpWalk", ".txt");
+		// Create a temporary directory
+		final Path tempDir = Files.createTempDirectory("snmpWalkDir");
+
+		// Create the file with the expected name "out.walk" inside that directory
+		final Path tempFile = tempDir.resolve("out.walk");
+
 		final String dump =
 				"1.3.6.1.2.1.2.2.1.1.1\tASN_INTEGER\t1\n" +
 						"1.3.6.1.2.1.2.2.1.1.6\tASN_INTEGER\t6\n" +
 						"1.3.6.1.2.1.2.2.1.2.1\tASN_OCTET_STR\tlo\n" +
 						"1.3.6.1.2.1.2.2.1.2.6\tASN_OCTET_STR\tbond0\n";
+
+		// Write the dump into "out.walk"
 		Files.write(tempFile, dump.getBytes(StandardCharsets.UTF_8));
 
+		// Pass the directory (not the file) to the client
+		client = new OfflineSnmpFileClient(tempDir);
 
-		client = new OfflineSnmpFileClient(tempFile);
-
-		// cleanup on exit
+		// Cleanup on exit
 		tempFile.toFile().deleteOnExit();
+		tempDir.toFile().deleteOnExit();
 	}
 
 	@Test

@@ -55,10 +55,11 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 	/**
 	 * Constructs an SNMP client that reads OID values from a file.
 	 *
-	 * @param file the path to the file containing OID values in UTF-16 encoding.
+	 * @param directory The path to the directory containing OID values in UTF-8 encoding.
 	 * @throws IOException if an I/O error occurs while reading the file.
 	 */
-	public OfflineSnmpFileClient(Path file) throws IOException {
+	public OfflineSnmpFileClient(Path directory) throws IOException {
+		Path file = directory.resolve("out.walk");
 		try (final BufferedReader br =
 					 Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
 			String line;
