@@ -24,6 +24,7 @@ package org.metricshub.snmp.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,12 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 /**
  * An offline SNMP client that reads OID values from a snmp WALK dump file and executes
  * SNMP operations (GET, GET_NEXT, TABLE, WALK) against those OIDs.
  */
-public final class OfflineSnmpFileClient implements ISnmpClient {
+public final class OfflineSnmpClient implements ISnmpClient {
 
 	/** Container for Snmp object's type and value. */
 	private static final class SnmpValue {
@@ -52,28 +54,34 @@ public final class OfflineSnmpFileClient implements ISnmpClient {
 	// Maps the OIDs to their corresponding SnmpValue (type + value).
 	private final NavigableMap<String, SnmpValue> oidValues = new TreeMap<>();
 
+
 	/**
-	 * Constructs an SNMP client that reads OID values from a file.
-	 *
-	 * @param file the path to the file containing OID values in UTF-16 encoding.
-	 * @throws IOException if an I/O error occurs while reading the file.
+	 * Reads oid values from all .walk files in the specified directory.
+	 * @param directory A given directory containing .walk files
+	 * @throws IOException If an I/O error occurs reading from the directory or a file
 	 */
-	public OfflineSnmpFileClient(Path file) throws IOException {
-		try (final BufferedReader br =
-					 Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				line = line.trim();
-				if (!line.contains("\t")) continue;
-				final String[] parts = line.split("\\t", 3);
-				if (parts.length < 3) {
-					continue;
-				}
-				final String oid   = stripDot(parts[0]);
-				final String type  = parts[1];
-				final String value = parts[2];
-				oidValues.put(oid, new SnmpValue(type, value));
-			}
+	public OfflineSnmpClient(Path directory) throws IOException {
+		try (Stream<Path> paths = Files.list(directory)) {
+			paths.filter(path -> path.toString().endsWith(".walk"))
+					.forEach(file -> {
+						try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
+							String line;
+							while ((line = br.readLine()) != null) {
+								line = line.trim();
+								if (!line.contains("\t")) continue;
+
+								final String[] parts = line.split("\\t", 3);
+								if (parts.length < 3) continue;
+
+								final String oid   = stripDot(parts[0]);
+								final String type  = parts[1];
+								final String value = parts[2];
+								oidValues.put(oid, new SnmpValue(type, value));
+							}
+						} catch (IOException e) {
+							throw new UncheckedIOException(e);
+						}
+					});
 		}
 	}
 

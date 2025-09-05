@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Unified abstraction that both {@link SnmpClient} (live network) and
- * {@link OfflineSnmpFileClient} (file‑backed) can implement.
+ * {@link OfflineSnmpClient} (file‑backed) can implement.
  */
 public interface ISnmpClient {
 
