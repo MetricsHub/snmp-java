@@ -41,7 +41,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SnmpClient {
+public class SnmpClient implements ISnmpClient {
 
 	// Default SNMP port number
 	public static final int SNMP_PORT = 161;
