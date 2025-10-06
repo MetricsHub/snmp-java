@@ -73,4 +73,9 @@ public interface ISnmpClient {
 	 * @throws Exception on error (e.g. no such OID).
 	 */
 	String walk(String oid) throws Exception;
+
+	/**
+	 * Frees any resources held by the client, such as network connections or file handles or memory space.
+	 */
+	void freeResources();
 }

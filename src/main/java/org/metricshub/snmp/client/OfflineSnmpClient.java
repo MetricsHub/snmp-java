@@ -199,4 +199,9 @@ public final class OfflineSnmpClient implements ISnmpClient {
 
 		return walkResult.toString();
 	}
+
+	@Override
+	public void freeResources() {
+		oidValues.clear();
+	}
 }
