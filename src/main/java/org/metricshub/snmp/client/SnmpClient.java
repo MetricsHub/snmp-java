@@ -305,6 +305,7 @@ public class SnmpClient implements ISnmpClient {
 	 * Releases the resources associated to this instance
 	 * (or so at least we believe...)
 	 */
+	@Override
 	public void freeResources() {
 		if (contextv1 != null) {
 			contextv1.destroy();
