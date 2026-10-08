@@ -1,26 +1,29 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="${project.name}">
+<?xml version="1.0" encoding="UTF-8"?>
+<site
+	xmlns="http://maven.apache.org/SITE/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 https://maven.apache.org/xsd/site-2.0.0.xsd"
+	name="${project.name}">
 
 	<skin>
 		<groupId>org.sentrysoftware.maven</groupId>
 		<artifactId>sentry-maven-skin</artifactId>
-		<version>6.4.01</version>
+		<version>8.0.00</version>
 	</skin>
 
 	<custom>
 		<noDefaultLinks>true</noDefaultLinks>
 		<keywords>snmp</keywords>
 	</custom>
-	<bannerLeft>
-		<src>images/metricshub-logo.png</src>
-		<href>https://metricshub.org</href>
+	<bannerLeft name="MetricsHub" href="https://metricshub.org">
+		<image src="images/metricshub-logo.png" />
 	</bannerLeft>
 
 	<body>
 
 		<links>
 			<item name="Fork on GitHub" href="${project.scm.url}" />
-			<item name="MetricsHub&reg;" href="https://metricshub.com" />
+			<item name="MetricsHub&#174;" href="https://metricshub.com" />
 		</links>
 
 		<menu name="User Documentation">
@@ -31,4 +34,4 @@
 		<menu ref="reports" />
 	</body>
 
-</project>
+</site>
